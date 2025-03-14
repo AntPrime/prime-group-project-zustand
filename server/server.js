@@ -13,8 +13,8 @@ const passport = require('./strategies/user.strategy');
 
 // Require router files:
 const userRouter = require('./routes/user.router');
-
 const testRouter = require('./routes/test.router');
+const eventsRouter = require('./routes/events.router');
 
 // Apply middleware:
 app.use(express.json());
@@ -26,8 +26,9 @@ app.use(passport.session());
 
 // Apply router files:
 app.use('/api/user', userRouter);
-
 app.use('/api/test', testRouter);
+app.use('/api/events', eventsRouter);
+
 
 // Start the server:
 app.listen(PORT, () => {
