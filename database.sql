@@ -8,13 +8,60 @@ DROP TABLE IF EXISTS "user";
 -------------------------------------------------------
 --------------------------------------------------
 -- TABLE SCHEMAS:
-CREATE TABLE "user" (
-  "id" SERIAL PRIMARY KEY,
-  "username" VARCHAR (80) UNIQUE NOT NULL,
-  "password" VARCHAR (1000) NOT NULL,
-  "inserted_at" TIMESTAMPTZ NOT NULL DEFAULT now(),
-  "updated_at" TIMESTAMPTZ NOT NULL DEFAULT now()
-);
+CREATE TABLE "users"(
+"id" SERIAL PRIMARY KEY,
+"username" VARCHAR (80),
+"admin" BOOLEAN,
+"super_admin" BOOLEAN,
+"active" BOOLEAN
+ );
+CREATE TABLE "categories" (
+"id" SERIAL PRIMARY KEY,
+"activity" VARCHAR (100)
+ );
+ CREATE TABLE "events" (
+"id" SERIAL PRIMARY KEY,
+"activities_id" INTEGER,
+"title" VARCHAR(50),
+"date" DATE,
+"time" TIME,
+"home_team" VARCHAR (100),
+"away_team" VARCHAR (100),
+"location" VARCHAR (100),
+"play_by_play" INTEGER,
+"color_commentator" INTEGER,
+"camera" INTEGER,
+"producer" INTEGER,
+"channel" VARCHAR (50),
+"notes" VARCHAR (100)
+ );
+-----some seed data
+INSERT INTO "users" ("username","admin", "super_admin", "active")
+VALUES
+('Aunika', true, true, true),
+('Anthony', true, false, true),
+('Abdi',false, false, true),
+('Aden',false, false, true),
+('Brad',false, false, true),
+('Ru',false, false, true),
+('Gregg',false, false, true);
+SELECT * FROM "users";
+INSERT INTO "categories" ("activity")
+VALUES
+('Basketball'),
+('Tennis'),
+('Football'),
+('Lacrosse'),
+('Hockey');
+SELECT * FROM "categories";
+INSERT INTO "events" ("activities_id","title", "date","time","home_team","away_team","location","play_by_play","color_commentator","camera","producer","channel","notes")
+VALUES
+('1','Event title1', '2025-03-13','14:30:00','Elk River','Rogers','Elks',NULL, 5, 6, 4, 'RogersTv','Look out for pickleballers'),
+('2', 'Event title2', '2025-02-13','11:00:00','Maple Grove','Rogers','Target Field', 1, 5, NULL, 3, 'RogersTv','gonna get crazy'),
+('3', 'Event title3','2025-03-13','12:30:00','Elk River','Maple Grove','Target Field',NULL, 5, 1, NULL, 'LeafsTv','touchdown'),
+('4','Event title4', '2025-04-03','16:30:00','Northfield','Zimmerman','The North Field',2, 5, 1, 7, 'ZTV','goal!'),
+('5', 'Event title5','2025-03-13','12:30:00','Elk River','Maple Grove','Target Field',3, 5, 1, NULL, 'ERTv','goal!');
+SELECT * FROM "events";
 
 
 -------------------------------------------------------
