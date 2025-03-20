@@ -52,13 +52,30 @@ const values = [`%${searchQuery}%`]
   })
 })
 
+// router.post('/', (req, res)=>{
+//   const queryText = `
+// INSERT INTO "events" ("activities_id","title", "date","time","school_id","location","play_by_play","color_commentator","camera","producer","channel","notes")
+// VALUES )
+// ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);
+// `;
+//   pool.query(queryText)
+//   .then((results)=>{
+//     console.log("post to db", results)
+//     res.send(results)
+//   })
+//   .catch((err)=>{
+//     console.log("error in events.router post", err)
+//     res.sendStatus(400);
+//   })
+// })
+
 router.post('/', (req, res)=>{
+  const {location} = req.body;
   const queryText = `
-INSERT INTO "events" ("activities_id","title", "date","time","school_id","location","play_by_play","color_commentator","camera","producer","channel","notes")
-VALUES )
-($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);
+INSERT INTO "events" ("location")
+VALUES ($1);
 `;
-  pool.query(queryText)
+  pool.query(queryText,[location])
   .then((results)=>{
     console.log("post to db", results)
     res.send(results)
