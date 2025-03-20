@@ -7,6 +7,7 @@ const userStrategy = require('../strategies/user.strategy');
 const router = express.Router();
 
 router.get('/', (req, res)=>{
+  const searchQuery = req.query.q || '';
   const queryText = ` 
 SELECT events.id AS "events id", 
 events.title AS "title",
@@ -26,9 +27,21 @@ LEFT JOIN "users" AS "pbp_user" ON pbp_user.id = events.play_by_play
 LEFT JOIN "users" AS "color_comm_user" ON color_comm_user.id = events.color_commentator
 LEFT JOIN "users" AS "camera" ON camera.id = events.camera
 LEFT JOIN "users" AS "producer" ON producer.id = events.producer
-LEFT JOIN "schools" ON schools.id = events.school_id  
-ORDER BY events.id; `;
-  pool.query(queryText)
+LEFT JOIN "schools" ON schools.id = events.school_id 
+WHERE events.title ILIKE $1
+OR categories.activity ILIKE $1
+OR TO_CHAR(events.date, 'YYYY-MM-DD') ILIKE $1
+OR events.location ILIKE $1
+OR schools.name ILIKE $1
+OR pbp_user.username ILIKE $1
+OR color_comm_user.username ILIKE $1
+OR camera.username ILIKE $1
+OR producer.username ILIKE $1
+OR events.channel ILIKE $1;`;
+
+const values = [`%${searchQuery}%`]
+
+  pool.query(queryText, values)
   .then((results)=>{
     console.log("results from db", results.rows)
     res.send(results.rows)
