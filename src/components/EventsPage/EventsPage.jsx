@@ -12,7 +12,9 @@ function EventsPage() {
     notes: ""
   });
 
-  //POST to create a new event //?haven't finished adding all fields to create a new event
+  //POST to create a new event 
+  //?haven't finished adding all fields to create a new event. Not sure how to go about
+  //?adding date and time
   const createEvent = () => {
     console.log("sending event", event);
     axios
