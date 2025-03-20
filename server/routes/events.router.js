@@ -7,14 +7,14 @@ const userStrategy = require('../strategies/user.strategy');
 const router = express.Router();
 
 router.get('/', (req, res)=>{
-  const queryText = `
+  const searchQuery = req.query.q || '';
+  const queryText = ` 
 SELECT events.id AS "events id", 
 events.title AS "title",
 categories.activity AS "activity", 
 events.date AS "date",
 events.location AS "location",  
-events.home_team AS "home team", 
-events.away_team AS "away team", 
+schools.name AS "school name", 
 pbp_user.username AS "play-by-play",
 color_comm_user.username AS "color comm.",
 camera.username AS "camera",
@@ -27,8 +27,21 @@ LEFT JOIN "users" AS "pbp_user" ON pbp_user.id = events.play_by_play
 LEFT JOIN "users" AS "color_comm_user" ON color_comm_user.id = events.color_commentator
 LEFT JOIN "users" AS "camera" ON camera.id = events.camera
 LEFT JOIN "users" AS "producer" ON producer.id = events.producer
-ORDER BY events.id;`;
-  pool.query(queryText)
+LEFT JOIN "schools" ON schools.id = events.school_id 
+WHERE events.title ILIKE $1
+OR categories.activity ILIKE $1
+OR TO_CHAR(events.date, 'YYYY-MM-DD') ILIKE $1
+OR events.location ILIKE $1
+OR schools.name ILIKE $1
+OR pbp_user.username ILIKE $1
+OR color_comm_user.username ILIKE $1
+OR camera.username ILIKE $1
+OR producer.username ILIKE $1
+OR events.channel ILIKE $1;`;
+
+const values = [`%${searchQuery}%`]
+
+  pool.query(queryText, values)
   .then((results)=>{
     console.log("results from db", results.rows)
     res.send(results.rows)
@@ -41,9 +54,9 @@ ORDER BY events.id;`;
 
 router.post('/', (req, res)=>{
   const queryText = `
-INSERT INTO "events" ("activities_id","title", "date","time","home_team","away_team","location", "channel","notes")
-VALUES 
-('1','Event title1', '2025-03-13','14:30:00','Elk River','Rogers','Elks','RogersTv','Look out for pickleballers');
+INSERT INTO "events" ("activities_id","title", "date","time","school_id","location","play_by_play","color_commentator","camera","producer","channel","notes")
+VALUES )
+($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);
 `;
   pool.query(queryText)
   .then((results)=>{
