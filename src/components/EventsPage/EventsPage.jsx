@@ -1,70 +1,105 @@
 import axios from "axios";
 import { useState } from "react";
+import SearchFetchEvents from "../SearchFetchEvents/SearchFetchEvents";
 
 function EventsPage() {
-  const [event, setEvent] = useState({ location: "" });
+  const [event, setEvent] = useState({
+    activities_id: "",
+    title: "",
+    school_id: 0,
+    location: "",
+    channel: "",
+    notes: ""
+  });
 
-  //added for search feature-g
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-
+  //POST to create a new event 
+  //?haven't finished adding all fields to create a new event. Not sure how to go about
+  //?adding date and time
   const createEvent = () => {
     console.log("sending event", event);
     axios
       .post("/api/events", event)
       .then((response) => {
         alert("event sent");
-        setEvent({ location: "" });
+        setEvent({ activities_id: "", title: "", school_id: 0, location: "", channel: "", notes: "" });
       })
       .catch((err) => {
         console.log("error in event post", err);
       });
   };
 
-  //Search function for get requests-g
-  const Search = () => {
-    console.log("Fetching query:", searchQuery);
-    axios
-      .get(`/api/events?q=${searchQuery}`)
-      .then((response) => {
-        setSearchResults(response.data);
-        console.log("search results", response.data);
-      })
-      .catch((error) => {
-        console.log("Error on GET", error);
-      });
-  };
-
   return (
     <div className="EventsPage">
-
-      {/* g */}
-      <input type="text"
-      placeholder="Search"
-      value={searchQuery}
-      onChange={(e)=> setSearchQuery(e.target.value)}/>
-      <button onClick={ Search }>Search</button>
-      <p>{JSON.stringify(searchResults)}</p>
-       {/* g */}
-
-      <p>Add event</p>
-      <form
-        onSubmit={(e) => {
-          createEvent(event);
-        }}
-      >
-        <input
-          type="text"
-          placeholder="new location"
-          onChange={(e) =>
-            setEvent({
-              ...event,
-              location: e.target.value,
-            })
-          }
-        />
-        <button type="submit">add location</button>
-      </form>
+      <SearchFetchEvents />
+      <div>
+        <p>Add event</p>
+        <form
+          onSubmit={(e) => {
+            createEvent(event);
+          }}
+        >
+                 <select
+            onChange={(e) => {
+              setEvent({ ...event, activities_id: e.target.value });
+            }}
+          >
+            <option value="">Activity</option>
+            <option value="1">Basketball</option>
+            <option value="2">Tennis</option>
+            <option value="3">Football</option>
+            <option value="4">Lacrosse</option>
+            <option value="5">Hockey</option>
+          </select>
+          {/* a drop down in this format might not be scalable for client to add new schools*/}
+          <select
+            onChange={(e) => {
+              setEvent({ ...event, school_id: e.target.value });
+            }}
+          >
+            <option value="">School</option>
+            <option value="1">Alber Lea</option>
+            <option value="2">Fairbault</option>
+            <option value="3">Northfield</option>
+          </select>
+          <input
+            type="text"
+            placeholder="location"
+            onChange={(e) => setEvent({ ...event, location: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="title"
+            onChange={(e) =>
+              setEvent({
+                ...event,
+                title: e.target.value,
+              })
+            }
+          />
+          {/* This channel select is a little redundant. Just threw it in there for now*/}
+          <select
+            onChange={(e) => {
+              setEvent({ ...event, channel: e.target.value });
+            }}
+          >
+            <option value="">Channel</option>
+            <option value="Albert Lea Live">Albert Lea Live</option>
+            <option value="Fairbault Live">Fairbault Live</option>
+            <option value="Northfield Live">Northfield Live</option>
+          </select>
+          <input
+            type="text"
+            placeholder="notes"
+            onChange={(e) =>
+              setEvent({
+                ...event,
+                notes: e.target.value,
+              })
+            }
+          />
+          <button type="submit">add event</button>
+        </form>
+      </div>
     </div>
   );
 }

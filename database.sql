@@ -82,8 +82,8 @@ VALUES
 
 SELECT * FROM "events";
 
-INSERT INTO "schools" ("name","address")
-VALUES ('Elk River', '550 School Streee'),('Rogers','123 Main Street'),('Zimmerman','321 Country Road');
+INSERT INTO "schools" ("name")
+VALUES ('Albert Lea'),('Faibault'),('Northfield');
 
 SELECT * FROM "schools";
 -------------------------------------------------------

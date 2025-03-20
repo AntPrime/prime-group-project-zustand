@@ -6,6 +6,7 @@ const userStrategy = require('../strategies/user.strategy');
 
 const router = express.Router();
 
+//GET route for search feature for events
 router.get('/', (req, res)=>{
   const searchQuery = req.query.q || '';
   const queryText = ` 
@@ -13,6 +14,7 @@ SELECT events.id AS "events id",
 events.title AS "title",
 categories.activity AS "activity", 
 events.date AS "date",
+events.time AS "time",
 events.location AS "location",  
 schools.name AS "school name", 
 pbp_user.username AS "play-by-play",
@@ -38,9 +40,7 @@ OR color_comm_user.username ILIKE $1
 OR camera.username ILIKE $1
 OR producer.username ILIKE $1
 OR events.channel ILIKE $1;`;
-
 const values = [`%${searchQuery}%`]
-
   pool.query(queryText, values)
   .then((results)=>{
     console.log("results from db", results.rows)
@@ -52,13 +52,14 @@ const values = [`%${searchQuery}%`]
   })
 })
 
+//POST to create a new event //?haven't finished adding all fields to create a new event
 router.post('/', (req, res)=>{
+  const {activities_id, title, school_id, location, channel, notes} = req.body;
   const queryText = `
-INSERT INTO "events" ("activities_id","title", "date","time","school_id","location","play_by_play","color_commentator","camera","producer","channel","notes")
-VALUES )
-($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12);
+INSERT INTO "events" ("activities_id", "title","school_id","location", "channel", "notes")
+VALUES ($1, $2, $3, $4, $5, $6);
 `;
-  pool.query(queryText)
+  pool.query(queryText,[activities_id, title, school_id, location, channel, notes])
   .then((results)=>{
     console.log("post to db", results)
     res.send(results)
@@ -68,4 +69,5 @@ VALUES )
     res.sendStatus(400);
   })
 })
+
 module.exports = router;
