@@ -4,6 +4,7 @@ import SearchFetchEvents from "../SearchFetchEvents/SearchFetchEvents";
 
 function EventsPage() {
   const [event, setEvent] = useState({
+    activities_id: "",
     title: "",
     school_id: 0,
     location: "",
@@ -18,7 +19,7 @@ function EventsPage() {
       .post("/api/events", event)
       .then((response) => {
         alert("event sent");
-        setEvent({ title: "", school_id: 0, location: "", channel: "", notes: "" });
+        setEvent({ activities_id: "", title: "", school_id: 0, location: "", channel: "", notes: "" });
       })
       .catch((err) => {
         console.log("error in event post", err);
@@ -35,6 +36,18 @@ function EventsPage() {
             createEvent(event);
           }}
         >
+                 <select
+            onChange={(e) => {
+              setEvent({ ...event, activities_id: e.target.value });
+            }}
+          >
+            <option value="">Activity</option>
+            <option value="1">Basketball</option>
+            <option value="2">Tennis</option>
+            <option value="3">Football</option>
+            <option value="4">Lacrosse</option>
+            <option value="5">Hockey</option>
+          </select>
           {/* a drop down in this format might not be scalable for client to add new schools*/}
           <select
             onChange={(e) => {

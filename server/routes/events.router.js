@@ -14,6 +14,7 @@ SELECT events.id AS "events id",
 events.title AS "title",
 categories.activity AS "activity", 
 events.date AS "date",
+events.time AS "time",
 events.location AS "location",  
 schools.name AS "school name", 
 pbp_user.username AS "play-by-play",
@@ -53,12 +54,12 @@ const values = [`%${searchQuery}%`]
 
 //POST to create a new event //?haven't finished adding all fields to create a new event
 router.post('/', (req, res)=>{
-  const {title, school_id, location, channel, notes} = req.body;
+  const {activities_id, title, school_id, location, channel, notes} = req.body;
   const queryText = `
-INSERT INTO "events" ("title","school_id","location", "channel", "notes")
-VALUES ($1, $2, $3, $4, $5);
+INSERT INTO "events" ("activities_id", "title","school_id","location", "channel", "notes")
+VALUES ($1, $2, $3, $4, $5, $6);
 `;
-  pool.query(queryText,[title, school_id, location, channel, notes])
+  pool.query(queryText,[activities_id, title, school_id, location, channel, notes])
   .then((results)=>{
     console.log("post to db", results)
     res.send(results)
