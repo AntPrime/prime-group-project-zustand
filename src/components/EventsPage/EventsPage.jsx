@@ -1,5 +1,6 @@
 import axios from "axios";
 import { useState } from "react";
+import SearchFetchEvents from "../SearchFetchEvents/SearchFetchEvents";
 
 function EventsPage() {
   const [event, setEvent] = useState({
@@ -9,23 +10,6 @@ function EventsPage() {
     channel: "",
     notes: ""
   });
-
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
-
-  //GET request for search results
-  const Search = () => {
-    console.log("Fetching query:", searchQuery);
-    axios
-      .get(`/api/events?q=${searchQuery}`)
-      .then((response) => {
-        setSearchResults(response.data);
-        console.log("search results", response.data);
-      })
-      .catch((error) => {
-        console.log("Error on GET", error);
-      });
-  };
 
   //POST to create a new event //?haven't finished adding all fields to create a new event
   const createEvent = () => {
@@ -43,17 +27,7 @@ function EventsPage() {
 
   return (
     <div className="EventsPage">
-      <div>
-        <p>Search Events</p>
-        <input
-          type="text"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <button onClick={Search}>Search</button>
-        <p>{JSON.stringify(searchResults)}</p>
-      </div>
+      <SearchFetchEvents />
       <div>
         <p>Add event</p>
         <form
