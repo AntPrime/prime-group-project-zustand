@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import useStore from '../../zustand/store';
-
+import '../RegisterPage/RegisterPage.css'
 
 function RegisterPage() {
   const [username, setUsername] = useState('');
