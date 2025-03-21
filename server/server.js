@@ -13,9 +13,9 @@ const passport = require('./strategies/user.strategy');
 
 // Require router files:
 const userRouter = require('./routes/user.router');
-
 const eventsRouter = require('./routes/events.router');
-
+const categoriesRouter = require('./routes/categories.router');
+const schoolsRouter = require('./routes/schools.router');
 
 // Apply middleware:
 app.use(express.json());
@@ -27,10 +27,9 @@ app.use(passport.session());
 
 // Apply router files:
 app.use('/api/user', userRouter);
-
 app.use('/api/events', eventsRouter);
-
-
+app.use('/api/categories', categoriesRouter);
+app.use('/api/schools', schoolsRouter);
 
 // Start the server:
 app.listen(PORT, () => {

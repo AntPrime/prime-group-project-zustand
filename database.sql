@@ -38,7 +38,8 @@ CREATE TABLE "categories" (
 "camera" INTEGER,
 "producer" INTEGER,
 "channel" VARCHAR (50),
-"notes" VARCHAR (100)
+"notes" VARCHAR (100),
+"event_type" VARCHAR(50)
  );
  
  CREATE TABLE "schools" (
@@ -86,6 +87,11 @@ INSERT INTO "schools" ("name")
 VALUES ('Albert Lea'),('Faibault'),('Northfield');
 
 SELECT * FROM "schools";
+
+-- Update some existing events with event types
+UPDATE "events" SET "event_type" = 'Sporting Event' WHERE "activities_id" IN (1, 2, 3, 4, 5);
+UPDATE "events" SET "event_type" = 'Online Event' WHERE "channel" LIKE '%Live%';
+
 -------------------------------------------------------
 --------------------------------------------------
 -- AUTOMAGIC UPDATED_AT:
