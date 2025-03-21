@@ -62,6 +62,7 @@ function App() {
               )
             }
           />
+          <Route path="/events" element={<EventsPage />} />
           <Route
             exact
             path="/about"
