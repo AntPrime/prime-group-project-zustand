@@ -107,9 +107,9 @@ function App() {
             path="/events"
             element={
               user.id ? (
-                <Navigate /> // Render HomePage for authenticated user.
+                <EventsPage to="/events" />// Render HomePage for authenticated user.
               ) : (
-                <EventsPage to="/events" /> // Redirect unauthenticated user.
+                <Navigate to="/" replace /> // Redirect unauthenticated user.
               )
             }
           />
