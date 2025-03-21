@@ -7,7 +7,7 @@ import {
 
 import useStore from '../../zustand/store';
 import Nav from '../Nav/Nav';
-import HomePage from '../HomePage/HomePage';
+import HomePage from '../StudentHomePage/StudentHomePage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
 import EventsPage from '../EventsPage/EventsPage';
@@ -108,9 +108,9 @@ function App() {
             path="/events"
             element={
               user.id ? (
-                <Navigate /> // Render HomePage for authenticated user.
+                <EventsPage to="/events" />// Render HomePage for authenticated user.
               ) : (
-                <EventsPage to="/events" /> // Redirect unauthenticated user.
+                <Navigate to="/" replace /> // Redirect unauthenticated user.
               )
             }
           />
