@@ -25,7 +25,7 @@ function EventsPage() {
       .post("/api/events", event)
       .then((response) => {
         alert("event sent");
-        setEvent({ activities_id: "", date: 0, time: 0,title: "", school_id: 0, location: "", channel: "", notes: "" });
+        setEvent({ activities_id: 0, date: 0, time: 0,title: "", school_id: 0, location: "", channel: "", notes: "" });
       })
       .catch((err) => {
         console.log("error in event post", err);
