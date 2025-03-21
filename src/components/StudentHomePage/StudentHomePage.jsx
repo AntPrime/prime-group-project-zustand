@@ -26,6 +26,11 @@ function HomePage() {
         <Typography variant="h7" component="div">
          LOCATION
         </Typography>
+        <Typography variant="body2">
+        <br />
+        DETAILS:
+        {" a benevolent smile"}
+      </Typography>
       </CardContent>
       <CardActions>
         <Button size="small">Producer</Button>
@@ -55,10 +60,8 @@ function HomePage() {
       <Box sx={{ minWidth: 275 }}>
       <Card variant="outlined">{card}</Card>
     </Box>
-    
+
       <h5></h5>
-      <h5>SCHOOL:</h5>
-      <h5>DETAILS:</h5>
       <p>Your ID is: {user.id}</p>
       <button onClick={logOut}>
         Log Out

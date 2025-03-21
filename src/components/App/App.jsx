@@ -7,7 +7,7 @@ import {
 
 import useStore from '../../zustand/store';
 import Nav from '../Nav/Nav';
-import HomePage from '../HomePage/HomePage';
+import HomePage from '../StudentHomePage/StudentHomePage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
 import EventsPage from '../EventsPage/EventsPage';

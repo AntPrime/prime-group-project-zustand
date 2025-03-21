@@ -54,12 +54,12 @@ const values = [`%${searchQuery}%`]
 
 //POST to create a new event //?haven't finished adding all fields to create a new event
 router.post('/', (req, res)=>{
-  const {activities_id, title, school_id, location, channel, notes} = req.body;
+  const {activities_id, date, time, title, school_id, location, channel, notes} = req.body;
   const queryText = `
-INSERT INTO "events" ("activities_id", "title","school_id","location", "channel", "notes")
-VALUES ($1, $2, $3, $4, $5, $6);
+INSERT INTO "events" ("activities_id", "date", "time", "title","school_id","location", "channel", "notes")
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
 `;
-  pool.query(queryText,[activities_id, title, school_id, location, channel, notes])
+  pool.query(queryText,[activities_id, date, time, title, school_id, location, channel, notes])
   .then((results)=>{
     console.log("post to db", results)
     res.send(results)
@@ -69,5 +69,4 @@ VALUES ($1, $2, $3, $4, $5, $6);
     res.sendStatus(400);
   })
 })
-
 module.exports = router;
