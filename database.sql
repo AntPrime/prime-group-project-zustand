@@ -9,7 +9,7 @@ DROP TABLE IF EXISTS "user";
 --------------------------------------------------
 -- TABLE SCHEMAS:
 
-CREATE TABLE "users"(
+CREATE TABLE "user"(
 "id" SERIAL PRIMARY KEY,
 "username" VARCHAR (80) UNIQUE NOT NULL,
 "password" VARCHAR (1000) NOT NULL,
@@ -50,7 +50,7 @@ CREATE TABLE "categories" (
 --------------------------------------------------
 -- SEED DATA:
 
-INSERT INTO "users" ("username","password","admin", "super_admin", "active")
+INSERT INTO "user" ("username","password","admin", "super_admin", "active")
 VALUES 
 ('Aunika','egg', true, true, true),
 ('Anthony','egg', true, false, true),
@@ -60,7 +60,7 @@ VALUES
 ('Ru','egg',false, false, true),
 ('Gregg','egg',false, false, true);
 
-SELECT * FROM "users";
+SELECT * FROM "user";
 
 INSERT INTO "categories" ("activity")
 VALUES 

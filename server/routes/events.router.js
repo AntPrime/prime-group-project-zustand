@@ -25,10 +25,10 @@ events.channel AS "channel",
 events.notes AS "notes"
 FROM "events"
 LEFT JOIN "categories" ON events.activities_id = categories.id
-LEFT JOIN "users" AS "pbp_user" ON pbp_user.id = events.play_by_play
-LEFT JOIN "users" AS "color_comm_user" ON color_comm_user.id = events.color_commentator
-LEFT JOIN "users" AS "camera" ON camera.id = events.camera
-LEFT JOIN "users" AS "producer" ON producer.id = events.producer
+LEFT JOIN "user" AS "pbp_user" ON pbp_user.id = events.play_by_play
+LEFT JOIN "user" AS "color_comm_user" ON color_comm_user.id = events.color_commentator
+LEFT JOIN "user" AS "camera" ON camera.id = events.camera
+LEFT JOIN "user" AS "producer" ON producer.id = events.producer
 LEFT JOIN "schools" ON schools.id = events.school_id 
 WHERE events.title ILIKE $1
 OR categories.activity ILIKE $1
@@ -54,12 +54,12 @@ const values = [`%${searchQuery}%`]
 
 //POST to create a new event //?haven't finished adding all fields to create a new event
 router.post('/', (req, res)=>{
-  const {activities_id, title, school_id, location, channel, notes} = req.body;
+  const {activities_id, date, time, title, school_id, location, channel, notes} = req.body;
   const queryText = `
-INSERT INTO "events" ("activities_id", "title","school_id","location", "channel", "notes")
-VALUES ($1, $2, $3, $4, $5, $6);
+INSERT INTO "events" ("activities_id", "date", "time", "title","school_id","location", "channel", "notes")
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
 `;
-  pool.query(queryText,[activities_id, title, school_id, location, channel, notes])
+  pool.query(queryText,[activities_id, date, time, title, school_id, location, channel, notes])
   .then((results)=>{
     console.log("post to db", results)
     res.send(results)

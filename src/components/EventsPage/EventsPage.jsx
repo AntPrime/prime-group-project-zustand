@@ -6,6 +6,8 @@ function EventsPage() {
   const [event, setEvent] = useState({
     activities_id: "",
     title: "",
+    date: 0,
+    time: 0,
     school_id: 0,
     location: "",
     channel: "",
@@ -21,7 +23,7 @@ function EventsPage() {
       .post("/api/events", event)
       .then((response) => {
         alert("event sent");
-        setEvent({ activities_id: "", title: "", school_id: 0, location: "", channel: "", notes: "" });
+        setEvent({ activities_id: "", date: 0, time: 0,title: "", school_id: 0, location: "", channel: "", notes: "" });
       })
       .catch((err) => {
         console.log("error in event post", err);
@@ -38,7 +40,7 @@ function EventsPage() {
             createEvent(event);
           }}
         >
-                 <select
+          <select
             onChange={(e) => {
               setEvent({ ...event, activities_id: e.target.value });
             }}
@@ -50,6 +52,8 @@ function EventsPage() {
             <option value="4">Lacrosse</option>
             <option value="5">Hockey</option>
           </select>
+          <input placeholder="Date" type="date" onChange={(e) => setEvent({ ...event, date: e.target.value })}/>
+          <input placeholder="Time" type="time" onChange={(e) => setEvent({ ...event, time: e.target.value })}/>
           {/* a drop down in this format might not be scalable for client to add new schools*/}
           <select
             onChange={(e) => {
