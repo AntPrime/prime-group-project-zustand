@@ -30,3 +30,5 @@ Added buttons for students to sign up for roles (Producer, Camera, Play-by-play)
 Fixed issues with creating new events
 Fixed issues with updating events
 Made sure search results display correctly
+
+--slight database changes have been made to the events table
