@@ -82,8 +82,6 @@ function EventsPage() {
               })
             }
           />
-          <input placeholder="Date" type="date" onChange={(e) => setEvent({ ...event, date: e.target.value })}/>
-          <input placeholder="Time" type="time" onChange={(e) => setEvent({ ...event, time: e.target.value })} />
           {/* This channel select is a little redundant. Just threw it in there for now*/}
           <select
             onChange={(e) => {
