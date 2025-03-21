@@ -4,7 +4,7 @@ import SearchFetchEvents from "../SearchFetchEvents/SearchFetchEvents";
 
 function EventsPage() {
   const [event, setEvent] = useState({
-    activities_id: "",
+    activities_id: 0,
     title: "",
     date: 0,
     time: 0,
