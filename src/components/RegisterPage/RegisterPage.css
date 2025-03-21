@@ -1,0 +1,205 @@
+/* Sports-themed styling for RegisterPage */
+.register-container {
+  max-width: 500px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
+  position: relative;
+  overflow: hidden;
+}
+
+.sports-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(to right, #0c2340 33%, #d12630 33%, #d12630 66%, #0c2340 66%);
+}
+
+.register-header {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.page-title {
+  color: #0c2340;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.page-subtitle {
+  color: #555;
+  font-size: 18px;
+  margin-top: 0;
+  position: relative;
+  display: inline-block;
+  padding: 0 15px;
+}
+
+.page-subtitle::before,
+.page-subtitle::after {
+  content: "";
+  display: inline-block;
+  width: 30px;
+  height: 2px;
+  background-color: #d12630;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.page-subtitle::before {
+  left: -40px;
+}
+
+.page-subtitle::after {
+  right: -40px;
+}
+
+.register-form {
+  display: flex;
+  flex-direction: column;
+  background-color: white;
+  padding: 25px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+}
+
+.form-title {
+  text-align: center;
+  color: #0c2340;
+  font-size: 20px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.form-group {
+  margin-bottom: 20px;
+}
+
+.form-label {
+  display: block;
+  margin-bottom: 8px;
+  font-weight: 500;
+  color: #333;
+}
+
+.form-input {
+  width: 100%;
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.form-input:focus {
+  border-color: #0c2340;
+}
+
+.form-input::placeholder {
+  color: #aaa;
+}
+
+.register-button {
+  background-color: #0c2340;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background-color 0.3s;
+  margin-top: 10px;
+}
+
+.register-button:hover {
+  background-color: #1a3a5f;
+}
+
+.login-link {
+  text-align: center;
+  margin-top: 20px;
+}
+
+.login-link a {
+  color: #0c2340;
+  text-decoration: none;
+  font-size: 14px;
+  transition: color 0.3s;
+}
+
+.login-link a:hover {
+  color: #d12630;
+  text-decoration: underline;
+}
+
+.error-message {
+  color: #d12630;
+  text-align: center;
+  margin-top: 20px;
+  font-weight: bold;
+  padding: 10px;
+  background-color: rgba(209, 38, 48, 0.1);
+  border-radius: 4px;
+  border: 1px solid rgba(209, 38, 48, 0.3);
+}
+
+.register-footer {
+  text-align: center;
+  margin-top: 30px;
+  color: #666;
+  font-size: 14px;
+  padding: 15px 0;
+  border-top: 1px solid #eee;
+}
+
+.footer-text {
+  margin: 5px 0;
+}
+
+.copyright {
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+/* Sports-themed decorative elements */
+.ball-decoration {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: repeating-linear-gradient(
+    45deg,
+    #0c2340,
+    #0c2340 5px,
+    #d12630 5px,
+    #d12630 10px
+  );
+  opacity: 0.1;
+  z-index: -1;
+}
+
+.ball-1 {
+  top: 20px;
+  left: 20px;
+}
+
+.ball-2 {
+  bottom: 20px;
+  right: 20px;
+} 

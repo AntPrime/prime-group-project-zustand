@@ -1,0 +1,240 @@
+/* Sports-themed styling for HomePage */
+.home-container {
+  max-width: 800px;
+  margin: 40px auto;
+  padding: 30px;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
+  border: 1px solid #e0e0e0;
+  position: relative;
+  overflow: hidden;
+}
+
+.sports-border {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 6px;
+  background: linear-gradient(to right, #0c2340 33%, #d12630 33%, #d12630 66%, #0c2340 66%);
+}
+
+.home-header {
+  text-align: center;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.page-title {
+  color: #0c2340;
+  font-size: 32px;
+  font-weight: bold;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.page-subtitle {
+  color: #555;
+  font-size: 18px;
+  margin-top: 0;
+  position: relative;
+  display: inline-block;
+  padding: 0 15px;
+}
+
+.page-subtitle::before,
+.page-subtitle::after {
+  content: "";
+  display: inline-block;
+  width: 30px;
+  height: 2px;
+  background-color: #d12630;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.page-subtitle::before {
+  left: -40px;
+}
+
+.page-subtitle::after {
+  right: -40px;
+}
+
+.content-card {
+  background-color: white;
+  padding: 25px;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+  margin-bottom: 20px;
+}
+
+.section-title {
+  color: #0c2340;
+  font-size: 20px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  font-weight: 600;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 10px;
+}
+
+.user-info {
+  margin-bottom: 25px;
+}
+
+.user-detail {
+  margin: 10px 0;
+  font-size: 16px;
+  color: #333;
+}
+
+.user-detail span {
+  font-weight: 600;
+  color: #0c2340;
+  margin-right: 5px;
+}
+
+.action-button {
+  background-color: #0c2340;
+  color: white;
+  padding: 14px;
+  border: none;
+  border-radius: 4px;
+  font-size: 16px;
+  font-weight: bold;
+  cursor: pointer;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  transition: background-color 0.3s;
+  width: 100%;
+}
+
+.logout-button {
+  background-color: #d12630;
+}
+
+.logout-button:hover {
+  background-color: #b01f28;
+}
+
+.home-footer {
+  text-align: center;
+  margin-top: 30px;
+  color: #666;
+  font-size: 14px;
+  padding: 15px 0;
+  border-top: 1px solid #eee;
+}
+
+.footer-text {
+  margin: 5px 0;
+}
+
+.copyright {
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+/* Sports-themed decorative elements */
+.ball-decoration {
+  position: absolute;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: repeating-linear-gradient(
+    45deg,
+    #0c2340,
+    #0c2340 5px,
+    #d12630 5px,
+    #d12630 10px
+  );
+  opacity: 0.1;
+  z-index: -1;
+}
+
+.ball-1 {
+  top: 20px;
+  left: 20px;
+}
+
+.ball-2 {
+  bottom: 20px;
+  right: 20px;
+}
+
+.home-page {
+  width: 100%;
+}
+
+.admin-controls {
+  background-color: #f9f9f9;
+  border-radius: 5px;
+  padding: 15px 20px;
+  margin-bottom: 20px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 15px;
+}
+
+.admin-greeting h3 {
+  margin: 0 0 5px 0;
+  color: #333;
+  font-size: 1.2rem;
+}
+
+.admin-level {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.admin-links {
+  display: flex;
+  gap: 10px;
+}
+
+.admin-link {
+  display: inline-block;
+  padding: 8px 16px;
+  background-color: #4a86e8;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  font-weight: 500;
+  transition: background-color 0.2s;
+}
+
+.admin-link:hover {
+  background-color: #3a76d8;
+}
+
+.admin-link.super-admin {
+  background-color: #9c27b0;
+}
+
+.admin-link.super-admin:hover {
+  background-color: #7b1fa2;
+}
+
+@media (max-width: 768px) {
+  .admin-controls {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .admin-links {
+    width: 100%;
+  }
+  
+  .admin-link {
+    flex: 1;
+    text-align: center;
+  }
+} 
