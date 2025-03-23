@@ -65,3 +65,10 @@ function UserManagement() {
 }
 
 export default UserManagement;
+
+
+// Make sure back-end has a route like GET /api/user/admin that returns all users.
+
+// I can add more features like “Change Password,” “Delete Account”...
+// by calling additional endpoints like ( DELETE /api/user/admin/:id or PUT /api/user/admin/:id).
+// If needed adjust the URL accordingly.
