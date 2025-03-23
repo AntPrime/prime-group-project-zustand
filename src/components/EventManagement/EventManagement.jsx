@@ -64,6 +64,6 @@ function EventManagement() {
 export default EventManagement;
 
 
-//Ensure  back-end has a route like GET /api/events/admin that returns all events for admin usage.
+//Ensure back-end has a route like GET /api/events/admin that returns all events for admin usage.
 //Add forms or buttons for creating, updating, or deleting events as needed 
 // And (POST /api/events/admin, PUT /api/events/admin/:id, etc.).

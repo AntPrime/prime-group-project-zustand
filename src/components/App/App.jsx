@@ -11,6 +11,10 @@ import HomePage from '../StudentHomePage/StudentHomePage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
 import EventsPage from '../EventsPage/EventsPage';
+import Dashboard from '../Dashboard/Dashboard';
+import UserManagement from '../UserManagement/UserManagement';
+import EventManagement from '../EventManagement/EventManagement';
+
 
 
 function App() {
@@ -63,6 +67,9 @@ function App() {
             }
           />
           <Route path="/events" element={<EventsPage />} />
+          <Route path="/dashboard" element={<Dashboard />} />
+          <Route path="/eventmanagement" element={<EventManagement />} />
+          <Route path="/userManagement" element={<UserManagement />} />
           <Route
             exact
             path="/about"

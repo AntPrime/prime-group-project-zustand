@@ -42,7 +42,7 @@ function UserManagement() {
 
   return (
     <div>
-      <h2>User Management</h2>
+      <h2>User Management </h2>
 
       <div style={{ marginBottom: '1rem' }}>
         <input
@@ -68,7 +68,6 @@ export default UserManagement;
 
 
 // Make sure back-end has a route like GET /api/user/admin that returns all users.
-
 // I can add more features like “Change Password,” “Delete Account”...
 // by calling additional endpoints like ( DELETE /api/user/admin/:id or PUT /api/user/admin/:id).
 // If needed adjust the URL accordingly.

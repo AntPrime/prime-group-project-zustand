@@ -26,6 +26,15 @@ function Nav() {
             <li>
               <NavLink to="/">Home</NavLink>
             </li>
+            <li>
+              <NavLink to="/dashboard">Dashboard</NavLink>
+            </li>
+            <li>
+              <NavLink to="/eventManagement">EventManagement</NavLink>
+            </li>
+            <li>
+              <NavLink to="/userManagement">UserManagment</NavLink>
+            </li>
           </>
         )
       }

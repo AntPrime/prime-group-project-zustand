@@ -3,6 +3,8 @@ import { useState } from "react";
 import SearchFetchEvents from "../SearchFetchEvents/SearchFetchEvents";
 
 function EventsPage() {
+
+  
   const [event, setEvent] = useState({
     activities_id: 0,
     title: "",
@@ -10,8 +12,6 @@ function EventsPage() {
     time: 0,
     school_id: 0,
     location: "",
-    date: 0,
-    time: 0,
     channel: "",
     notes: ""
   });
