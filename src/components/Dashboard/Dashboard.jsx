@@ -1,3 +1,6 @@
+// We may need to define routes in...
+// App.jsx for "/admin", "/admin/users", and "/admin/events".
+// I assume we will store the user’s role in user.role.
 
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -39,7 +42,7 @@ function Dashboard() {
 <h1>Welcome, Admin {user.username}</h1>
 
  <p>Use the sidebar to manage users and events.</p>
- 
+
  </main>
     </div>
   );
