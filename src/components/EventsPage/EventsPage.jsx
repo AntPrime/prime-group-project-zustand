@@ -10,8 +10,6 @@ function EventsPage() {
     time: 0,
     school_id: 0,
     location: "",
-    date: 0,
-    time: 0,
     channel: "",
     notes: ""
   });
