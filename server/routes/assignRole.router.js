@@ -6,35 +6,29 @@ const userStrategy = require('../strategies/user.strategy');
 
 const router = express.Router();
 
-router.put('/assign-role', async (req, res) => {
+router.put('/', async (req, res) => {
     console.log('Request received at /assign');
-    const { eventId, roleColumn, userId } = req.body; 
-  
+    const { eventId, roleColumn } = req.body; 
+    const userId = req.user.id
     // Validate that roleColumn is a valid column name to prevent SQL injection
     const validRoles = ["producer", "camera", "play_by_play", "color_commentator"];
     if (!validRoles.includes(roleColumn)) {
       return res.status(400).json({ error: "Invalid role" });
     }
-  
+
     try {
       const query = `
-        UPDATE events
+        UPDATE "events"
         SET ${roleColumn} = $1
-        WHERE id = $2
-        RETURNING *;
+        WHERE events.id = $2;
       `;
   
       const result = await pool.query(query, [userId, eventId]);
   
       res.status(200).json(result.rows[0]);
     } catch (error) {
-        console.error("Detailed error:", {
-          message: error.message,
-          stack: error.stack,
-          query: query,
-          parameters: [userId, eventId]
-        });
-        res.status(500).send("Error updating event role");
+      console.log(error);
+      res.status(500).send("Error updating event role");
       }
   });
 module.exports = router;

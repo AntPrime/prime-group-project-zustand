@@ -43,7 +43,7 @@ OR events.channel ILIKE $1;`;
 const values = [`%${searchQuery}%`]
   pool.query(queryText, values)
   .then((results)=>{
-    console.log("results from db", results.rows)
+   // console.log("results from db", results.rows)
     res.send(results.rows)
   })
   .catch((err)=>{
@@ -52,14 +52,78 @@ const values = [`%${searchQuery}%`]
   })
 })
 
-//POST to create a new event //?haven't finished adding all fields to create a new event
+//GET ROUTE to map through and select roles on events: 
+router.get('/test', (req, res) => {
+  const queryText = `
+    SELECT 
+      events.id AS event_id,
+      events.title,
+      categories.activity,
+      TO_CHAR(events.date, 'DD-MM-YYYY') AS date,
+      TO_CHAR(events.time, 'HH12:MI') AS time,
+      events.location,
+      schools.name AS school_name,
+      events.channel,
+      events.notes,
+      events.play_by_play,
+      events.color_commentator,
+      events.camera,
+      events.producer,
+      pbp_user.username AS play_by_play_username,
+      cc_user.username AS color_commentator_username,
+      cam_user.username AS camera_username,
+      prod_user.username AS producer_username
+    FROM events
+    LEFT JOIN categories ON events.activities_id = categories.id
+    LEFT JOIN schools ON events.school_id = schools.id
+    LEFT JOIN "user" AS pbp_user ON events.play_by_play = pbp_user.id
+    LEFT JOIN "user" AS cc_user ON events.color_commentator = cc_user.id
+    LEFT JOIN "user" AS cam_user ON events.camera = cam_user.id
+    LEFT JOIN "user" AS prod_user ON events.producer = prod_user.id
+    ORDER BY events.date DESC, events.time DESC;
+  `;
+
+  pool.query(queryText)
+    .then(result => {
+      // Transform raw data to enforce consistent naming
+      const cleanedEvents = result.rows.map(event => ({
+        id: event.event_id,
+        title: event.title,
+        activity: event.activity,
+        date: event.date,  // Already formatted as YYYY-MM-DD
+        time: event.time,   // Already formatted as HH:MM
+        location: event.location,
+        school_name: event.school_name,
+        channel: event.channel,
+        notes: event.notes,
+        play_by_play: event.play_by_play,
+        color_commentator: event.color_commentator,
+        camera: event.camera,
+        producer: event.producer,
+        play_by_play_username: event.play_by_play_username,
+        color_commentator_username: event.color_commentator_username,
+        camera_username: event.camera_username,
+        producer_username: event.producer_username
+      }));
+      
+      res.status(200).json(cleanedEvents);
+    })
+    .catch(err => {
+      console.error('[GET /clean Error]', err);
+      res.status(500).json({ error: 'Database error' });
+    });
+});
+
+
+//POST to create a new event
 router.post('/', (req, res)=>{
+  const userId = req.user.id;
   const {activities_id, date, time, title, school_id, location, channel, notes} = req.body;
   const queryText = `
-INSERT INTO "events" ("activities_id", "date", "time", "title","school_id","location", "channel", "notes")
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
+INSERT INTO "events" ("created_by_id", "activities_id", "date", "time", "title","school_id","location", "channel", "notes")
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
 `;
-  pool.query(queryText,[activities_id, date, time, title, school_id, location, channel, notes])
+  pool.query(queryText,[userId, activities_id, date, time, title, school_id, location, channel, notes])
   .then((results)=>{
     console.log("post to db", results)
     res.send(results)
@@ -69,4 +133,5 @@ VALUES ($1, $2, $3, $4, $5, $6, $7, $8);
     res.sendStatus(400);
   })
 })
+
 module.exports = router;
