@@ -6,7 +6,9 @@ const userStrategy = require('../strategies/user.strategy');
 
 const router = express.Router();
 
-//GET route for search feature for events
+router.get( '/')
+
+//GET route for search
 router.get('/', (req, res)=>{
   const searchQuery = req.query.q || '';
   const queryText = ` 
