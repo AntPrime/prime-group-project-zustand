@@ -19,26 +19,61 @@ function HomePage() {
   }, []);
 
 
-  const fetchEvent = () =>{
+  const fetchEvent = () => {
     console.log("fetching..")
 
     axios({
       method: "GET",
-      url: "/api/events"
-  })
-  .then((response) => {
-      console.log("Response: ", response.data)
-      // adding the DB contents into the empty array above
-      setEventList(response.data)
-  })
-  .catch((err) => {
-      console.log("GET /api/event is broken")
-  })
+      url: "/api/events/test"
+    })
+      .then((response) => {
+        console.log("Response: ", response.data)
+        // adding the DB contents into the empty array above
+        setEventList(response.data)
+      })
+      .catch((err) => {
+        console.log("GET /api/event is broken")
+      })
+  }
+  // function to assign users to open roles/positions
+  const assignRole = (event, roleColumn) => {
+    if (!event || !event.id) {
+      console.error("Invalid event data:", event);
+      return;
+    }
+
+    console.log('Attempting to assign role:', {
+      eventId: event.id,
+      roleColumn,
+      userId: user.id
+    });
+
+    axios.put('/api/events/assign', {
+      eventId: event.id,
+      roleColumn,
+      userId: user.id
+    })
+      .then(response => {
+        console.log('Sending:', {
+          eventId: event.id,
+          roleColumn,
+          userId: user.id
+        });
+        console.log(`Assigned ${user.id} as ${roleColumn} for event ${event.id}`);
+        // Update state with the returned event
+        setEventList(prevEvents =>
+          prevEvents.map(prevEvent =>
+            prevEvent.id === response.data.id ? response.data : prevEvent
+          ));
+      })
+      .catch(error => {
+        console.error("Error assigning role:", error);
+      });
   }
   return (
     <>
       <h2>LMR STUDENT HOME PAGE</h2>
-      <input placeholder='Search Event' />  
+      <input placeholder='Search Event' />
       <div>
         <button>Date</button>
         <button>Location</button>
@@ -57,34 +92,43 @@ function HomePage() {
       <div className='eventCard'>
         {eventList.length > 0 ? (
           eventList.map((event, index) => (
-            <div key={index}> 
-            <Box sx={{ minWidth: 275, mb: 2 }} >
-              <Card variant="outlined">
-                <CardContent>
-                  <Typography variant="h5" component="div">
-                    {event.title}
-                  </Typography>
-                  <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>
-                    Date: {event.date} - Time of Event: {event.time} <br /> Streaming Channel: {event.channel}
-                  </Typography>
-                  <Typography variant="h7" component="div">
-                    Schools: {event.school_id} vs [Opponent Name]
-                  </Typography>
-                  <Typography variant="h7" component="div">
-                    Location: {event.location}
-                  </Typography>
-                  <Typography variant="body2">
-                    <br />
-                    Notes: {event.notes}
-                  </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button size="small">Producer: {event.producer}</Button>
-                  <Button size="small">Camera: {event.camera}</Button>
-                  <Button size="small">Play-by-play: {event.play_by_play}</Button>
-                </CardActions>
-              </Card>
-            </Box>
+            <div key={index}>
+              <Box sx={{ minWidth: 275, mb: 2 }} >
+                <Card variant="outlined">
+                  <CardContent>
+                    <Typography variant="h5" component="div">
+                      {event.title}
+                    </Typography>
+                    <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>
+                      Date: {event.date} - Time of Event: {event.time} <br /> Streaming Channel: {event.channel}
+                    </Typography>
+                    <Typography variant="h7" component="div">
+                      Schools: {event.school_name} vs [Opponent Name]
+                    </Typography>
+                    <Typography variant="h7" component="div">
+                      Location: {event.location}
+                    </Typography>
+                    <Typography variant="body2">
+                      <br />
+                      Notes: {event.notes}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <Button size="small" onClick={() => assignRole(event, "producer")}>
+                      Producer: {event.producer_username || "(Unassigned)"}
+                    </Button>
+                    <Button size="small" onClick={() => assignRole(event, "camera")}>
+                      Camera: {event.camera_username || "(Unassigned)"}
+                    </Button>
+                    <Button size="small" onClick={() => assignRole(event, "play_by_play")}>
+                      Play-by-play: {event.play_by_play_username || "(Unassigned)" }
+                    </Button>
+                    <Button onClick={() => assignRole(event, "color_commentator")}>
+                      Color Commentator: {event.color_commentator_username || "(Unassigned)"}
+                    </Button>
+                  </CardActions>
+                </Card>
+              </Box>
             </div>
           ))
         ) : (
