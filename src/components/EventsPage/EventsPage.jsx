@@ -6,8 +6,8 @@ function EventsPage() {
   const [event, setEvent] = useState({
     activities_id: 0,
     title: "",
-    date: 0,
-    time: 0,
+    // date: 0,
+    // time: 0,
     school_id: 0,
     location: "",
     date: 0,
@@ -25,7 +25,8 @@ function EventsPage() {
       .post("/api/events", event)
       .then((response) => {
         alert("event sent");
-        setEvent({ activities_id: 0, date: 0, time: 0,title: "", school_id: 0, location: "", channel: "", notes: "" });
+        setEvent({ activities_id: 0, //date: 0, time: 0,
+        title: "", school_id: 0, location: "", channel: "", notes: "" });
       })
       .catch((err) => {
         console.log("error in event post", err);

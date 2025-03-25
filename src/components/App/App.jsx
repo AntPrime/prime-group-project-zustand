@@ -11,6 +11,7 @@ import HomePage from '../StudentHomePage/StudentHomePage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
 import EventsPage from '../EventsPage/EventsPage';
+import SearchFetchEvents from '../SearchFetchEvents/SearchFetchEvents';
 
 
 function App() {
@@ -63,6 +64,7 @@ function App() {
             }
           />
           <Route path="/events" element={<EventsPage />} />
+          <Route path="/search" element={<SearchFetchEvents />} />
           <Route
             exact
             path="/about"

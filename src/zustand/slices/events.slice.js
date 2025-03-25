@@ -11,6 +11,7 @@ const createEventsSlice = (set, get) => ({
     set({ isLoading: true, error: null });
     try {
       const { data } = await axios.get('/api/events');
+      console.log( 'fetchEvents from events.slice', data );
       set({ events: data, isLoading: false });
     } catch (err) {
       console.log('fetchEvents error:', err);
@@ -32,10 +33,12 @@ const createEventsSlice = (set, get) => ({
 
   // Search events
   searchEvents: async (searchQuery, categoryId) => {
+    console.log( 'searchQuery searchEvents', searchQuery );
     set({ isLoading: true, error: null });
     try {
-      let url = '/api/events/search?';
+      let url = '/api/events';
       
+      // fix or delete if statement
       if (searchQuery) {
         url += `query=${encodeURIComponent(searchQuery)}`;
       }
@@ -43,8 +46,9 @@ const createEventsSlice = (set, get) => ({
       if (categoryId) {
         url += `${searchQuery ? '&' : ''}category=${categoryId}`;
       }
-      
+      console.log('final URL', url );
       const { data } = await axios.get(url);
+      console.log( 'searchEvents from events.slice', data );
       set({ events: data, isLoading: false });
     } catch (err) {
       console.log('searchEvents error:', err);
