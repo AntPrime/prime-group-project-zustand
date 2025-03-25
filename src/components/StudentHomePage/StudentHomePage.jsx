@@ -35,6 +35,36 @@ function HomePage() {
       console.log("GET /api/event is broken")
   })
   }
+  const assignRole = (event, roleColumn) => {
+    if (!event || !event.id) {
+      console.error("Invalid event data:", event);
+      return;
+    }
+  
+    console.log('Attempting to assign role:', { 
+      eventId: event.id, 
+      roleColumn, 
+      userId: user.id 
+    });
+  
+    axios.put('/api/events/assign-role', {
+      eventId: event.id,  // Now properly accessing the id
+      roleColumn,
+      userId: user.id
+    })
+    .then(response => {
+      console.log('Sending:', { eventId, roleColumn, userId: user.id });
+      console.log(`Assigned ${user.id} as ${roleColumn} for event ${eventId}`);
+      // Use the response data to update state
+      setEventList(prevEvents => 
+        prevEvents.map(event => 
+          event.id === response.data.id ? response.data : event
+        ))
+    })
+    .catch(error => {
+      console.error("Error assigning role:", err);
+    });
+  }
   return (
     <>
       <h2>LMR STUDENT HOME PAGE</h2>
@@ -77,12 +107,21 @@ function HomePage() {
                     <br />
                     Notes: {event.notes}
                   </Typography>
-                </CardContent>
-                <CardActions>
-                  <Button size="small">Producer: {event.producer}</Button>
-                  <Button size="small">Camera: {event.camera}</Button>
-                  <Button size="small">Play-by-play: {event.play_by_play}</Button>
-                </CardActions>
+                  </CardContent>
+                  <CardActions>
+                    <Button size="small" onClick={() => assignRole(event.id, "producer")}>
+                      Producer {event.producer ? `(Assigned: ${event.producer})` : ""}
+                    </Button>
+                    <Button size="small" onClick={() => assignRole(event.id, "camera")}>
+                      Camera {event.camera ? `(Assigned: ${event.camera})` : ""}
+                    </Button>
+                    <Button size="small" onClick={() => assignRole(event.id, "play_by_play")}>
+                      Play-by-play {event.play_by_play ? `(Assigned: ${event.play_by_play})` : ""}
+                    </Button>
+                    <Button size="small" onClick={() => assignRole(event.id, "color_commentator")}>
+                      Color Commentator {event.color_commentator ? `(Assigned: ${event.color_commentator})` : ""}
+                    </Button>
+                  </CardActions>
               </Card>
             </Box>
             </div>
