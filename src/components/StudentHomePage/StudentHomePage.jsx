@@ -13,11 +13,11 @@ function HomePage() {
   const user = useStore((state) => state.user);
   const logOut = useStore((state) => state.logOut);
   const [eventList, setEventList] = useState([]);
-
-  useEffect(() => {
-    fetchEvent();
-  }, []);
-
+  const [sortBy, setSortBy] = useState(null);
+  const [sortOrder, setSortOrder] = useState({
+    date: "asc", // Default: Soonest first
+    location: "asc", // Default: A-Z
+  });
 
   const fetchEvent = () => {
     console.log("fetching..")
@@ -35,13 +35,42 @@ function HomePage() {
         console.log("GET /api/event is broken")
       })
   }
+    // Sorting function
+    const sortEvents = (criteria, event) => {
+      event.preventDefault();
+  
+      let sortedEvents = [...eventList];
+      let newOrder = sortOrder[criteria] === "asc" ? "desc" : "asc"; // Toggle order
+  
+      if (criteria === "date") {
+        sortedEvents.sort((a, b) => 
+          newOrder === "asc" 
+            ? new Date(a.date) - new Date(b.date) // Soonest first
+            : new Date(b.date) - new Date(a.date) // Latest first
+        );
+      } else if (criteria === "location") {
+        sortedEvents.sort((a, b) =>
+          newOrder === "asc"
+            ? a.location.localeCompare(b.location) // A-Z
+            : b.location.localeCompare(a.location) // Z-A
+        );
+      }
+  
+      setSortOrder((prev) => ({ ...prev, [criteria]: newOrder })); // Update sorting order
+      setSortBy(criteria);
+      setEventList(sortedEvents);
+    };
   // function to assign users to open roles/positions
   const assignRole = (event, roleColumn) => {
     if (!event || !event.id) {
       console.error("Invalid event data:", event);
       return;
     }
-
+  // Check if role is already taken and Alert user that role is filled
+  // if (event[roleColumn]) {
+  //   alert(`This ${roleColumn.replace('_', ' ')} role is already assigned to user ${event[roleColumn].name}`);
+  //   return;
+  // }
     console.log('Attempting to assign role:', {
       eventId: event.id,
       roleColumn,
@@ -65,18 +94,27 @@ function HomePage() {
           prevEvents.map(prevEvent =>
             prevEvent.id === response.data.id ? response.data : prevEvent
           ));
+          fetchEvent();
       })
       .catch(error => {
         console.error("Error assigning role:", error);
       });
   }
+
+  useEffect(() => {
+    fetchEvent();
+  }, []);
   return (
     <>
       <h2>LMR STUDENT HOME PAGE</h2>
       <input placeholder='Search Event' />
       <div>
-        <button>Date</button>
-        <button>Location</button>
+      <button onClick={(e) => sortEvents("date", e)}>
+          Date {sortOrder.date === "asc" ? "↑" : "↓"}
+        </button>
+        <button onClick={(e) => sortEvents("location", e)}>
+          Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
+        </button>
         <select>
           <option value="">Category</option>
         </select>
@@ -87,7 +125,7 @@ function HomePage() {
         <button>Clear All</button>
       </div>
 
-      <h4>Filter Applied: DATE March 2025 - SCHOOL Elk River - EVENT Show all Events </h4>
+      <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
 
       <div className='eventCard'>
         {eventList.length > 0 ? (
@@ -114,16 +152,31 @@ function HomePage() {
                     </Typography>
                   </CardContent>
                   <CardActions>
-                    <Button size="small" onClick={() => assignRole(event, "producer")}>
+                    <Button
+                      size="small"
+                      onClick={() => assignRole(event, "producer")}
+                      disabled={!!event.producer}
+                    >
                       Producer: {event.producer_username || "(Unassigned)"}
                     </Button>
-                    <Button size="small" onClick={() => assignRole(event, "camera")}>
+                    <Button 
+                    size="small" 
+                    onClick={() => assignRole(event, "camera")}
+                    disabled={!!event.camera}
+                    >
                       Camera: {event.camera_username || "(Unassigned)"}
                     </Button>
-                    <Button size="small" onClick={() => assignRole(event, "play_by_play")}>
+                    <Button 
+                    size="small" 
+                    onClick={() => assignRole(event, "play_by_play")}
+                    disabled={!!event.play_by_play}
+                    >
                       Play-by-play: {event.play_by_play_username || "(Unassigned)" }
                     </Button>
-                    <Button onClick={() => assignRole(event, "color_commentator")}>
+                    <Button size='small'
+                    onClick={() => assignRole(event, "color_commentator")}
+                    disabled={!!event.color_commentator}
+                    >
                       Color Commentator: {event.color_commentator_username || "(Unassigned)"}
                     </Button>
                   </CardActions>

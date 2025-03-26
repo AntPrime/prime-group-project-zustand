@@ -59,7 +59,7 @@ router.get('/test', (req, res) => {
       events.id AS event_id,
       events.title,
       categories.activity,
-      TO_CHAR(events.date, 'DD-MM-YYYY') AS date,
+      TO_CHAR(events.date, 'YYYY-MM-DD') AS date,
       TO_CHAR(events.time, 'HH12:MI') AS time,
       events.location,
       schools.name AS school_name,
