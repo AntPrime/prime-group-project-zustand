@@ -11,6 +11,7 @@ import HomePage from '../StudentHomePage/StudentHomePage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
 import EventsPage from '../EventsPage/EventsPage';
+import SuccessPage from '../../SuccessPage/SuccessPage';
 
 
 function App() {
