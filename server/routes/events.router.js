@@ -144,15 +144,10 @@ router.put('/', rejectUnauthenticated,(req, res)=>{
   const queryText = `
   UPDATE "events"
   SET activities_id = ($1),
-  date = ($2),
-  time = ($3),
-  school_id = ($4),
-  location = ($5),
-  title = ($6),
-  channel = ($7),
-  notes = ($8)
+  title = ($2),
+  date = ($3)
   WHERE events.id = 1;`;
-  pool.query( queryText,[ eventUpdate.title ])
+  pool.query( queryText,[ eventUpdate.activities_id, eventUpdate.title, eventUpdate.date])
   .then((results)=>{
     res.sendStatus(200);
   })
