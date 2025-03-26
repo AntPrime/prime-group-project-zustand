@@ -1,111 +1,132 @@
+import { useState, useEffect } from "react";
 import axios from "axios";
-import { useState } from "react";
-import SearchFetchEvents from "../SearchFetchEvents/SearchFetchEvents";
+import useStore from '../../zustand/store';
+import moment from 'moment'; 
+import './EventsPage.css';
 
 function EventsPage() {
-  const [event, setEvent] = useState({
+  const [newEvent, setNewEvent] = useState({
     activities_id: 0,
     title: "",
-    date: 0,
-    time: 0,
+    date: "",
+    time: "",
     school_id: 0,
     location: "",
     channel: "",
     notes: ""
   });
+  const [ eventList, setEventList ] = useState([]);
+  const fetchEvents = useStore((state) => state.fetchEvents)
+
+useEffect(()=> {
+  fetchEvents()
+  fetchEventList()
+}, [] );
+
+
+
+  function fetchEventList(){
+    console.log( 'in fetchEventList' );
+    axios.get( '/api/events' ).then(function( response ){
+      console.log( response.data )
+      setEventList( response.data )
+    }).catch( function( err ){
+      console.log( err );
+      alert( 'error getting test list' );
+    })
+  }
 
   //POST to create a new event 
   //?haven't finished adding all fields to create a new event. Not sure how to go about
   //?adding date and time
   const createEvent = () => {
-    console.log("sending event", event);
-    axios
-      .post("/api/events", event)
-      .then((response) => {
-        alert("event sent");
-        setEvent({ activities_id: 0, date: 0, time: 0,title: "", school_id: 0, location: "", channel: "", notes: "" });
-      })
-      .catch((err) => {
-        console.log("error in event post", err);
-      });
+    console.log( 'in createEvent' );
+  const eventToSend = { ...newEvent, date: newEvent.date, time: newEvent.time };
+    console.log('newEvent:', newEvent);
+    axios.post( '/api/events', newEvent).then(function (response){
+        console.log( response.data );
+        fetchEvents();
+      }).catch(function ( err ){
+        console.log( err );
+        alert( 'error creating new event' );
+      });  
   };
 
   return (
     <div className="EventsPage">
-      <SearchFetchEvents />
       <div>
         <p>Add event</p>
-        <form
-          onSubmit={(e) => {
-            createEvent(event);
-          }}
-        >
-          <select
-            onChange={(e) => {
-              setEvent({ ...event, activities_id: e.target.value });
-            }}
-          >
-            <option value="">Activity</option>
+        <form>
+          <select id="activities" placeholder="activities" onChange={(e) => { setNewEvent({ ...newEvent, activities_id: Number ( e.target.value ) });}}>
+            <option value="0">Activity</option>
             <option value="1">Basketball</option>
             <option value="2">Tennis</option>
             <option value="3">Football</option>
             <option value="4">Lacrosse</option>
             <option value="5">Hockey</option>
           </select>
-          <input placeholder="Date" type="date" onChange={(e) => setEvent({ ...event, date: e.target.value })}/>
-          <input placeholder="Time" type="time" onChange={(e) => setEvent({ ...event, time: e.target.value })}/>
+          <input placeholder="Date" type="date" value={newEvent.date} onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}/>
+          <input placeholder="Time" type="time" value={newEvent.time}  onChange={(e) => setNewEvent({ ...newEvent, time: e.target.value })}/>
           {/* a drop down in this format might not be scalable for client to add new schools*/}
-          <select
-            onChange={(e) => {
-              setEvent({ ...event, school_id: e.target.value });
-            }}
-          >
+          <select id="school" placeholder="school" onChange={(e) => { setNewEvent({ ...newEvent, school_id: Number ( e.target.value ) })}}>
             <option value="">School</option>
             <option value="1">Alber Lea</option>
             <option value="2">Fairbault</option>
             <option value="3">Northfield</option>
           </select>
-          <input
-            type="text"
-            placeholder="Location"
-            onChange={(e) => setEvent({ ...event, location: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Title"
-            onChange={(e) =>
-              setEvent({
-                ...event,
-                title: e.target.value,
-              })
-            }
-          />
-          {/* This channel select is a little redundant. Just threw it in there for now*/}
-          <select
-            onChange={(e) => {
-              setEvent({ ...event, channel: e.target.value });
-            }}
-          >
+          <input type="text" placeholder="Location" onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}/>
+          <input type="text" placeholder="Title" onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}/>
+          <select id="channel" placeholder="Channel" onChange={(e) => { setNewEvent({ ...newEvent, channel: e.target.value })}}>
             <option value="">Channel</option>
             <option value="Albert Lea Live">Albert Lea Live</option>
             <option value="Fairbault Live">Fairbault Live</option>
             <option value="Northfield Live">Northfield Live</option>
           </select>
-          <input
-            type="text"
-            placeholder="notes"
-            onChange={(e) =>
-              setEvent({
-                ...event,
-                notes: e.target.value,
-              })
-            }
-          />
-          <button type="submit">add event</button>
+          <input type="text" placeholder="notes" onChange={(e) => setNewEvent({...newEvent,notes: e.target.value,})}/>
         </form>
+        <button onClick={ createEvent }>Add An Event</button>
+      <h2>Test List</h2>
+        <table>
+          <thead>
+            <tr>
+            <th>Title</th>
+            <th>Activity</th>
+            <th>Date</th>
+            <th>Time</th>
+            <th>Location</th>
+            <th>School</th>
+            <th>Channel</th>
+            <th>Notes</th>
+            </tr>
+          </thead>
+          <tbody>
+          { eventList.map(( item ) => (
+                <tr key={item.id}>
+                <td><p>{item.title || "No Title"}</p></td>
+                <td><p>{item.activity || "No Activity"}</p></td>
+                <td>{item.date ? moment(item.date).format('MM/DD/YYYY') : 'No Date'}</td> {/* Display date */}
+                <td>{item.time ? moment(item.time, "HH:mm").format('hh:mm A') : 'No Time'}</td> {/* Display time */}
+                <td><p>{item.location || "No Location"}</p></td>
+                <td><p>{item.schoolname || "Unknown School"}</p></td>
+                <td><p>{item.channel || "Unknown Channel"}</p></td>
+                <td><p>{item.notes || "No Notes"}</p></td>
+                </tr>
+              ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );
 }
 
 export default EventsPage;
+
+
+  // // Function to format the date using Moment.js
+  // function formatDate(date) {
+  //   return date ? moment(date).format('MM/DD/YYYY') : 'No Date'; // Format date to MM/DD/YYYY
+  // }
+  //  // Function to format the time using Moment.js
+  //  function formatTime(time) {
+  //   return time ? moment(time, "HH:mm").format('hh:mm A') : 'No Time'; // Format time to 12-hour format
+  // }
