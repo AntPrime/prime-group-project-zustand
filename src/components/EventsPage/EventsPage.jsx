@@ -41,7 +41,6 @@ useEffect(()=> {
   //?adding date and time
   const createEvent = () => {
     console.log( 'in createEvent' );
-  const eventToSend = { ...newEvent, date: newEvent.date, time: newEvent.time };
     console.log('newEvent:', newEvent);
     axios.post( '/api/events', newEvent).then(function (response){
         console.log( response.data );
