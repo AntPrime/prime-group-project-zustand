@@ -14,7 +14,7 @@ function RegisterPage() {
     return () => {
       setAuthErrorMessage('');
     }
-  }, [])
+  }, [setAuthErrorMessage])
 
   const handleRegister = (event) => {
     event.preventDefault();
