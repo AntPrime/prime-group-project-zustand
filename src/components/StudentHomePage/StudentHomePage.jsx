@@ -24,7 +24,7 @@ function HomePage() {
 
     axios({
       method: "GET",
-      url: "/api/events/test"
+      url: "/api/events"
     })
       .then((response) => {
         console.log("Response: ", response.data)

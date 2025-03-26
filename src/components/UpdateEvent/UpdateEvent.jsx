@@ -1,47 +1,27 @@
 import axios from "axios";
 import { useState } from "react";
-import SearchFetchEvents from "../SearchFetchEvents/SearchFetchEvents";
-import UpdateEvent from "../UpdateEvent/UpdateEvent";
 
-function EventsPage() {
-  const [event, setEvent] = useState({
-    activities_id: 0,
-    title: "",
-    date: 0,
-    time: 0,
-    school_id: 0,
-    location: "",
-    channel: "",
-    notes: ""
-  });
 
-  //POST to create a new event 
-  const createEvent = () => {
-    console.log("sending event", event);
-    axios
-      .post("/api/events", event)
-      .then((response) => {
-        alert("event sent");
-        setEvent({ activities_id: 0, date: 0, time: 0,title: "", school_id: 0, location: "", channel: "", notes: "" });
-      })
-      .catch((err) => {
-        console.log("error in event post", err);
-      });
-  };
+function UpdateEvent( ) {
+  const [ updatedEvent, setUpdatedEvent ]=useState({ title: ""});
+
+  const update=(e)=>{
+    axios.put(`/api/events`, updatedEvent )
+    .then(( response  )=>{
+      console.log( "response from update in UpdateEvent", response.data );
+    }).catch(( err )=>{
+      console.log("error in UpdateEvent", err );
+    });
+    };
 
   return (
-    <div className="EventsPage">
-      <SearchFetchEvents />
-      <div>
+     <div className='UpdateEvent'>
+  <div>
         <p>Add event</p>
-        <form
-          onSubmit={(e) => {
-            createEvent(event);
-          }}
-        >
+        <form >
           <select
             onChange={(e) => {
-              setEvent({ ...event, activities_id: e.target.value });
+              setUpdatedEvent({ ...updatedEvent, activities_id: e.target.value });
             }}
           >
             <option value="">Activity</option>
@@ -51,12 +31,12 @@ function EventsPage() {
             <option value="4">Lacrosse</option>
             <option value="5">Hockey</option>
           </select>
-          <input placeholder="Date" type="date" onChange={(e) => setEvent({ ...event, date: e.target.value })}/>
-          <input placeholder="Time" type="time" onChange={(e) => setEvent({ ...event, time: e.target.value })}/>
+          <input placeholder="Date" type="date" onChange={(e) => setUpdatedEvent({ ...updatedEvent, date: e.target.value })}/>
+          <input placeholder="Time" type="time" onChange={(e) => setUpdatedEvent({ ...updatedEvent, time: e.target.value })}/>
           {/* a drop down in this format might not be scalable for client to add new schools*/}
           <select
             onChange={(e) => {
-              setEvent({ ...event, school_id: e.target.value });
+              setUpdatedEvent({ ...updatedEvent, school_id: e.target.value });
             }}
           >
             <option value="">School</option>
@@ -67,14 +47,14 @@ function EventsPage() {
           <input
             type="text"
             placeholder="Location"
-            onChange={(e) => setEvent({ ...event, location: e.target.value })}
+            onChange={(e) => setUpdatedEvent({ ...updatedEvent, location: e.target.value })}
           />
           <input
             type="text"
             placeholder="Title"
             onChange={(e) =>
-              setEvent({
-                ...event,
+              setUpdatedEvent({
+                ...updatedEvent,
                 title: e.target.value,
               })
             }
@@ -82,7 +62,7 @@ function EventsPage() {
           {/* This channel select is a little redundant. Just threw it in there for now*/}
           <select
             onChange={(e) => {
-              setEvent({ ...event, channel: e.target.value });
+              setUpdatedEvent({ ...updatedEvent, channel: e.target.value });
             }}
           >
             <option value="">Channel</option>
@@ -94,18 +74,17 @@ function EventsPage() {
             type="text"
             placeholder="notes"
             onChange={(e) =>
-              setEvent({
-                ...event,
+              setUpdatedEvent({
+                ...updatedEvent,
                 notes: e.target.value,
               })
             }
           />
-          <button type="submit">add event</button>
+             <button onClick={ update }>Update event</button>   
         </form>
-        <UpdateEvent />
       </div>
     </div>
   );
-}
+  }
 
-export default EventsPage;
+export default UpdateEvent;
