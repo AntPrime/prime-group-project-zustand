@@ -1,8 +1,14 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+
+import { useState } from "react";
+import SearchFetchEvents from "../SearchFetchEvents/SearchFetchEvents";
+import UpdateEvent from "../UpdateEvent/UpdateEvent";
+
 import useStore from '../../zustand/store';
 import moment from 'moment'; 
 import './EventsPage.css';
+
 
 function EventsPage() {
   const [newEvent, setNewEvent] = useState({
@@ -71,6 +77,36 @@ useEffect(()=> {
             <option value="2">Fairbault</option>
             <option value="3">Northfield</option>
           </select>
+
+          <input
+            type="text"
+            placeholder="Location"
+            onChange={(e) => setEvent({ ...event, location: e.target.value })}
+          />
+          <input
+            type="text"
+            placeholder="Title"
+            onChange={(e) =>
+              setEvent({
+                ...event,
+                title: e.target.value,
+              })
+            }
+          />
+          <input
+            type="text"
+            placeholder="notes"
+            onChange={(e) =>
+              setEvent({
+                ...event,
+                notes: e.target.value,
+              })
+            }
+          />
+          <button type="submit">add event</button>
+        </form>
+        <UpdateEvent />
+
           <input type="text" placeholder="Location" onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}/>
           <input type="text" placeholder="Title" onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}/>
           <select id="channel" placeholder="Channel" onChange={(e) => { setNewEvent({ ...newEvent, channel: e.target.value })}}>
@@ -111,6 +147,7 @@ useEffect(()=> {
               ))}
           </tbody>
         </table>
+
       </div>
     </div>
   );

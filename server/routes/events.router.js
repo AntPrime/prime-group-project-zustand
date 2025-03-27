@@ -3,6 +3,10 @@ const encryptLib = require('../modules/encryption');
 const pool = require('../modules/pool');
 const userStrategy = require('../strategies/user.strategy');
 
+const {
+  rejectUnauthenticated,
+} = require('../modules/authentication-middleware');
+
 
 const router = express.Router();
 
@@ -56,7 +60,7 @@ const values = [`%${searchQuery}%`]
 })
 
 //GET ROUTE to map through and select roles on events: 
-router.get('/test', (req, res) => {
+router.get('/', (req, res) => {
   const queryText = `
     SELECT 
       events.id AS event_id,
@@ -119,7 +123,7 @@ router.get('/test', (req, res) => {
 
 
 //POST to create a new event
-router.post('/', (req, res)=>{
+router.post('/',(req, res)=>{
   const userId = req.user.id;
   const {activities_id, date, time, title, school_id, location, channel, notes} = req.body;
   const queryText = `
@@ -134,6 +138,38 @@ VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
   .catch((err)=>{
     console.log("error in events.router post", err)
     res.sendStatus(400);
+  })
+})
+
+
+//PUT route to handle updating an event
+router.put('/', rejectUnauthenticated,(req, res)=>{
+  const eventUpdate = req.body;
+  const queryText = `
+  UPDATE "events"
+  SET activities_id = ($1),
+  title = ($2),
+  date = ($3),
+  time = ($4),
+  school_id = ($5),
+  location = ($6),
+  notes = ($7)
+  WHERE events.id = 2;`;
+  pool.query( queryText,[ 
+    eventUpdate.activities_id, 
+    eventUpdate.title, 
+    eventUpdate.date, 
+    eventUpdate.time, 
+    eventUpdate.school_id, 
+    eventUpdate.location,
+    eventUpdate.notes])
+  .then((results)=>{
+    console.log("put in events.router", results)
+    res.sendStatus(200);
+  })
+  .catch(( err )=>{
+    console.log("error in PUT in events.router", err);
+    res.sendStatus(400)
   })
 })
 
