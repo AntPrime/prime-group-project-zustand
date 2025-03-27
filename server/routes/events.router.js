@@ -6,6 +6,9 @@ const userStrategy = require('../strategies/user.strategy');
 
 const router = express.Router();
 
+
+
+
 //GET route for search feature for events
 router.get('/', (req, res)=>{
   const searchQuery = req.query.q || '';
@@ -16,7 +19,7 @@ categories.activity AS "activity",
 events.date AS "date",
 events.time AS "time",
 events.location AS "location",  
-schools.name AS "school name", 
+schools.name AS "schoolname", 
 pbp_user.username AS "play-by-play",
 color_comm_user.username AS "color comm.",
 camera.username AS "camera",
@@ -133,5 +136,6 @@ VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
     res.sendStatus(400);
   })
 })
+
 
 module.exports = router;
