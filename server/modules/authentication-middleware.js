@@ -11,5 +11,15 @@ const rejectUnauthenticated = (req, res, next) => {
   }
 };
 
+// NEW: Middleware to check if the authenticated user is an admin
+const rejectNonAdmin = (req, res, next) => {
+  if (req.isAuthenticated() && req.user.role === 'admin') {
+    next();
+  } else {
+    res.sendStatus(403);
+  }
+};
 
-module.exports = { rejectUnauthenticated };
+
+
+module.exports = { rejectUnauthenticated, rejectNonAdmin };

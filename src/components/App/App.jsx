@@ -14,6 +14,7 @@ import EventsPage from '../EventsPage/EventsPage';
 import Dashboard from '../Dashboard/Dashboard';
 import UserManagement from '../UserManagement/UserManagement';
 import EventManagement from '../EventManagement/EventManagement';
+import AdminDashboard from '../AdminDashboard/AdminDashboard';
 
 
 
@@ -66,6 +67,10 @@ function App() {
               )
             }
           />
+          <Route path="/admin" 
+          element={
+             user.id && user.role === 'admin' ? <AdminDashboard /> : <Navigate to="/" replace /> }/>
+
           <Route path="/events" element={<EventsPage />} />
           <Route path="/dashboard" element={<Dashboard />} />
           <Route path="/eventmanagement" element={<EventManagement />} />
