@@ -40,6 +40,32 @@ function UpdateEvent( ) {
           </select>
         <p>Title<input type="text" placeholder="title" onChange={(e)=>{ setUpdatedEvent({ ...updatedEvent, title: e.target.value })}} /></p>
         <input placeholder="Date" type="date" onChange={(e) => setUpdatedEvent({ ...updatedEvent, date: e.target.value })}/>
+        <input placeholder="Time" type="time" onChange={(e) => setUpdatedEvent({ ...updatedEvent, time: e.target.value })}/>
+        <select
+            onChange={(e) => {
+              setUpdatedEvent({ ...updatedEvent, school_id: e.target.value });
+            }}
+          >
+            <option value="">School</option>
+            <option value="1">Alber Lea</option>
+            <option value="2">Fairbault</option>
+            <option value="3">Northfield</option>
+         </select>
+         <input
+            type="text"
+            placeholder="Location"
+            onChange={(e) => setUpdatedEvent({ ...updatedEvent, location: e.target.value })}            
+          />
+          <input
+            type="text"
+            placeholder="notes"
+            onChange={(e) =>
+              setUpdatedEvent({
+                ...updatedEvent,
+                notes: e.target.value,
+              })
+            }
+          />
        <button onClick={ update }>Update Profile</button>  
     </div>
   );

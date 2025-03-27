@@ -79,17 +79,6 @@ function EventsPage() {
               })
             }
           />
-          {/* This channel select is a little redundant. Just threw it in there for now*/}
-          <select
-            onChange={(e) => {
-              setEvent({ ...event, channel: e.target.value });
-            }}
-          >
-            <option value="">Channel</option>
-            <option value="Albert Lea Live">Albert Lea Live</option>
-            <option value="Fairbault Live">Fairbault Live</option>
-            <option value="Northfield Live">Northfield Live</option>
-          </select>
           <input
             type="text"
             placeholder="notes"
