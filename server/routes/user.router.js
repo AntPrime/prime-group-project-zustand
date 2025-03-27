@@ -4,6 +4,7 @@ const pool = require('../modules/pool');
 const userStrategy = require('../strategies/user.strategy');
 
 
+
 const router = express.Router();
 
 // If the request came from an authenticated user, this route
