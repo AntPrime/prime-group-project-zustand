@@ -24,7 +24,7 @@ function HomePage() {
 
     axios({
       method: "GET",
-      url: "/api/events"
+      url: "/api/events/all"
     })
       .then((response) => {
         console.log("Response: ", response.data)

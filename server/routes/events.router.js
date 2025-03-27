@@ -60,7 +60,7 @@ const values = [`%${searchQuery}%`]
 })
 
 //GET ROUTE to map through and select roles on events: 
-router.get('/', (req, res) => {
+router.get('/all', (req, res) => {
   const queryText = `
     SELECT 
       events.id AS event_id,

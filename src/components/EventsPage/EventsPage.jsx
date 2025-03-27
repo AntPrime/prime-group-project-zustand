@@ -1,12 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 
-import { useState } from "react";
+
 import SearchFetchEvents from "../SearchFetchEvents/SearchFetchEvents";
 import UpdateEvent from "../UpdateEvent/UpdateEvent";
 
 import useStore from '../../zustand/store';
-import moment from 'moment'; 
+import moment from 'moment';
+
 import './EventsPage.css';
 
 
@@ -106,7 +107,7 @@ useEffect(()=> {
           <button type="submit">add event</button>
         </form>
         <UpdateEvent />
-
+        <form>
           <input type="text" placeholder="Location" onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}/>
           <input type="text" placeholder="Title" onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}/>
           <select id="channel" placeholder="Channel" onChange={(e) => { setNewEvent({ ...newEvent, channel: e.target.value })}}>
@@ -133,8 +134,8 @@ useEffect(()=> {
             </tr>
           </thead>
           <tbody>
-          { eventList.map(( item ) => (
-                <tr key={item.id}>
+          { eventList.map(( item , index  ) => (
+                <tr key={index}>
                 <td><p>{item.title || "No Title"}</p></td>
                 <td><p>{item.activity || "No Activity"}</p></td>
                 <td>{item.date ? moment(item.date).format('MM/DD/YYYY') : 'No Date'}</td> {/* Display date */}
@@ -150,7 +151,7 @@ useEffect(()=> {
 
       </div>
     </div>
-  );
+ );
 }
 
 export default EventsPage;
