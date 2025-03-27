@@ -32,9 +32,10 @@ function App() {
     <div className="app-container">
       <header className="app-header">
         <div className="header-content">
-          <h1 className="app-title">LMR Project</h1>
+          <h1 className="app-title">LMR</h1>
+          <Nav />
           <nav className="main-nav">
-            <Link to="/about" className="nav-link">About</Link>
+            {/* <Link to="/about" className="nav-link">Abou</Link> */}
             {user?.id ? (
               <button 
                 className="nav-link logout-button"
@@ -49,8 +50,8 @@ function App() {
             ) : (
     
               <>
-                <Link to="/login" className="nav-link">Login</Link>
-                <Link to="/registration" className="nav-link">Register</Link>
+                {/* <Link to="/login" className="nav-link">Login</Link>
+                <Link to="/registration" className="nav-link">Register</Link> */}
               </>
             )}
           </nav>
@@ -123,17 +124,29 @@ function App() {
              
                 <p className="about-quote">
                   
- The technologies we used were React, Node.js, Express, and PostgreSQL to build this app.
+ The technologies We used were React, Node.js, Express, Tailwind CSS and PostgreSQL to build this app.
                 </p>
                
-                {/* {user?.id && (
-                  <Link to="/" className="back-to-donors-button">
-                    Back to Donor List
+                {user?.id && (
+                  <Link to="/events" className="back-to-Events-button">
+                    Back to Events Page
                   </Link>
-                )} */}
+                )}
               </div>
             }
           />
+
+<Route
+        exact
+             path="/events"
+             element={
+               user.id ? (
+                <EventsPage/>// Render HomePage for authenticated user.
+               ) : (
+                 <Navigate to="/" replace /> // Redirect unauthenticated user.
+               )
+             }
+           />
 
 
           <Route
@@ -152,7 +165,11 @@ function App() {
   );
 }
 
-  // return (
+export default App;
+
+
+
+//   return (
 //     <>
 //       <header>
 //         <h1>Prime Group Project</h1>
@@ -256,4 +273,4 @@ function App() {
 // }
 
 
-export default App;
+// export default App;

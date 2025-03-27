@@ -184,8 +184,8 @@
   }
 }
 
-/* Back to Donors button */
-.back-to-donors-button {
+/* Back to mains page button */
+.back-to-mainpage-button {
   display: inline-block;
   margin-top: 2rem;
   padding: 0.75rem 1.5rem;
@@ -198,12 +198,12 @@
   text-align: center;
 }
 
-.back-to-donors-button:hover {
+.back-to-main-button:hover {
   background-color: #2563eb;
 }
 
 @media (max-width: 768px) {
-  .back-to-donors-button {
+  .back-to-Events-button {
     display: block;
     width: 100%;
     margin: 2rem auto 0;

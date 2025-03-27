@@ -26,7 +26,7 @@ function LoginPage() {
   };
 
   return (
-    <>
+    <div className='login-page'>
       <h2>Login Page</h2>
       <form onSubmit={handleLogIn}>
         <label htmlFor="username">Username:</label>
@@ -51,10 +51,11 @@ function LoginPage() {
       </form>
       { // Conditionally render login error:
         errorMessage && (
-          <h3>{errorMessage}</h3>
+          <h3 className='error-message'>
+          {errorMessage}</h3>
         )
       }
-    </>
+    </div>
   );
 }
 

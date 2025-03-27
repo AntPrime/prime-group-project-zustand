@@ -1,6 +1,85 @@
 /* Enhanced sports-themed styling for LMR Media login page */
 
-.login-container {
+/* LoginPage.css */
+.login-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: #f0f2f5;
+  padding: 20px;
+}
+
+.login-page h2 {
+  text-align: center;
+  color: #333;
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+.login-page form {
+  background: #ffffff;
+  padding: 2rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.login-page label {
+  font-weight: 500;
+  color: #333;
+  margin-bottom: 5px;
+}
+
+.login-page input {
+  padding: 12px;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  font-size: 16px;
+  width: 100%;
+  box-sizing: border-box;
+  transition: border-color 0.3s ease;
+}
+
+.login-page input:focus {
+  border-color: #0066ff;
+  outline: none;
+}
+
+.login-page button {
+  background-color: #0066ff;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 12px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.login-page button:hover {
+  background-color: #0056cc;
+}
+
+.login-page button:disabled {
+  background-color: #bbb;
+  cursor: not-allowed;
+}
+
+.login-page .error-message {
+  text-align: center;
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+/* .login-container {
   max-width: 500px;
   margin: 40px auto;
   padding: 30px;
@@ -34,9 +113,9 @@
   margin-bottom: 5px;
   text-transform: uppercase;
   letter-spacing: 1px;
-}
+} */
 
-.login-subtitle {
+/* .login-subtitle {
   color: #555;
   font-size: 18px;
   margin-top: 0;
@@ -63,9 +142,9 @@
 
 .login-subtitle::after {
   right: -40px;
-}
+} */
 
-.login-form {
+/* .login-form {
   display: flex;
   flex-direction: column;
   background-color: white;
@@ -103,9 +182,9 @@
   transition: border-color 0.3s;
   outline: none;
   box-sizing: border-box;
-}
+} */
 
-.form-input:focus {
+/* .form-input:focus {
   border-color: #0c2340;
 }
 
@@ -132,9 +211,9 @@
 
 .login-button:hover {
   background-color: #1a3a5f;
-}
+} */
 
-.error-message {
+/* .error-message {
   color: #d12630;
   text-align: center;
   margin-top: 20px;
@@ -161,10 +240,10 @@
 .copyright {
   font-weight: 500;
   margin-top: 10px;
-}
+} */
 
 /* Sports-themed decorative elements */
-.ball-decoration {
+/* .ball-decoration {
   position: absolute;
   width: 40px;
   height: 40px;
@@ -188,4 +267,4 @@
 .ball-2 {
   bottom: 20px;
   right: 20px;
-} 
+}  */
