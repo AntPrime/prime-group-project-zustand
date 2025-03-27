@@ -10,6 +10,9 @@ const {
 
 const router = express.Router();
 
+
+
+
 //GET route for search feature for events
 router.get('/', (req, res)=>{
   const searchQuery = req.query.q || '';
@@ -20,7 +23,7 @@ categories.activity AS "activity",
 events.date AS "date",
 events.time AS "time",
 events.location AS "location",  
-schools.name AS "school name", 
+schools.name AS "schoolname", 
 pbp_user.username AS "play-by-play",
 color_comm_user.username AS "color comm.",
 camera.username AS "camera",
@@ -63,7 +66,7 @@ router.get('/', (req, res) => {
       events.id AS event_id,
       events.title,
       categories.activity,
-      TO_CHAR(events.date, 'DD-MM-YYYY') AS date,
+      TO_CHAR(events.date, 'YYYY-MM-DD') AS date,
       TO_CHAR(events.time, 'HH12:MI') AS time,
       events.location,
       schools.name AS school_name,
@@ -138,6 +141,7 @@ VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
   })
 })
 
+
 //PUT route to handle updating an event
 router.put('/', rejectUnauthenticated,(req, res)=>{
   const eventUpdate = req.body;
@@ -168,5 +172,6 @@ router.put('/', rejectUnauthenticated,(req, res)=>{
     res.sendStatus(400)
   })
 })
+
 
 module.exports = router;

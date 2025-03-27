@@ -1,0 +1,42 @@
+/* General table styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 20px 0;
+    font-family: Arial, sans-serif;
+  }
+  
+  /* Table header styles */
+  th {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px;
+    text-align: left;
+  }
+  
+  /* Table data cell styles */
+  td {
+    padding: 10px;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+  
+  /* Zebra striping for table rows */
+  tr:nth-child(even) {
+    background-color: #f2f2f2;
+  }
+  
+  /* Hover effect for rows */
+  tr:hover {
+    background-color: #ddd;
+  }
+  
+  /* Styling for the table container */
+  table.container {
+    overflow-x: auto;
+    margin: 0 auto;
+    border-radius: 10px;
+  }
+  
+  /* Optional: Styling*
+  

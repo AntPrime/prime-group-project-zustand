@@ -6,6 +6,7 @@ const userStrategy = require('../strategies/user.strategy');
 
 const router = express.Router();
 
+
 router.put('/', async (req, res) => {
     console.log('Request received at /assign');
     const { eventId, roleColumn } = req.body; 
