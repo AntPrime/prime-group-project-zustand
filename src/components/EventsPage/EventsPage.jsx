@@ -1,13 +1,8 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-
-
-import SearchFetchEvents from "../SearchFetchEvents/SearchFetchEvents";
 import UpdateEvent from "../UpdateEvent/UpdateEvent";
-
 import useStore from '../../zustand/store';
 import moment from 'moment';
-
 import './EventsPage.css';
 
 
@@ -78,35 +73,8 @@ useEffect(()=> {
             <option value="2">Fairbault</option>
             <option value="3">Northfield</option>
           </select>
-
-          <input
-            type="text"
-            placeholder="Location"
-            onChange={(e) => setEvent({ ...event, location: e.target.value })}
-          />
-          <input
-            type="text"
-            placeholder="Title"
-            onChange={(e) =>
-              setEvent({
-                ...event,
-                title: e.target.value,
-              })
-            }
-          />
-          <input
-            type="text"
-            placeholder="notes"
-            onChange={(e) =>
-              setEvent({
-                ...event,
-                notes: e.target.value,
-              })
-            }
-          />
-          <button type="submit">add event</button>
         </form>
-        <UpdateEvent />
+        {/* <UpdateEvent /> */}
         <form>
           <input type="text" placeholder="Location" onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}/>
           <input type="text" placeholder="Title" onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}/>
