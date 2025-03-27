@@ -16,6 +16,8 @@ function EventsPage() {
     notes: ""
   });
 
+  const [successMessage, setSuccessMessage] = useState("");
+
   //POST to create a new event 
   //?haven't finished adding all fields to create a new event. Not sure how to go about
   //?adding date and time
@@ -32,15 +34,22 @@ function EventsPage() {
       });
   };
 
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (!event.activities_id || !event.title || !event.date || !event.time || !event.school_id || !event.location) {
+      alert("Please fill in all required fields");
+      return;
+    }
+    createEvent();
+  };
+
   return (
     <div className="EventsPage">
       <SearchFetchEvents />
       <div>
         <p>Add event</p>
         <form
-          onSubmit={(e) => {
-            createEvent(event);
-          }}
+         onSubmit={handleSubmit}
         >
           <select
             onChange={(e) => {
@@ -105,6 +114,8 @@ function EventsPage() {
           />
           <button type="submit">add event</button>
         </form>
+        {/* Show success message if event was created */}
+        {successMessage && <div className="success-message">{successMessage}</div>}
       </div>
     </div>
   );
