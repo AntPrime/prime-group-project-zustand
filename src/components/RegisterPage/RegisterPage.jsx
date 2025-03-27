@@ -14,7 +14,7 @@ function RegisterPage() {
     return () => {
       setAuthErrorMessage('');
     }
-  }, [])
+  }, [setAuthErrorMessage])
 
   const handleRegister = (event) => {
     event.preventDefault();
@@ -25,8 +25,11 @@ function RegisterPage() {
     })
   };
 
+ 
+  
+
   return (
-    <>
+    <div className='register-page'>
       <h2>Register Page</h2>
       <form onSubmit={handleRegister}>
         <label htmlFor="username">Username:</label>
@@ -51,10 +54,10 @@ function RegisterPage() {
       </form>
       { // Conditionally render registration error:
         errorMessage && (
-          <h3>{errorMessage}</h3>
+          <h3 className='error-message'>{errorMessage}</h3>
         )
       }
-    </>
+    </div>
   );
 }
 

@@ -1,5 +1,157 @@
 /* Sports-themed styling for RegisterPage */
-.register-container {
+
+/* RegisterPage.css */
+
+/* RegisterPage.css */
+.register-page {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  background: linear-gradient(135deg, #4facfe, #00f2fe);
+}
+
+.register-page h2 {
+  text-align: center;
+  color: #333;
+}
+
+.register-page form {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+.register-page label {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+.register-page input {
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.register-page input:focus {
+  border-color: #4facfe;
+  outline: none;
+}
+
+.register-page button {
+  background: #4facfe;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.register-page button:hover {
+  background: #00c2fe;
+}
+
+.register-page button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.register-page .error-message {
+  text-align: center;
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+
+/* body {
+  font-family: Arial, sans-serif;
+  background: linear-gradient(135deg, #81a2be, #4ee4ec);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+h2 {
+  text-align: center;
+  color: #333;
+}
+
+form {
+  background: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 400px;
+  display: flex;
+  flex-direction: column;
+}
+
+label {
+  font-weight: bold;
+  margin-top: 10px;
+}
+
+input {
+  padding: 10px;
+  margin-top: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+input:focus {
+  border-color: #4facfe;
+  outline: none;
+}
+
+button {
+  background: #4facfe;
+  color: white;
+  font-size: 16px;
+  font-weight: bold;
+  padding: 10px;
+  margin-top: 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+button:hover {
+  background: #00c2fe;
+}
+
+button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  text-align: center;
+  color: red;
+  font-weight: bold;
+  margin-top: 10px;
+} */
+
+/* .register-container {
   max-width: 500px;
   margin: 40px auto;
   padding: 30px;
@@ -18,8 +170,8 @@
   right: 0;
   height: 6px;
   background: linear-gradient(to right, #0c2340 33%, #d12630 33%, #d12630 66%, #0c2340 66%);
-}
-
+} */
+/* 
 .register-header {
   text-align: center;
   margin-bottom: 30px;
@@ -178,7 +330,7 @@
 }
 
 /* Sports-themed decorative elements */
-.ball-decoration {
+/* .ball-decoration {
   position: absolute;
   width: 40px;
   height: 40px;
@@ -202,4 +354,4 @@
 .ball-2 {
   bottom: 20px;
   right: 20px;
-} 
+}  */ */
