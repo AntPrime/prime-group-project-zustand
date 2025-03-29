@@ -7,10 +7,8 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
-// import { useNavigate } from 'react-router-dom';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios'
-// import { search } from '../../../server/routes/events.router';
 
 function StudentHomePage() {
   const user = useStore((state) => state.user);
@@ -24,26 +22,21 @@ function StudentHomePage() {
 const [sortBy, setSortBy] = useState(null);
 const [selectedSchools, setSelectedSchools] = useState([]);
 const [selectedActivities, setSelectedActivities] = useState([]);
+const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
 
-  // const navigate = useNavigate();
-  const [sortOrder, setSortOrder] = useState({
-    date: "asc", // Default: by most recent event
-    location: "asc", // Default: location by A-Z
-  });
+  const [schools, setSchools] = useState([
+    { id: 1, name: 'Albert Lea' },
+    { id: 2, name: 'Fairbault' },
+    { id: 3, name: 'Northfield' },
+  ]);
 
-  // const [schools, setSchools] = useState([
-  //   { id: 1, name: 'Alber Lea' },
-  //   { id: 2, name: 'Fairbault' },
-  //   { id: 3, name: 'Northfield' },
-  // ]);
-
-  // const [activities, setActivities] = useState([
-  //   { id: 1, name: 'Basketball' },
-  //   { id: 2, name: 'Tennis' },
-  //   { id: 3, name: 'Football' },
-  //   { id: 4, name: 'Lacrosse' },
-  //   { id: 5, name: 'Hockey' },
-  // ]);
+  const [activities, setActivities] = useState([
+    { id: 1, name: 'Basketball' },
+    { id: 2, name: 'Tennis' },
+    { id: 3, name: 'Football' },
+    { id: 4, name: 'Lacrosse' },
+    { id: 5, name: 'Hockey' },
+  ]);
   
 
   useEffect(()=> {
@@ -63,42 +56,8 @@ const [selectedActivities, setSelectedActivities] = useState([]);
           })
     }
 
-    // const handleMultiSelectChange = (event, type) => {
-    //   const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
-    //   if (type === "schools") {
-    //     setSelectedSchools(selectedOptions);
-    //   } else if (type === "activities") {
-    //     setSelectedActivities(selectedOptions);
-    //   }
-    //   filterEvents(selectedOptions, type); // Auto-search on selection
-    // };
-  
-    // const SearchFilter = () => {
-    //   filterEvents([...selectedActivities], "activities");
-    //   filterEvents([...selectedSchools], "schools");
-    // };
-  
-    // const filterEvents = (selectedValues, type) => {
-    //   let filteredResults = eventList;
-  
-    //   if (type === "activities" && selectedValues.length > 0) {
-    //     filteredResults = filteredResults.filter(event =>
-    //       selectedValues.some(activity => event.activity.includes(activity))
-    //     );
-    //   }
-  
-    //   if (type === "schools" && selectedValues.length > 0) {
-    //     filteredResults = filteredResults.filter(event =>
-    //       selectedValues.some(school => event.school_name.includes(school))
-    //     );
-    //   }
-  
-    //   setSearchResults(filteredResults);
-    // };
-
-
   const Search = () => {
-    console.log( "Fetching query:", searchQuery );
+    console.log( "Fetching query:", searchQuery, selectedSchools, selectedActivities );
     axios.get(`/api/events?q=${searchQuery}`).then(( searchResponse ) => {
       const searchResults = searchResponse.data;
       console.log("searchResponse:", searchResults );
@@ -114,7 +73,7 @@ const [selectedActivities, setSelectedActivities] = useState([]);
       axios.get(`/api/events/all`).then((fullResponse)=> {
         const allEvents = fullResponse.data;
         console.log( "Full events:", allEvents );
-        // Search Filter select apply
+        // Search Filter
         if (!Array.isArray(allEvents)) {
           console.log( "Invalid full events:");
           return;
@@ -128,15 +87,74 @@ const [selectedActivities, setSelectedActivities] = useState([]);
     .catch(error => console.error("Error on GET", error));
   };
 
+  function searchEvents(searchQuery, selectedSchools, selectedActivities) {
+    console.log("Fetching query:", searchQuery, selectedSchools, selectedActivities);
+    
+    axios.get(`/api/events?q=${searchQuery}`).then((searchResponse) => {
+      const searchResults = searchResponse.data;
+      console.log("Search response:", searchResults);
+  
+      if (!Array.isArray(searchResults) || searchResults.length === 0) {
+        console.log("No results searched");
+        setSearchResults([]);
+        setEventList([]);
+        return;
+      }
+  
+      // Extract event titles from search results
+      const eventTitles = searchResults.map(event => event.title);
+      console.log("Extracted Event Titles:", eventTitles);
+  
+      // Fetch all events and filter
+      axios.get(`/api/events/all`).then((fullResponse) => {
+        const allEvents = fullResponse.data;
+        console.log("Full events:", allEvents);
+  
+        if (!Array.isArray(allEvents)) {
+          console.log("Invalid full events");
+          return;
+        }
+  
+        // Apply school and activity filters if selected
+        const filteredEvents = allEvents.filter(event => 
+          eventTitles.includes(event.title) &&
+          (selectedSchools.length === 0 || selectedSchools.includes(event.school_name)) &&
+          (selectedActivities.length === 0 || selectedActivities.includes(event.activity))
+        );
+  
+        console.log("Filtered full event details:", filteredEvents);
+        setSearchResults(filteredEvents);
+        setEventList(filteredEvents);
+      }).catch(error => console.error("Error fetching full event details:", error));
+  
+    }).catch(error => console.error("Error on GET", error));
+  }
+  
+  
+  function handleSearch() {
+    searchEvents(searchQuery, selectedSchools, selectedActivities);
+  }
+  
+  function handleMultiSelectChange(event, type) {
+    const selectedOptions = Array.from(event.target.selectedOptions, (option) => option.value);
+    if (type === "schools") {
+      setSelectedSchools(selectedOptions);
+    } else if (type === "activities") {
+      setSelectedActivities(selectedOptions);
+    }
+  }
+  
+  
+  
     // PUT Assign user role
     function assignRole(event, roleColumn) {
       if (!event || !roleColumn) {
         console.error("Missing event or roleColumn");
         return;
       }
-      console.log('Assign user to role:', { eventId: event.id, roleColumn, userId: user.id });
+      console.log('Assign user to role:', { eventTitle: event.title, roleColumn, userId: user.id });
       axios.put( 'api/events/assign', {
-        eventId: event.id,
+        eventId: event.title,
         roleColumn: roleColumn,
         userId: user.id
       }).then(function(response){
@@ -173,7 +191,8 @@ const [selectedActivities, setSelectedActivities] = useState([]);
       setEventList(sortedEvents);
     };
 
-   
+    
+    
 
   return (
     <>
@@ -187,6 +206,8 @@ const [selectedActivities, setSelectedActivities] = useState([]);
           onChange={(e) => setSearchQuery(e.target.value)}
         />
         <button onClick={Search}>Search</button>
+        <button onClick={handleSearch}>Search</button>
+
         <p>{JSON.stringify(searchResults)}</p>
         <div>
           <button onClick={(e) => sortEvents("date", e)}>
@@ -195,32 +216,18 @@ const [selectedActivities, setSelectedActivities] = useState([]);
           <button onClick={(e) => sortEvents("location", e)}>
             Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
           </button>
-{/*         
-          Multi-Select Dropdown for Activities
-          <label htmlFor="activities">Select Activities:</label>
-          <select
-            id="activities"
-            multiple
-            value={selectedActivities}
-            onChange={(e) => handleMultiSelectChange(e, "activities")}
-          >
-            {activities.map((activity) => (
-              <option key={activity.id} value={activity.name}>{activity.name}</option>
-            ))}
-          </select>
+        
+          <select id="activities" multiple value={selectedActivities} onChange={(e) => handleMultiSelectChange(e, "activities")}>
+  {activities.map((activity) => (
+    <option key={activity.id} value={activity.name}>{activity.name}</option>
+  ))}
+</select>
 
-          Multi-Select Dropdown for Schools
-          <label htmlFor="schools">Select Schools:</label>
-          <select
-            id="schools"
-            multiple
-            value={selectedSchools}
-            onChange={(e) => handleMultiSelectChange(e, "schools")}
-          >
-            {schools.map((school) => (
-              <option key={school.id} value={school.name}>{school.name}</option>
-            ))}
-          </select>
+<select id="schools" multiple value={selectedSchools} onChange={(e) => handleMultiSelectChange(e, "schools")}>
+  {schools.map((school) => (
+    <option key={school.id} value={school.name}>{school.name}</option>
+  ))}
+</select>
 
           <button onClick={() => { 
             setSelectedSchools([]); 
@@ -228,7 +235,7 @@ const [selectedActivities, setSelectedActivities] = useState([]);
             setSearchResults([]); 
           }}>
             Clear All
-          </button> */}
+          </button>
         </div>
       </div>
       <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
@@ -360,3 +367,36 @@ export default StudentHomePage;
     //     .catch(error => console.log("Error on GET", error));
     // };
     
+
+    // const handleMultiSelectChange = (event, type) => {
+    //   const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
+    //   if (type === "schools") {
+    //     setSelectedSchools(selectedOptions);
+    //   } else if (type === "activities") {
+    //     setSelectedActivities(selectedOptions);
+    //   }
+    //   filterEvents(selectedOptions, type); // Auto-search on selection
+    // };
+  
+    // const SearchFilter = () => {
+    //   filterEvents([...selectedActivities], "activities");
+    //   filterEvents([...selectedSchools], "schools");
+    // };
+  
+    // const filterEvents = (selectedValues, type) => {
+    //   let filteredResults = eventList;
+  
+    //   if (type === "activities" && selectedValues.length > 0) {
+    //     filteredResults = filteredResults.filter(event =>
+    //       selectedValues.some(activity => event.activity.includes(activity))
+    //     );
+    //   }
+  
+    //   if (type === "schools" && selectedValues.length > 0) {
+    //     filteredResults = filteredResults.filter(event =>
+    //       selectedValues.some(school => event.school_name.includes(school))
+    //     );
+    //   }
+  
+    //   setSearchResults(filteredResults);
+    // };

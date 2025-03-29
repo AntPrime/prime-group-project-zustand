@@ -193,5 +193,62 @@ router.put('/', rejectUnauthenticated,(req, res)=>{
   })
 })
 
+router.post('/search', async (req, res) => {
+  try {
+    const { searchQuery, schools, activities } = req.body;
+    let queryText = ` 
+      SELECT events.id AS "events id", 
+      events.title AS "title",
+      categories.activity AS "activity", 
+      events.date AS "date",
+      events.time AS "time",
+      events.location AS "location",  
+      schools.name AS "schoolname", 
+      pbp_user.username AS "play-by-play",
+      color_comm_user.username AS "color comm.",
+      camera.username AS "camera",
+      producer.username AS "producer",
+      events.channel AS "channel", 
+      events.notes AS "notes"
+      FROM "events"
+      LEFT JOIN "categories" ON events.activities_id = categories.id
+      LEFT JOIN "user" AS "pbp_user" ON pbp_user.id = events.play_by_play
+      LEFT JOIN "user" AS "color_comm_user" ON color_comm_user.id = events.color_commentator
+      LEFT JOIN "user" AS "camera" ON camera.id = events.camera
+      LEFT JOIN "user" AS "producer" ON producer.id = events.producer
+      LEFT JOIN "schools" ON schools.id = events.school_id 
+      WHERE (events.title ILIKE $1
+      OR categories.activity ILIKE $1
+      OR TO_CHAR(events.date, 'YYYY-MM-DD') ILIKE $1
+      OR events.location ILIKE $1
+      OR schools.name ILIKE $1
+      OR pbp_user.username ILIKE $1
+      OR color_comm_user.username ILIKE $1
+      OR camera.username ILIKE $1
+      OR producer.username ILIKE $1
+      OR events.channel ILIKE $1)`;
+
+    let values = [`%${searchQuery}%`];
+
+    // Filter by selected schools
+    if (schools && schools.length > 0) {
+      queryText += ` AND schools.name = ANY($2)`;
+      values.push(schools);
+    }
+
+    // Filter by selected activities
+    if (activities && activities.length > 0) {
+      queryText += ` AND categories.activity = ANY($${values.length + 1})`;
+      values.push(activities);
+    }
+
+    const result = await pool.query(queryText, values);
+    res.status(200).json(result.rows);
+  } catch (error) {
+    console.error('[POST /search Error]', error);
+    res.status(500).json({ error: 'Database error' });
+  }
+});
+
 
 module.exports = router;
