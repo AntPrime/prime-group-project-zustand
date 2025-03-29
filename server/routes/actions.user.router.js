@@ -9,21 +9,24 @@ const router = express.Router();
 // fetch all super admin users
 // fetch all users who are not admin or super admin
 
+//This get route is for all users - which includes Admin, SuperAdmin, and users (think:students)
+
 router.get('/', (req, res)=>{
-//     const searchQuery = req.query.q || '';
-//     const queryText = ` `;
-//   const values = [`%${searchQuery}%`]
-//     pool.query(queryText, values)
-// console.log("this is the first domonoe")
-    // .then((results)=>{
-     // console.log("results from db", results.rows)
-    //   res.send(results.rows)
+    
+   const queryText = `SELECT * FROM "user";`;
+    pool.query(queryText)
+
+    .then((results)=>{
+     console.log("results from db", results.rows)
+      res.send(results.rows)
     res.sendStatus (200);
-//     })
-//     .catch((err)=>{
-//       console.log("error in events.router get", err)
-//       res.sendStatus(400);
-//     })
+    })
+    .catch((err)=>{
+      console.log("error in events.router get", err)
+      res.sendStatus(400);
+    })
    })
 
+ //this get route will be for all admin users - but NOT super admin, nor users (think: users=students)
+   
 module.exports = router;
