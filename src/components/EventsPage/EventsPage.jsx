@@ -19,6 +19,9 @@ function EventsPage() {
   });
   const [ eventList, setEventList ] = useState([]);
   const fetchEvents = useStore((state) => state.fetchEvents)
+  // const [searchResults, setSearchResults] = useState([]);
+  // const [searchQuery, setSearchQuery] = useState("");
+
 
 useEffect(()=> {
   fetchEvents()
@@ -38,6 +41,20 @@ useEffect(()=> {
     })
   }
 
+  // //GET request for search results
+  // const Search = () => {
+  //   console.log("Fetching query:", searchQuery);
+  //   axios
+  //     .get(`/api/events?q=${searchQuery}`)
+  //     .then((response) => {
+  //       setSearchResults(response.data);
+  //       console.log("search results", response.data);
+  //     })
+  //     .catch((error) => {
+  //       console.log("Error on GET", error);
+  //     });
+  // };
+
   //POST to create a new event 
   const createEvent = () => {
     console.log( 'in createEvent' );
@@ -54,7 +71,15 @@ useEffect(()=> {
   return (
     <div className="EventsPage">
       <div>
-        <p>Add event</p>
+        {/* <p>Search Events</p>
+        <input
+          type="text"
+          placeholder="Search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button onClick={Search}>Search</button>
+        <p>{JSON.stringify(searchResults)}</p> */}
         <form>
           <select id="activities" placeholder="activities" onChange={(e) => { setNewEvent({ ...newEvent, activities_id: Number ( e.target.value ) });}}>
             <option value="0">Activity</option>
@@ -87,36 +112,6 @@ useEffect(()=> {
           <input type="text" placeholder="notes" onChange={(e) => setNewEvent({...newEvent,notes: e.target.value,})}/>
         </form>
         <button onClick={ createEvent }>Add An Event</button>
-      <h2>Test List</h2>
-        <table>
-          <thead>
-            <tr>
-            <th>Title</th>
-            <th>Activity</th>
-            <th>Date</th>
-            <th>Time</th>
-            <th>Location</th>
-            <th>School</th>
-            <th>Channel</th>
-            <th>Notes</th>
-            </tr>
-          </thead>
-          <tbody>
-          { eventList.map(( item , index  ) => (
-                <tr key={index}>
-                <td><p>{item.title || "No Title"}</p></td>
-                <td><p>{item.activity || "No Activity"}</p></td>
-                <td>{item.date ? moment(item.date).format('MM/DD/YYYY') : 'No Date'}</td> {/* Display date */}
-                <td>{item.time ? moment(item.time, "HH:mm").format('hh:mm A') : 'No Time'}</td> {/* Display time */}
-                <td><p>{item.location || "No Location"}</p></td>
-                <td><p>{item.schoolname || "Unknown School"}</p></td>
-                <td><p>{item.channel || "Unknown Channel"}</p></td>
-                <td><p>{item.notes || "No Notes"}</p></td>
-                </tr>
-              ))}
-          </tbody>
-        </table>
-
       </div>
     </div>
  );
@@ -133,3 +128,33 @@ export default EventsPage;
   //  function formatTime(time) {
   //   return time ? moment(time, "HH:mm").format('hh:mm A') : 'No Time'; // Format time to 12-hour format
   // }
+
+  // <h2>Test List</h2>
+  // <table>
+  //   <thead>
+  //     <tr>
+  //     <th>Title</th>
+  //     <th>Activity</th>
+  //     <th>Date</th>
+  //     <th>Time</th>
+  //     <th>Location</th>
+  //     <th>School</th>
+  //     <th>Channel</th>
+  //     <th>Notes</th>
+  //     </tr>
+  //   </thead>
+  //   <tbody>
+  //   { eventList.map(( item , index  ) => (
+  //         <tr key={index}>
+  //         <td><p>{item.title || "No Title"}</p></td>
+  //         <td><p>{item.activity || "No Activity"}</p></td>
+  //         <td>{item.date ? moment(item.date).format('MM/DD/YYYY') : 'No Date'}</td> {/* Display date */}
+  //         <td>{item.time ? moment(item.time, "HH:mm").format('hh:mm A') : 'No Time'}</td> {/* Display time */}
+  //         <td><p>{item.location || "No Location"}</p></td>
+  //         <td><p>{item.schoolname || "Unknown School"}</p></td>
+  //         <td><p>{item.channel || "Unknown Channel"}</p></td>
+  //         <td><p>{item.notes || "No Notes"}</p></td>
+  //         </tr>
+  //       ))}
+  //   </tbody>
+  // </table>

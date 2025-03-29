@@ -9,7 +9,7 @@ import {
 
 import useStore from '../../zustand/store';
 import Nav from '../Nav/Nav';
-import HomePage from '../StudentHomePage/StudentHomePage';
+import StudentHomePage from '../StudentHomePage/StudentHomePage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
 import EventsPage from '../EventsPage/EventsPage';
@@ -64,7 +64,7 @@ function App() {
             exact path="/"
             element={
               user.id ? (
-                <HomePage />
+                <StudentHomePage />
               ) : (
                 <Navigate to="/login" replace />
               )
