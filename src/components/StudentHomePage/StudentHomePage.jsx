@@ -7,20 +7,43 @@ import CardActions from '@mui/material/CardActions';
 import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
+// import { useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 import axios from 'axios'
+// import { search } from '../../../server/routes/events.router';
 
 function StudentHomePage() {
   const user = useStore((state) => state.user);
   const logOut = useStore((state) => state.logOut);
-  const [eventList, setEventList] = useState([]);
-  const [sortBy, setSortBy] = useState(null);
-  const [searchResults, setSearchResults] = useState([]);
-  const [searchQuery, setSearchQuery] = useState("");
   const fetchEvents = useStore((state) => state.fetchEvents)
+
+  const [eventList, setEventList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [searchResults, setSearchResults] = useState([]);
+// Multi-select states
+const [sortBy, setSortBy] = useState(null);
+const [selectedSchools, setSelectedSchools] = useState([]);
+const [selectedActivities, setSelectedActivities] = useState([]);
+
+  // const navigate = useNavigate();
   const [sortOrder, setSortOrder] = useState({
     date: "asc", // Default: by most recent event
     location: "asc", // Default: location by A-Z
   });
+
+  // const [schools, setSchools] = useState([
+  //   { id: 1, name: 'Alber Lea' },
+  //   { id: 2, name: 'Fairbault' },
+  //   { id: 3, name: 'Northfield' },
+  // ]);
+
+  // const [activities, setActivities] = useState([
+  //   { id: 1, name: 'Basketball' },
+  //   { id: 2, name: 'Tennis' },
+  //   { id: 3, name: 'Football' },
+  //   { id: 4, name: 'Lacrosse' },
+  //   { id: 5, name: 'Hockey' },
+  // ]);
   
 
   useEffect(()=> {
@@ -39,52 +62,71 @@ function StudentHomePage() {
             alert( 'error getting test list' );
           })
     }
-    const Search = () => {
-      console.log("Fetching query:", searchQuery);
-    
-      axios
-        .get(`/api/events?q=${searchQuery}`)
-        .then((response) => {
-          console.log("Raw search response:", response.data); // Log raw search results
-    
-          if (!Array.isArray(response.data) || response.data.length === 0) {
-            console.warn("Search API returned empty or non-array data.");
-            return; // Stop execution if no results
-          }
-    
-          // Extract titles instead of IDs
-          const eventTitles = response.data.map(event => event.title);
-          console.log("Extracted Event Titles:", eventTitles); // Debug titles
-    
-          // Fetch all event details
-          axios
-            .get('/api/events/all')
-            .then(fullResponse => {
-              console.log("Raw full events data:", fullResponse.data); // Log full event details
-    
-              if (!Array.isArray(fullResponse.data)) {
-                console.warn("Full events API returned non-array data.");
-                return;
-              }
-    
-              // Filter full events using title instead of id
-              const fullEvents = fullResponse.data.filter(event => eventTitles.includes(event.title));
-    
-              console.log("Filtered full event details:", fullEvents);
-    
-              if (fullEvents.length === 0) {
-                console.warn("No matching full event details found.");
-              }
-    
-              // Update state
-              setSearchResults(fullEvents);
-              setEventList(fullEvents);
-            })
-            .catch(error => console.log("Error fetching full event details:", error));
-        })
-        .catch(error => console.log("Error on GET", error));
-    };
-    
+
+    // const handleMultiSelectChange = (event, type) => {
+    //   const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
+    //   if (type === "schools") {
+    //     setSelectedSchools(selectedOptions);
+    //   } else if (type === "activities") {
+    //     setSelectedActivities(selectedOptions);
+    //   }
+    //   filterEvents(selectedOptions, type); // Auto-search on selection
+    // };
+  
+    // const SearchFilter = () => {
+    //   filterEvents([...selectedActivities], "activities");
+    //   filterEvents([...selectedSchools], "schools");
+    // };
+  
+    // const filterEvents = (selectedValues, type) => {
+    //   let filteredResults = eventList;
+  
+    //   if (type === "activities" && selectedValues.length > 0) {
+    //     filteredResults = filteredResults.filter(event =>
+    //       selectedValues.some(activity => event.activity.includes(activity))
+    //     );
+    //   }
+  
+    //   if (type === "schools" && selectedValues.length > 0) {
+    //     filteredResults = filteredResults.filter(event =>
+    //       selectedValues.some(school => event.school_name.includes(school))
+    //     );
+    //   }
+  
+    //   setSearchResults(filteredResults);
+    // };
+
+
+  const Search = () => {
+    console.log( "Fetching query:", searchQuery );
+    axios.get(`/api/events?q=${searchQuery}`).then(( searchResponse ) => {
+      const searchResults = searchResponse.data;
+      console.log("searchResponse:", searchResults );
+      // Search Input Apply
+      if (!Array.isArray( searchResults )|| searchResults.length === 0 ) {
+        console.log("No results searched");
+        setSearchResults([]);
+        setEventList([]);
+        return;
+      }
+      const eventTitles = searchResults.map(event => event.title );
+      console.log("Extracted Event Titles:", eventTitles );
+      axios.get(`/api/events/all`).then((fullResponse)=> {
+        const allEvents = fullResponse.data;
+        console.log( "Full events:", allEvents );
+        // Search Filter select apply
+        if (!Array.isArray(allEvents)) {
+          console.log( "Invalid full events:");
+          return;
+        }
+        const filteredEvents = allEvents.filter(event => eventTitles.includes(event.title));
+        console.log("Filtered full event details:", filteredEvents);
+        setSearchResults(filteredEvents);
+        setEventList(filteredEvents);
+      }).catch(error => console.error("Error fetching full event details:", error));
+    })
+    .catch(error => console.error("Error on GET", error));
+  };
 
     // PUT Assign user role
     function assignRole(event, roleColumn) {
@@ -131,50 +173,70 @@ function StudentHomePage() {
       setEventList(sortedEvents);
     };
 
+   
+
   return (
     <>
-    <div>
-      <h2>LMR STUDENT HOME PAGE</h2>
-      {/* <input placeholder='Search Event' /> */}
-      <p>Search Events</p>
-      <input
-        type="text"
-        placeholder="Search"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-      />
-      <button onClick={Search}>Search</button>
-      <p>{JSON.stringify(searchResults)}</p>
       <div>
-      <button onClick={(e) => sortEvents("date", e)}>
-          Date {sortOrder.date === "asc" ? "↑" : "↓"}
-        </button>
-        <button onClick={(e) => sortEvents("location", e)}>
-          Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
-        </button>
-        <select>
-          <option value="">Category</option>
-        </select>
-        <select>
-          <option value="">School</option>
-        </select>
-        <button>Clear All</button>
+        <h2>LMR STUDENT HOME PAGE</h2>
+        <p>Search Events</p>
+        <input
+          type="text"
+          placeholder="Search"
+          value={searchQuery}
+          onChange={(e) => setSearchQuery(e.target.value)}
+        />
+        <button onClick={Search}>Search</button>
+        <p>{JSON.stringify(searchResults)}</p>
+        <div>
+          <button onClick={(e) => sortEvents("date", e)}>
+            Date {sortOrder.date === "asc" ? "↑" : "↓"}
+          </button>
+          <button onClick={(e) => sortEvents("location", e)}>
+            Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
+          </button>
+{/*         
+          Multi-Select Dropdown for Activities
+          <label htmlFor="activities">Select Activities:</label>
+          <select
+            id="activities"
+            multiple
+            value={selectedActivities}
+            onChange={(e) => handleMultiSelectChange(e, "activities")}
+          >
+            {activities.map((activity) => (
+              <option key={activity.id} value={activity.name}>{activity.name}</option>
+            ))}
+          </select>
+
+          Multi-Select Dropdown for Schools
+          <label htmlFor="schools">Select Schools:</label>
+          <select
+            id="schools"
+            multiple
+            value={selectedSchools}
+            onChange={(e) => handleMultiSelectChange(e, "schools")}
+          >
+            {schools.map((school) => (
+              <option key={school.id} value={school.name}>{school.name}</option>
+            ))}
+          </select>
+
+          <button onClick={() => { 
+            setSelectedSchools([]); 
+            setSelectedActivities([]); 
+            setSearchResults([]); 
+          }}>
+            Clear All
+          </button> */}
         </div>
       </div>
       <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
+      
 
       <div className='eventCard'>
   {eventList.length > 0 ? (
     eventList.map((event, index) => {
-       // Log the entire event object to check its structure
-      console.log(`Event ${index}:`, event);
-
-      if (event && event.camera_username) {
-        console.log(`Event ${event.id} - Camera Username:`, event.camera_username);
-      } else {
-        console.log(`Event ${index} is undefined or missing camera_username`);
-      }
-      
       return (
         <div key={index}>
           <Box sx={{ minWidth: 275, mb: 2 }} >
@@ -225,6 +287,12 @@ function StudentHomePage() {
                 >
                   Color Commentator: {event.color_commentator_username || "(Unassigned)"}
                 </Button>
+                {/* Use NavLink to navigate to the updateEvent page */}
+                <NavLink to={`/updateEvent/${event.id}`} style={{ textDecoration: 'none' }}>
+                  <Button size="small">
+                    Update Event
+                  </Button>
+                </NavLink>
               </CardActions>
             </Card>
           </Box>
@@ -245,62 +313,50 @@ function StudentHomePage() {
 
 export default StudentHomePage;
 
-  // const fetchEvent = () => {
-  //   console.log("fetching..")
-
-  //   axios({
-  //     method: "GET",
-  //     url: "/api/events/all"
-  //   })
-  //     .then((response) => {
-  //       console.log("Response: ", response.data)
-  //       // adding the DB contents into the empty array above
-  //       setEventList(response.data)
-  //     })
-  //     .catch((err) => {
-  //       console.log("GET /api/event is broken")
-  //     })
-  // }
-
-    // // function to assign users to open roles/positions
-  // const assignRole = (event, roleColumn) => {
-  //   if (!event || !event.id) {
-  //     console.error("Invalid event data:", event);
-  //     return;
-  //   }
-
-  // Check if role is already taken and Alert user that role is filled
-  // if (event[roleColumn]) {
-  //   alert(`This ${roleColumn.replace('_', ' ')} role is already assigned to user ${event[roleColumn].name}`);
-  //   return;
-  // }
-
-    // console.log('Attempting to assign role:', {
-    //   eventId: event.id,
-    //   roleColumn,
-    //   userId: user.id
-    // });
-
-  //   axios.put('/api/events/assign', {
-  //     eventId: event.id,
-  //     roleColumn,
-  //     userId: user.id
-  //   })
-  //     .then(response => {
-  //       console.log('Sending:', {
-  //         eventId: event.id,
-  //         roleColumn,
-  //         userId: user.id
-  //       });
-  //       console.log(`Assigned ${user.id} as ${roleColumn} for event ${event.id}`);
-  //       // Update state with the returned event
-  //       setEventList(prevEvents =>
-  //         prevEvents.map(prevEvent =>
-  //           prevEvent.id === response.data.id ? response.data : prevEvent
-  //         ));
-  //         // fetchEvent();
-  //     })
-  //     .catch(error => {
-  //       console.error("Error assigning role:", error);
-  //     });
-  // }
+/// Working Search axios GET 
+    // const Search = () => {
+    //   console.log("Fetching query:", searchQuery);
+    
+    //   axios
+    //     .get(`/api/events?q=${searchQuery}`)
+    //     .then((response) => {
+    //       console.log("Raw search response:", response.data); // Log raw search results
+    
+    //       if (!Array.isArray(response.data) || response.data.length === 0) {
+    //         console.warn("Search API returned empty or non-array data.");
+    //         return; // Stop execution if no results
+    //       }
+    
+    //       // Extract titles instead of IDs
+    //       const eventTitles = response.data.map(event => event.title);
+    //       console.log("Extracted Event Titles:", eventTitles); // Debug titles
+    
+    //       // Fetch all event details
+    //       axios
+    //         .get('/api/events/all')
+    //         .then(fullResponse => {
+    //           console.log("Raw full events data:", fullResponse.data); // Log full event details
+    
+    //           if (!Array.isArray(fullResponse.data)) {
+    //             console.warn("Full events API returned non-array data.");
+    //             return;
+    //           }
+    
+    //           // Filter full events using title instead of id
+    //           const fullEvents = fullResponse.data.filter(event => eventTitles.includes(event.title));
+    
+    //           console.log("Filtered full event details:", fullEvents);
+    
+    //           if (fullEvents.length === 0) {
+    //             console.warn("No matching full event details found.");
+    //           }
+    
+    //           // Update state
+    //           setSearchResults(fullEvents);
+    //           setEventList(fullEvents);
+    //         })
+    //         .catch(error => console.log("Error fetching full event details:", error));
+    //     })
+    //     .catch(error => console.log("Error on GET", error));
+    // };
+    

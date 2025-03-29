@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
-import UpdateEvent from "../UpdateEvent/UpdateEvent";
 import useStore from '../../zustand/store';
 import moment from 'moment';
 import './EventsPage.css';

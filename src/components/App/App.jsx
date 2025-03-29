@@ -14,6 +14,7 @@ import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
 import EventsPage from '../EventsPage/EventsPage';
 import SuccessPage from '../../SuccessPage/SuccessPage';
+import UpdateEvent from '../UpdateEvent/UpdateEvent';
 
 
 function App() {
@@ -148,6 +149,7 @@ function App() {
              }
            />
 
+<Route path="/updateEvent/:id" element={<UpdateEvent />} />
 
           <Route
             path="*"

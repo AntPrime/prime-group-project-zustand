@@ -68,9 +68,25 @@ typings/
 package-lock.json
 
 --To-Do-List
-# complete
---searchquery 
+SEARCHQUERY
+# complete (almost dropdown search feature needs to be completed now)
+--Style?
 
---dropdown
+DROPDOWN
+--Update dropdown
 
---eventpage css/materuil UI
+--Delete dropdown
+
+--Add dropdown
+
+UPDATE
+--Updatepage 
+# Setup complete functions
+--Style?
+
+EVENTPAGE
+--Eventpage css/materuil UI Style?
+
+--eventPage functionality
+# almost complete still setting up search feature  for all 
+# Roles button works

@@ -33,31 +33,3 @@ router.put('/', async (req, res) => {
       }
   });
 module.exports = router;
-
-// Router changed a bit 
-// router.put('/', async (req, res) => {
-//   console.log('Request received at /assign');
-//   const { eventId, roleColumn, userId } = req.body; 
- 
-//   // Validate that roleColumn is a valid column name to prevent SQL injection
-//   const validRoles = ["producer", "camera", "play_by_play", "color_commentator"];
-//   if (!validRoles.includes(roleColumn)) {
-//     return res.status(400).json({ error: "Invalid role" });
-//   }
-
-//   try {
-//     const query = `
-//       UPDATE "events"
-//       SET ${roleColumn} = $1
-//       WHERE events.id = $2
-//       RETURNING *;
-//     `;
-
-//     const result = await pool.query(query, [userId, eventId]);
-//     console.log('Updated event:', result.rows[0]); 
-//     res.status(200).json(result.rows[0]);
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send("Error updating event role");
-//     }
-// });
