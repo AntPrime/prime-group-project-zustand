@@ -43,5 +43,39 @@ router.get('/', (req, res)=>{
        res.sendStatus(400);
      })
     })
+// this route will be for super admins - but not for admin,  nor users (think: users=students)
+router.get('/superadmins', (req, res)=>{
+    
+    const queryText = `SELECT * FROM "user" WHERE "super_admin"=TRUE;`;
+     pool.query(queryText)
+ 
+     .then((results)=>{
+      console.log("results from db on get Super admin users", results.rows)
+       res.send(results.rows)
+     res.sendStatus (200);
+     })
+     .catch((err)=>{
+       console.log("error in actions.user.router get for Super admin users", err)
+       res.sendStatus(400);
+     })
+    });
 
+// this route will be for users (but not admins, nor superadmins) (think: users=students)
+// SELECT * FROM "user" WHERE "super_admin"=FALSE AND "admin"=FALSE;
+router.get('/notadmin', (req, res)=>{
+    
+    const queryText = `SELECT * FROM "user" WHERE "super_admin"=FALSE AND "admin"=FALSE;`;
+     pool.query(queryText)
+ 
+     .then((results)=>{
+      console.log("results from db on get users not admin nor superadmin", results.rows)
+       res.send(results.rows)
+     res.sendStatus (200);
+     })
+     .catch((err)=>{
+       console.log("error in actions.user.router get for users not admin nor superadmin", err)
+       res.sendStatus(400);
+     })
+    });
+    
 module.exports = router;
