@@ -6,6 +6,10 @@ import AccordionActions from '@mui/material/AccordionActions';
 import AccordionSummary from '@mui/material/AccordionSummary';
 import AccordionDetails from '@mui/material/AccordionDetails';
 import Typography from '@mui/material/Typography';
+import Box from '@mui/material/Box';
+import Card from '@mui/material/Card';
+import CardActions from '@mui/material/CardActions';
+import CardContent from '@mui/material/CardContent';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import Button from '@mui/material/Button';
 
@@ -69,7 +73,7 @@ function SuperAdminHome( ) {
   }, []);
   return (
     <>
-      <h2>LMR STUDENT HOME PAGE</h2>
+      <h2>LMR SUPER ADMIN HOME PAGE</h2>
       <input placeholder='Search Event' />
       <div>
       <button onClick={(e) => sortEvents("date", e)}>
@@ -105,7 +109,7 @@ function SuperAdminHome( ) {
       </Accordion>
       <Accordion>
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
+         // expandIcon={<ExpandMoreIcon />}
           aria-controls="panel2-content"
           id="panel2-header"
         >
@@ -118,7 +122,7 @@ function SuperAdminHome( ) {
       </Accordion>
       <Accordion defaultExpanded>
         <AccordionSummary
-          expandIcon={<ExpandMoreIcon />}
+          //expandIcon={<ExpandMoreIcon />}
           aria-controls="panel3-content"
           id="panel3-header"
         >
@@ -133,6 +137,7 @@ function SuperAdminHome( ) {
           <Button>Agree</Button>
         </AccordionActions>
       </Accordion>
+
     </div>
       <div className='eventCard'>
         {eventList.length > 0 ? (
