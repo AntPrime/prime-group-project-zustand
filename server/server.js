@@ -15,7 +15,7 @@ const passport = require('./strategies/user.strategy');
 const userRouter = require('./routes/user.router');
 const eventsRouter = require('./routes/events.router');
 const assignRoleRouter = require('./routes/assignRole.router')
-
+const paymentRouter = require('./routes/payment.router')
 // Apply middleware:
 app.use(express.json());
 app.use(express.urlencoded({extended: true}));
@@ -28,7 +28,7 @@ app.use(passport.session());
 app.use('/api/user', userRouter);
 app.use('/api/events', eventsRouter);
 app.use('/api/events/assign', assignRoleRouter);
-
+app.use('/api/events/payments', paymentRouter)
 
 // Start the server:
 app.listen(PORT, () => {

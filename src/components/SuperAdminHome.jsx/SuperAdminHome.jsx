@@ -42,7 +42,7 @@ function SuperAdminHome() {
       if (idx !== eventIndex) return event;
       return {
         ...event,
-        participants: event.participants.map(p => 
+        participants: event.participants.map(p =>
           p.userId === userId ? { ...p, isPaid: !p.isPaid } : p
         )
       };
@@ -51,7 +51,7 @@ function SuperAdminHome() {
 
   // Data fetching
   const fetchEvent = () => {
-    axios.get("/api/events/all")
+    axios.get("/api/events/payments/admin")
       .then((response) => {
         setEventList(response.data);
       })
@@ -67,15 +67,35 @@ function SuperAdminHome() {
 
   // Update events when eventList changes
   useEffect(() => {
+    console.log(eventList)
     setEvents(eventList.map(event => ({
       ...event,
-      isPaid: event.isPaid || false,
       participants: [
-        { role: 'Play-by-Play', username: event.play_by_play_username, userId: event.play_by_play },
-        { role: 'Color Commentator', username: event.color_commentator_username, userId: event.color_commentator },
-        { role: 'Camera', username: event.camera_username, userId: event.camera },
-        { role: 'Producer', username: event.producer_username, userId: event.producer }
-      ].filter(p => p.username)
+        {
+          role: 'Play-by-Play',
+          userId: event.play_by_play,
+          username: event.play_by_play,
+          paid: event.payments?.[event.play_by_play]?.paid || false
+        },
+        {
+          role: 'Color Commentator',
+          userId: event.color_commentator,
+          username: event.color_commentator,
+          paid: event.payments?.[event.color_commentator]?.paid || false
+        },
+        {
+          role: 'Camera',
+          userId: event.camera,
+          username: event.camera,
+          paid: event.payments?.[event.camera]?.paid || false
+        },
+        {
+          role: 'Producer',
+          userId: event.producer,
+          username: event.producer,
+          paid: event.payments?.[event.producer]?.paid || false
+        }
+      ].filter(p => p.userId) 
     })));
   }, [eventList]);
 
@@ -86,12 +106,12 @@ function SuperAdminHome() {
     const newOrder = sortOrder[criteria] === "asc" ? "desc" : "asc";
 
     if (criteria === "date") {
-      sortedEvents.sort((a, b) => newOrder === "asc" 
-        ? new Date(a.date) - new Date(b.date) 
+      sortedEvents.sort((a, b) => newOrder === "asc"
+        ? new Date(a.date) - new Date(b.date)
         : new Date(b.date) - new Date(a.date));
     } else if (criteria === "location") {
-      sortedEvents.sort((a, b) => newOrder === "asc" 
-        ? a.location.localeCompare(b.location) 
+      sortedEvents.sort((a, b) => newOrder === "asc"
+        ? a.location.localeCompare(b.location)
         : b.location.localeCompare(a.location));
     }
 
@@ -103,7 +123,25 @@ function SuperAdminHome() {
   return (
     <>
       <h2>LMR SUPER ADMIN HOME PAGE</h2>
-      {/* Search/filter UI remains same */}
+      <input placeholder='Search Event' />
+      <div>
+        <button onClick={(e) => sortEvents("date", e)}>
+          Date {sortOrder.date === "asc" ? "↑" : "↓"}
+        </button>
+        <button onClick={(e) => sortEvents("location", e)}>
+          Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
+        </button>
+        <select>
+          <option value="">Category</option>
+        </select>
+        <select>
+          <option value="">School</option>
+        </select>
+        <button>Search</button>
+        <button>Clear All</button>
+      </div>
+
+      <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
 
       <div className='eventCard'>
         {events.length > 0 ? (
@@ -139,7 +177,7 @@ function SuperAdminHome() {
                 <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
                   {event.participants.map((participant, pIndex) => (
                     <ListItem
-                      key={participant.userId || pIndex}
+                      key={pIndex}
                       sx={{
                         backgroundColor: participant.isPaid ? 'lightgreen' : 'inherit',
                         transition: 'background-color 0.3s ease',
@@ -150,6 +188,12 @@ function SuperAdminHome() {
                       <ListItemText
                         primary={participant.username}
                         secondary={`Role: ${participant.role}`}
+                        sx={{
+                          '& .MuiListItemText-secondary': {
+                            color: 'text.secondary',
+                            fontSize: '0.875rem'
+                          }
+                        }}
                       />
                       <Box sx={{ ml: 'auto' }}>
                         <Button
