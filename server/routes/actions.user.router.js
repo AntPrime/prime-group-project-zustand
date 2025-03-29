@@ -22,11 +22,26 @@ router.get('/', (req, res)=>{
     res.sendStatus (200);
     })
     .catch((err)=>{
-      console.log("error in events.router get", err)
+      console.log("error in actions.user.router get for all users", err)
       res.sendStatus(400);
     })
    })
 
  //this get route will be for all admin users - but NOT super admin, nor users (think: users=students)
-   
+ router.get('/admins', (req, res)=>{
+    
+    const queryText = `SELECT * FROM "user" WHERE "admin"=TRUE;`;
+     pool.query(queryText)
+ 
+     .then((results)=>{
+      console.log("results from db on get admin users", results.rows)
+       res.send(results.rows)
+     res.sendStatus (200);
+     })
+     .catch((err)=>{
+       console.log("error in actions.user.router get for admin users", err)
+       res.sendStatus(400);
+     })
+    })
+
 module.exports = router;
