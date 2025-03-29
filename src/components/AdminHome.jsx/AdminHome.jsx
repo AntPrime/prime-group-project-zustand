@@ -1,12 +1,16 @@
 import useStore from '../../zustand/store'
 import { useState, useEffect } from 'react';
 import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
+import { 
+  Accordion,
+  AccordionSummary,
+  AccordionDetails,
+  AccordionActions,
+  Typography
+} from '@mui/material';
+import { IoIosArrowDropdown } from "react-icons/io";
 import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+
 import axios from 'axios'
 
 function AdminHome( ) {
@@ -60,53 +64,14 @@ function AdminHome( ) {
       setSortBy(criteria);
       setEventList(sortedEvents);
     };
-  // function to assign users to open roles/positions
-  const assignRole = (event, roleColumn) => {
-    if (!event || !event.id) {
-      console.error("Invalid event data:", event);
-      return;
-    }
-  // Check if role is already taken and Alert user that role is filled
-  // if (event[roleColumn]) {
-  //   alert(`This ${roleColumn.replace('_', ' ')} role is already assigned to user ${event[roleColumn].name}`);
-  //   return;
-  // }
-    console.log('Attempting to assign role:', {
-      eventId: event.id,
-      roleColumn,
-      userId: user.id
-    });
-
-    axios.put('/api/events/assign', {
-      eventId: event.id,
-      roleColumn,
-      userId: user.id
-    })
-      .then(response => {
-        console.log('Sending:', {
-          eventId: event.id,
-          roleColumn,
-          userId: user.id
-        });
-        console.log(`Assigned ${user.id} as ${roleColumn} for event ${event.id}`);
-        // Update state with the returned event
-        setEventList(prevEvents =>
-          prevEvents.map(prevEvent =>
-            prevEvent.id === response.data.id ? response.data : prevEvent
-          ));
-          fetchEvent();
-      })
-      .catch(error => {
-        console.error("Error assigning role:", error);
-      });
-  }
+  
 
   useEffect(() => {
     fetchEvent();
   }, []);
   return (
     <>
-      <h2>LMR STUDENT HOME PAGE</h2>
+      <h2>LMR SUPER ADMIN HOME PAGE</h2>
       <input placeholder='Search Event' />
       <div>
       <button onClick={(e) => sortEvents("date", e)}>
@@ -126,68 +91,43 @@ function AdminHome( ) {
       </div>
 
       <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
-
       <div className='eventCard'>
-        {eventList.length > 0 ? (
-          eventList.map((event, index) => (
-            <div key={index}>
-              <Box sx={{ minWidth: 275, mb: 2 }} >
-                <Card variant="outlined">
-                  <CardContent>
-                    <Typography variant="h5" component="div">
-                      {event.title}
-                    </Typography>
-                    <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>
-                      Date: {event.date} - Time of Event: {event.time} <br /> Streaming Channel: {event.channel}
-                    </Typography>
-                    <Typography variant="h7" component="div">
-                      Schools: {event.school_name} vs [Opponent Name]
-                    </Typography>
-                    <Typography variant="h7" component="div">
-                      Location: {event.location}
-                    </Typography>
-                    <Typography variant="body2">
-                      <br />
-                      Notes: {event.notes}
-                    </Typography>
-                  </CardContent>
-                  <CardActions>
-                    <Button
-                      size="small"
-                      onClick={() => assignRole(event, "producer")}
-                      disabled={!!event.producer}
-                    >
-                      Producer: {event.producer_username || "(Unassigned)"}
-                    </Button>
-                    <Button 
-                    size="small" 
-                    onClick={() => assignRole(event, "camera")}
-                    disabled={!!event.camera}
-                    >
-                      Camera: {event.camera_username || "(Unassigned)"}
-                    </Button>
-                    <Button 
-                    size="small" 
-                    onClick={() => assignRole(event, "play_by_play")}
-                    disabled={!!event.play_by_play}
-                    >
-                      Play-by-play: {event.play_by_play_username || "(Unassigned)" }
-                    </Button>
-                    <Button size='small'
-                    onClick={() => assignRole(event, "color_commentator")}
-                    disabled={!!event.color_commentator}
-                    >
-                      Color Commentator: {event.color_commentator_username || "(Unassigned)"}
-                    </Button>
-                  </CardActions>
-                </Card>
-              </Box>
-            </div>
-          ))
-        ) : (
-          <p>No events available</p>
-        )}
-      </div>
+  {eventList.length > 0 ? (
+    eventList.map((event, index) => (
+      <Accordion key={index} sx={{ mb: 2 }} defaultExpanded>
+        <AccordionSummary
+          expandIcon={<IoIosArrowDropdown />}
+          aria-controls={`panel${index}-content`}
+          id={`panel${index}-header`}
+        >
+          <Typography component="span" sx={{ fontWeight: 'bold' }}>
+            {event.title} - {event.date} | {event.time}
+          </Typography>
+        </AccordionSummary>
+        <AccordionDetails>
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            <strong>Streaming Channel:</strong> {event.channel}
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            <strong>Schools:</strong> {event.school_name} vs [Opponent Name]
+          </Typography>
+          <Typography variant="body1" sx={{ mb: 1 }}>
+            <strong>Location:</strong> {event.location}
+          </Typography>
+          <Typography variant="body2">
+            <strong>Notes:</strong> {event.notes}
+          </Typography>
+        </AccordionDetails>
+        <AccordionActions>
+          <Button>Sign User Up</Button>
+          <Button>Remove User</Button>
+        </AccordionActions>
+      </Accordion>
+    ))
+  ) : (
+    <p>No events available</p>
+  )}
+</div>
 
       <h5></h5>
       <p>Your ID is: {user.id}</p>
@@ -195,6 +135,5 @@ function AdminHome( ) {
     </>
   );
 }
-
 
 export default AdminHome;
