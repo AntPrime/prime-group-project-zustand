@@ -66,27 +66,32 @@ typings/
 
 # ignore package-lock as it complicates merging
 package-lock.json
-
+---------------------------------------------------------------------------------------------------
 --To-Do-List
 SEARCHQUERY
-# complete (almost dropdown search feature needs to be completed now)
+# complete dropdown and multi select feature work! Yaaaaaaaaaaaa!!!!!!!
 --Style?
 
 DROPDOWN
 --Update dropdown
+---update is feasible need to update the update page for that/PUT 
 
 --Delete dropdown
+---?
 
 --Add dropdown
+---could insert an add to the dropdown
 
 UPDATE
 --Updatepage 
-# Setup complete functions
+# Setup complete
+---Fix navigates to EventPage when completing update event instead of StudentPage
 --Style?
 
-EVENTPAGE
---Eventpage css/materuil UI Style?
+STUDENTPAGE
+--Studentpage css/materuil UI Style?
 
---eventPage functionality
-# almost complete still setting up search feature  for all 
-# Roles button works
+--studentPage functionality 
+# Search completed 
+# --Roles button works--
+---ASSIGHN ROLE BUTTON NOW WORKING!!!!!!!

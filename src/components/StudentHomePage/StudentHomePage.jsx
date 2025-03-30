@@ -1,6 +1,5 @@
 import useStore from '../../zustand/store'
 import { useState, useEffect } from 'react';
-import * as React from 'react';
 import Box from '@mui/material/Box';
 import Card from '@mui/material/Card';
 import CardActions from '@mui/material/CardActions';
@@ -56,85 +55,44 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
           })
     }
 
-  const Search = () => {
-    console.log( "Fetching query:", searchQuery, selectedSchools, selectedActivities );
-    axios.get(`/api/events?q=${searchQuery}`).then(( searchResponse ) => {
-      const searchResults = searchResponse.data;
-      console.log("searchResponse:", searchResults );
-      // Search Input Apply
-      if (!Array.isArray( searchResults )|| searchResults.length === 0 ) {
-        console.log("No results searched");
-        setSearchResults([]);
-        setEventList([]);
-        return;
-      }
-      const eventTitles = searchResults.map(event => event.title );
-      console.log("Extracted Event Titles:", eventTitles );
-      axios.get(`/api/events/all`).then((fullResponse)=> {
-        const allEvents = fullResponse.data;
-        console.log( "Full events:", allEvents );
-        // Search Filter
-        if (!Array.isArray(allEvents)) {
-          console.log( "Invalid full events:");
-          return;
-        }
-        const filteredEvents = allEvents.filter(event => eventTitles.includes(event.title));
-        console.log("Filtered full event details:", filteredEvents);
-        setSearchResults(filteredEvents);
-        setEventList(filteredEvents);
-      }).catch(error => console.error("Error fetching full event details:", error));
-    })
-    .catch(error => console.error("Error on GET", error));
-  };
-
-  function searchEvents(searchQuery, selectedSchools, selectedActivities) {
-    console.log("Fetching query:", searchQuery, selectedSchools, selectedActivities);
+    // GET Search
+    function searchEvents(searchQuery, selectedSchools, selectedActivities) {
+      axios.get(`/api/events?q=${searchQuery}`).then(function (searchResponse) {
+        const searchResults = searchResponse.data || [];
+          console.log("Search response:", searchResults);
+          if (!searchResults.length) {
+            console.log("No results searched");
+            setSearchResults([]);
+            setEventList([]);
+            return;
+          }
+          const eventTitles = new Set(searchResults.map(event => event.title));
+          const schoolSet = new Set(selectedSchools);
+          const activitySet = new Set(selectedActivities);
+            return axios.get(`/api/events/all`).then(function (fullResponse) {
+              const allEvents = fullResponse.data || [];
+              console.log("allEvents:", allEvents);
+            const filteredEvents = allEvents.filter(event => eventTitles.has(event.title) &&
+              (!selectedSchools.length || schoolSet.has(event.school_name)) &&
+              (!selectedActivities.length || activitySet.has(event.activity))
+            );
     
-    axios.get(`/api/events?q=${searchQuery}`).then((searchResponse) => {
-      const searchResults = searchResponse.data;
-      console.log("Search response:", searchResults);
+            console.log("Filtered full event details:", filteredEvents);
+            setSearchResults(filteredEvents);
+            setEventList(filteredEvents);
+          });
+        })
+        .catch(function (error) {
+          console.error("Error fetching events:", error);
+        });
+    }
   
-      if (!Array.isArray(searchResults) || searchResults.length === 0) {
-        console.log("No results searched");
-        setSearchResults([]);
-        setEventList([]);
-        return;
-      }
-  
-      // Extract event titles from search results
-      const eventTitles = searchResults.map(event => event.title);
-      console.log("Extracted Event Titles:", eventTitles);
-  
-      // Fetch all events and filter
-      axios.get(`/api/events/all`).then((fullResponse) => {
-        const allEvents = fullResponse.data;
-        console.log("Full events:", allEvents);
-  
-        if (!Array.isArray(allEvents)) {
-          console.log("Invalid full events");
-          return;
-        }
-  
-        // Apply school and activity filters if selected
-        const filteredEvents = allEvents.filter(event => 
-          eventTitles.includes(event.title) &&
-          (selectedSchools.length === 0 || selectedSchools.includes(event.school_name)) &&
-          (selectedActivities.length === 0 || selectedActivities.includes(event.activity))
-        );
-  
-        console.log("Filtered full event details:", filteredEvents);
-        setSearchResults(filteredEvents);
-        setEventList(filteredEvents);
-      }).catch(error => console.error("Error fetching full event details:", error));
-  
-    }).catch(error => console.error("Error on GET", error));
-  }
-  
-  
+  // Search Dropdown Handle 
   function handleSearch() {
     searchEvents(searchQuery, selectedSchools, selectedActivities);
   }
-  
+
+   // Search MultiDropdown Handle 
   function handleMultiSelectChange(event, type) {
     const selectedOptions = Array.from(event.target.selectedOptions, (option) => option.value);
     if (type === "schools") {
@@ -144,18 +102,12 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
     }
   }
   
-  
-  
     // PUT Assign user role
-    function assignRole(event, roleColumn) {
-      if (!event || !roleColumn) {
-        console.error("Missing event or roleColumn");
-        return;
-      }
-      console.log('Assign user to role:', { eventTitle: event.title, roleColumn, userId: user.id });
-      axios.put( 'api/events/assign', {
-        eventId: event.title,
-        roleColumn: roleColumn,
+    function assignRoles(event, roleColumn) {
+      console.log('Assign user to role:', { eventId: event.id, roleColumn: roleColumn, userId: user.id });
+      axios.put( '/api/assignRole/assignRole', {
+        eventId: event.id,
+        roleColumn,
         userId: user.id
       }).then(function(response){
         // setEventList(response.data);
@@ -191,9 +143,6 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
       setEventList(sortedEvents);
     };
 
-    
-    
-
   return (
     <>
       <div>
@@ -205,7 +154,6 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
           value={searchQuery}
           onChange={(e) => setSearchQuery(e.target.value)}
         />
-        <button onClick={Search}>Search</button>
         <button onClick={handleSearch}>Search</button>
 
         <p>{JSON.stringify(searchResults)}</p>
@@ -253,7 +201,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
                   {event.title}
                 </Typography>
                 <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>
-                  Date: {event.date} - Time of Event: {event.time} <br /> Streaming Channel: {event.channel}
+                  Createdby: {event.created_by_id }Date: {event.date} - Time of Event: {event.time} <br /> Streaming Channel: {event.channel}
                 </Typography>
                 <Typography variant="h7" component="div">
                   Schools: {event.school_name} vs [Opponent Name]
@@ -269,27 +217,27 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
               <CardActions>
                 <Button
                   size="small"
-                  onClick={() => assignRole(event, "producer")}
+                  onClick={() => assignRoles(event, "producer")}
                   disabled={!!event.producer}
                 >
                   Producer: {event.producer_username || "(Unassigned)"}
                 </Button>
                 <Button 
                 size="small" 
-                onClick={() => assignRole(event, "camera")}
+                onClick={() => assignRoles(event, "camera")}
                 disabled={!!event.camera}
                 >
                   Camera: {event.camera_username || "(Unassigned)"}
                 </Button>
                 <Button 
                 size="small" 
-                onClick={() => assignRole(event, "play_by_play")}
+                onClick={() => assignRoles(event, "play_by_play")}
                 disabled={!!event.play_by_play}
                 >
                   Play-by-play: {event.play_by_play_username || "(Unassigned)" }
                 </Button>
                 <Button size='small'
-                onClick={() => assignRole(event, "color_commentator")}
+                onClick={() => assignRoles(event, "color_commentator")}
                 disabled={!!event.color_commentator}
                 >
                   Color Commentator: {event.color_commentator_username || "(Unassigned)"}
@@ -400,3 +348,34 @@ export default StudentHomePage;
   
     //   setSearchResults(filteredResults);
     // };
+
+      // const Search = () => {
+  //   console.log( "Fetching query:", searchQuery, selectedSchools, selectedActivities );
+  //   axios.get(`/api/events?q=${searchQuery}`).then(( searchResponse ) => {
+  //     const searchResults = searchResponse.data;
+  //     console.log("searchResponse:", searchResults );
+  //     // Search Input Apply
+  //     if (!Array.isArray( searchResults )|| searchResults.length === 0 ) {
+  //       console.log("No results searched");
+  //       setSearchResults([]);
+  //       setEventList([]);
+  //       return;
+  //     }
+  //     const eventTitles = searchResults.map(event => event.title );
+  //     console.log("Extracted Event Titles:", eventTitles );
+  //     axios.get(`/api/events/all`).then((fullResponse)=> {
+  //       const allEvents = fullResponse.data;
+  //       console.log( "Full events:", allEvents );
+  //       // Search Filter
+  //       if (!Array.isArray(allEvents)) {
+  //         console.log( "Invalid full events:");
+  //         return;
+  //       }
+  //       const filteredEvents = allEvents.filter(event => eventTitles.includes(event.title));
+  //       console.log("Filtered full event details:", filteredEvents);
+  //       setSearchResults(filteredEvents);
+  //       setEventList(filteredEvents);
+  //     }).catch(error => console.error("Error fetching full event details:", error));
+  //   })
+  //   .catch(error => console.error("Error on GET", error));
+  // };

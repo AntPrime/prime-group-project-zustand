@@ -27,7 +27,8 @@ app.use(passport.session());
 // Apply router files:
 app.use('/api/user', userRouter);
 app.use('/api/events', eventsRouter);
-app.use('/api/events/assign', assignRoleRouter);
+app.use('/api/assignRole', assignRoleRouter);
+
 
 
 // Start the server:

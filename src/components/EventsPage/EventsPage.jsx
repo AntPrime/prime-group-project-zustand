@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import useStore from '../../zustand/store';
-import moment from 'moment';
 import './EventsPage.css';
 
 
@@ -18,16 +17,11 @@ function EventsPage() {
   });
   const [ eventList, setEventList ] = useState([]);
   const fetchEvents = useStore((state) => state.fetchEvents)
-  // const [searchResults, setSearchResults] = useState([]);
-  // const [searchQuery, setSearchQuery] = useState("");
-
 
 useEffect(()=> {
   fetchEvents()
   fetchEventList()
 }, [] );
-
-
 
   function fetchEventList(){
     console.log( 'in fetchEventList' );
@@ -39,20 +33,6 @@ useEffect(()=> {
       alert( 'error getting test list' );
     })
   }
-
-  // //GET request for search results
-  // const Search = () => {
-  //   console.log("Fetching query:", searchQuery);
-  //   axios
-  //     .get(`/api/events?q=${searchQuery}`)
-  //     .then((response) => {
-  //       setSearchResults(response.data);
-  //       console.log("search results", response.data);
-  //     })
-  //     .catch((error) => {
-  //       console.log("Error on GET", error);
-  //     });
-  // };
 
   //POST to create a new event 
   const createEvent = () => {
@@ -70,15 +50,6 @@ useEffect(()=> {
   return (
     <div className="EventsPage">
       <div>
-        {/* <p>Search Events</p>
-        <input
-          type="text"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <button onClick={Search}>Search</button>
-        <p>{JSON.stringify(searchResults)}</p> */}
         <form>
           <select id="activities" placeholder="activities" onChange={(e) => { setNewEvent({ ...newEvent, activities_id: Number ( e.target.value ) });}}>
             <option value="0">Activity</option>
@@ -98,7 +69,6 @@ useEffect(()=> {
             <option value="3">Northfield</option>
           </select>
         </form>
-        {/* <UpdateEvent /> */}
         <form>
           <input type="text" placeholder="Location" onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}/>
           <input type="text" placeholder="Title" onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}/>
@@ -117,43 +87,3 @@ useEffect(()=> {
 }
 
 export default EventsPage;
-
-
-  // // Function to format the date using Moment.js
-  // function formatDate(date) {
-  //   return date ? moment(date).format('MM/DD/YYYY') : 'No Date'; // Format date to MM/DD/YYYY
-  // }
-  //  // Function to format the time using Moment.js
-  //  function formatTime(time) {
-  //   return time ? moment(time, "HH:mm").format('hh:mm A') : 'No Time'; // Format time to 12-hour format
-  // }
-
-  // <h2>Test List</h2>
-  // <table>
-  //   <thead>
-  //     <tr>
-  //     <th>Title</th>
-  //     <th>Activity</th>
-  //     <th>Date</th>
-  //     <th>Time</th>
-  //     <th>Location</th>
-  //     <th>School</th>
-  //     <th>Channel</th>
-  //     <th>Notes</th>
-  //     </tr>
-  //   </thead>
-  //   <tbody>
-  //   { eventList.map(( item , index  ) => (
-  //         <tr key={index}>
-  //         <td><p>{item.title || "No Title"}</p></td>
-  //         <td><p>{item.activity || "No Activity"}</p></td>
-  //         <td>{item.date ? moment(item.date).format('MM/DD/YYYY') : 'No Date'}</td> {/* Display date */}
-  //         <td>{item.time ? moment(item.time, "HH:mm").format('hh:mm A') : 'No Time'}</td> {/* Display time */}
-  //         <td><p>{item.location || "No Location"}</p></td>
-  //         <td><p>{item.schoolname || "Unknown School"}</p></td>
-  //         <td><p>{item.channel || "Unknown Channel"}</p></td>
-  //         <td><p>{item.notes || "No Notes"}</p></td>
-  //         </tr>
-  //       ))}
-  //   </tbody>
-  // </table>
