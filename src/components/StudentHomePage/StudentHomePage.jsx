@@ -1,12 +1,8 @@
 import useStore from '../../zustand/store'
 import { useState, useEffect } from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+import { Box, Card, CardActions, CardContent, Button, Typography } from "@mui/material";
 import { NavLink } from 'react-router-dom';
+import moment from 'moment';
 import axios from 'axios'
 
 function StudentHomePage() {
@@ -146,114 +142,99 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
       setEventList(sortedEvents);
     };
 
-  return (
-    <>
-      <div>
-        <h2>LMR STUDENT HOME PAGE</h2>
-        {/* <p>{JSON.stringify(searchResults)}</p> */}
+    function formatDate(dateString) {
+      return moment(dateString).format("MM/DD/YYYY"); // Example: 03/30/2025
+    }
+
+    function formatTime(timeString) {
+      return moment(timeString, "HH:mm:ss").format("h:mm A"); // Example: 3:30 PM
+    }
+
+
+    return (
+      <>
         <div>
-          <input type="text" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
-          <button onClick={(e) => sortEvents("date", e)}> Date {sortOrder.date === "asc" ? "↑" : "↓"}</button>
-          <button onClick={(e) => sortEvents("location", e)}>Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}</button>
-          <select id="activities" multiple value={selectedActivities} onChange={(e) => handleMultiSelectChange(e, "activities")}>
-          {activities.map((activity) => (<option key={activity.id} value={activity.name}>{activity.name}</option>))}</select>
-          <select id="schools" multiple value={selectedSchools} onChange={(e) => handleMultiSelectChange(e, "schools")}>
-            {schools.map((school) => (<option key={school.id} value={school.name}>{school.name}</option>))}</select>
-          <button onClick={handleSearch}>Search</button>
-          <button onClick={() => { 
-  setSelectedSchools([]); 
-  setSelectedActivities([]); 
-  setSearchQuery(""); 
-  setSearchResults([]); 
-  fetchEventList(); // Refresh the event list
-}}>
-  Clear All
-</button>
-
+          <h2>LMR STUDENT HOME PAGE</h2>
+          <div>
+            <input type="text" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
+            <button onClick={(e) => sortEvents("date", e)}> Date {sortOrder.date === "asc" ? "↑" : "↓"}</button>
+            <button onClick={(e) => sortEvents("location", e)}>Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}</button>
+            <select id="activities" multiple value={selectedActivities} onChange={(e) => handleMultiSelectChange(e, "activities")}>
+            {activities.map((activity) => (<option key={activity.id} value={activity.name}>{activity.name}</option>))}</select>
+            <select id="schools" multiple value={selectedSchools} onChange={(e) => handleMultiSelectChange(e, "schools")}>
+              {schools.map((school) => (<option key={school.id} value={school.name}>{school.name}</option>))}</select>
+            <button onClick={handleSearch}>Search</button>
+            <button onClick={() => { 
+              setSelectedSchools([]); 
+              setSelectedActivities([]); 
+              setSearchQuery(""); 
+              setSearchResults([]); 
+              fetchEventList(); // Refresh the event list
+            }}>
+              Clear All
+            </button>
+          </div>
         </div>
-      </div>
-      <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
-      <div className='eventCard'>
-  {eventList.length > 0 ? (
-    eventList.map((event, index) => {
-      return (
-        <div key={index}>
-          <Box sx={{ minWidth: 275, mb: 2 }} >
-            <Card variant="outlined">
-              <CardContent>
-                <Typography variant="h5" component="div">
-                  {event.title}
-                </Typography>
-                <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>
-                  Createdby: {event.created_by_id }Date: {event.date} - Time of Event: {event.time} <br /> Streaming Channel: {event.channel}
-                </Typography>
-                <Typography variant="h7" component="div">
-                  Schools: {event.school_name} vs [Opponent Name]
-                </Typography>
-                <Typography variant="h7" component="div">
-                  Location: {event.location}
-                </Typography>
-                <Typography variant="body2">
-                  <br />
-                  Notes: {event.notes}
-                </Typography>
-              </CardContent>
-              <CardActions>
-                <Button
-                  size="small"
-                  onClick={() => assignRoles(event, "producer")}
-                  disabled={!!event.producer}
-                >
-                  Producer: {event.producer_username || "(Unassigned)"}
-                </Button>
-                <Button 
-                size="small" 
-                onClick={() => assignRoles(event, "camera")}
-                disabled={!!event.camera}
-                >
-                  Camera: {event.camera_username || "(Unassigned)"}
-                </Button>
-                <Button 
-                size="small" 
-                onClick={() => assignRoles(event, "play_by_play")}
-                disabled={!!event.play_by_play}
-                >
-                  Play-by-play: {event.play_by_play_username || "(Unassigned)" }
-                </Button>
-                <Button size='small'
-                onClick={() => assignRoles(event, "color_commentator")}
-                disabled={!!event.color_commentator}
-                >
-                  Color Commentator: {event.color_commentator_username || "(Unassigned)"}
-                </Button>
-                <NavLink 
-  to={`/updateEvent/${event.id}/${event.title}`} 
-  style={{ textDecoration: 'none' }} 
-  state={{ event }}
->
-  <Button size="small">
-    Update Event
-  </Button>
-</NavLink>
-
-
-              </CardActions>
-            </Card>
-          </Box>
+  
+        <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
+  
+        <div className='eventCard'>
+          {eventList.length > 0 ? (
+            eventList.map((event, index) => {
+              return (
+                <div key={index}>
+                  <Box sx={{ minWidth: 275, mb: 2 }} >
+                    <Card variant="outlined">
+                      <CardContent>
+                        <Typography variant="h5" component="div">
+                          {event.title}
+                        </Typography>
+                      <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>
+                          Created by: {event.created_by_id} <br />
+                          Date: {formatDate(event.date)} <br />
+                          Time: {formatTime(event.start_time)} - {formatTime(event.end_time)} <br />
+                          Streaming Channel: {event.channel}
+                        </Typography>
+                        <Typography variant="h7" component="div">
+                          Schools: {event.school_name} vs [Opponent Name]
+                        </Typography>
+                        <Typography variant="h7" component="div">
+                          Location: {event.location}
+                        </Typography>
+                        <Typography variant="body2">
+                          <br />
+                          Notes: {event.notes}
+                        </Typography>
+                      </CardContent>
+                      <CardActions>
+                        <Button size="small" onClick={() => assignRoles(event, "producer")} disabled={!!event.producer}>
+                          Producer: {event.producer_username || "(Unassigned)"}
+                        </Button>
+                        <Button size="small" onClick={() => assignRoles(event, "camera")} disabled={!!event.camera}>
+                          Camera: {event.camera_username || "(Unassigned)"}
+                        </Button>
+                        <Button size="small" onClick={() => assignRoles(event, "play_by_play")} disabled={!!event.play_by_play}>
+                          Play-by-play: {event.play_by_play_username || "(Unassigned)"}
+                        </Button>
+                        <Button size="small" onClick={() => assignRoles(event, "color_commentator")} disabled={!!event.color_commentator}>
+                          Color Commentator: {event.color_commentator_username || "(Unassigned)"}
+                        </Button>
+                        <NavLink to={`/updateEvent/${event.id}/${event.title}`} style={{ textDecoration: 'none' }} state={{ event }}>
+                          <Button size="small">Edit Event</Button>
+                        </NavLink>
+                      </CardActions>
+                    </Card>
+                  </Box>
+                </div>
+              );
+            })
+          ) : (
+            <h4>No events found</h4>
+          )}
         </div>
-      );
-    })
-  ) : (
-    <p>No events available</p>
-  )}
-</div>
-
-      <h5></h5>
-      <p>Your ID is: {user.id}</p>
-      <button onClick={logOut}>Log Out</button>
-    </>
-  );
-}
+      </>
+    );
+  }
 
 export default StudentHomePage;
 

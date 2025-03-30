@@ -84,7 +84,7 @@ DROPDOWN
 UPDATE
 --Updatepage 
 # Complete Update
----Fix navigates to EventPage when completing update event instead of StudentPage
+# Complete Update naviage to studentHomePage
 --Style?
 
 STUDENTPAGE
@@ -93,3 +93,4 @@ STUDENTPAGE
 --studentPage functionality 
 # Search completed 
 # --Roles button works
+---Role button works however when clicking the role events move around if many many events are displayed?

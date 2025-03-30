@@ -21,7 +21,8 @@ SELECT events.id AS "events id",
 events.title AS "title",
 categories.activity AS "activity", 
 events.date AS "date",
-events.time AS "time",
+events.start_time AS start_time,
+events.end_time AS end_time,
 events.location AS "location",  
 schools.name AS "schoolname", 
 pbp_user.username AS "play-by-play",
@@ -87,7 +88,8 @@ router.get('/all', (req, res) => {
       events.title,
       categories.activity,
       TO_CHAR(events.date, 'YYYY-MM-DD') AS date,
-      TO_CHAR(events.time, 'HH12:MI') AS time,
+      events.start_time AS start_time,
+      events.end_time AS end_time,
       events.location,
       schools.name AS school_name,
       events.channel,
@@ -107,7 +109,7 @@ router.get('/all', (req, res) => {
     LEFT JOIN "user" AS cc_user ON events.color_commentator = cc_user.id
     LEFT JOIN "user" AS cam_user ON events.camera = cam_user.id
     LEFT JOIN "user" AS prod_user ON events.producer = prod_user.id
-    ORDER BY events.date DESC, events.time DESC;
+    ORDER BY events.date DESC, events.start_time DESC;
   `;
 
   pool.query(queryText)
@@ -118,7 +120,8 @@ router.get('/all', (req, res) => {
         title: event.title,
         activity: event.activity,
         date: event.date,  // Already formatted as YYYY-MM-DD
-        time: event.time,   // Already formatted as HH:MM
+        start_time: event.start_time,
+        end_time: event.end_time,    
         location: event.location,
         school_name: event.school_name,
         channel: event.channel,
@@ -145,12 +148,12 @@ router.get('/all', (req, res) => {
 //POST to create a new event
 router.post('/',(req, res)=>{
   const userId = req.user.id;
-  const {activities_id, date, time, title, school_id, location, channel, notes} = req.body;
+  const {activities_id, date, start_time, end_time, title, school_id, location, channel, notes} = req.body;
   const queryText = `
-INSERT INTO "events" ("created_by_id", "activities_id", "date", "time", "title","school_id","location", "channel", "notes")
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
+INSERT INTO "events" ("created_by_id", "activities_id", "date", start_time, end_time, "title","school_id","location", "channel", "notes")
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10);
 `;
-  pool.query(queryText,[userId, activities_id, date, time, title, school_id, location, channel, notes])
+  pool.query(queryText,[userId, activities_id, date, start_time, end_time, title, school_id, location, channel, notes])
   .then((results)=>{
     console.log("post to db", results)
     res.send(results)
