@@ -55,38 +55,42 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
           })
     }
 
-    // GET Search
+   // GET Search
     function searchEvents(searchQuery, selectedSchools, selectedActivities) {
-      axios.get(`/api/events?q=${searchQuery}`).then(function (searchResponse) {
+      axios.get(`/api/events?q=${searchQuery}`).then((searchResponse) => {
         const searchResults = searchResponse.data || [];
-          console.log("Search response:", searchResults);
-          if (!searchResults.length) {
-            console.log("No results searched");
-            setSearchResults([]);
-            setEventList([]);
-            return;
-          }
-          const eventTitles = new Set(searchResults.map(event => event.title));
-          const schoolSet = new Set(selectedSchools);
-          const activitySet = new Set(selectedActivities);
-            return axios.get(`/api/events/all`).then(function (fullResponse) {
-              const allEvents = fullResponse.data || [];
-              console.log("allEvents:", allEvents);
-            const filteredEvents = allEvents.filter(event => eventTitles.has(event.title) &&
-              (!selectedSchools.length || schoolSet.has(event.school_name)) &&
-              (!selectedActivities.length || activitySet.has(event.activity))
-            );
-    
-            console.log("Filtered full event details:", filteredEvents);
-            setSearchResults(filteredEvents);
-            setEventList(filteredEvents);
+        console.log("Search response:", searchResults);
+        // No Search results
+        if (!searchResults.length) {
+          console.log("No results searched");
+          setSearchResults([]);
+          setEventList([]);
+          return;
+        }
+        filterEvents(searchResults, selectedSchools, selectedActivities);
+      })
+    }
+  // Filter events selected
+    function filterEvents(searchResults, selectedSchools, selectedActivities) {
+      axios.get('/api/events/all').then((fullResponse) => {
+          const allEvents = fullResponse.data || [];
+          console.log("All Events:", allEvents);
+          // Filter events based on search, schools, and activities
+          const filteredEvents = allEvents.filter(event => {
+            const eventMatchesSearch = searchResults.some(result => result.title === event.title);
+            const eventMatchesSchool = selectedSchools.length === 0 || selectedSchools.includes(event.school_name);
+            const eventMatchesActivity = selectedActivities.length === 0 || selectedActivities.includes(event.activity);
+            return eventMatchesSearch && eventMatchesSchool && eventMatchesActivity;
           });
+          console.log("Filtered events:", filteredEvents);
+          setSearchResults(filteredEvents);
+          setEventList(filteredEvents);
         })
-        .catch(function (error) {
-          console.error("Error fetching events:", error);
+        .catch((error) => {
+          console.error("Error fetching all events:", error);
         });
     }
-  
+
   // Search Dropdown Handle 
   function handleSearch() {
     searchEvents(searchQuery, selectedSchools, selectedActivities);
@@ -101,14 +105,13 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
       setSelectedActivities(selectedOptions);
     }
   }
-  
+
     // PUT Assign user role
     function assignRoles(event, roleColumn) {
-      console.log('Assign user to role:', { eventId: event.id, roleColumn: roleColumn, userId: user.id });
+      console.log('Assign user to role:', { eventId: event.id, roleColumn: roleColumn });
       axios.put( '/api/assignRole/assignRole', {
         eventId: event.id,
         roleColumn,
-        userId: user.id
       }).then(function(response){
         // setEventList(response.data);
         setEventList((prevEvents) =>
@@ -147,48 +150,25 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
     <>
       <div>
         <h2>LMR STUDENT HOME PAGE</h2>
-        <p>Search Events</p>
-        <input
-          type="text"
-          placeholder="Search"
-          value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
-        />
-        <button onClick={handleSearch}>Search</button>
-
-        <p>{JSON.stringify(searchResults)}</p>
+        {/* <p>{JSON.stringify(searchResults)}</p> */}
         <div>
-          <button onClick={(e) => sortEvents("date", e)}>
-            Date {sortOrder.date === "asc" ? "↑" : "↓"}
-          </button>
-          <button onClick={(e) => sortEvents("location", e)}>
-            Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
-          </button>
-        
+          <input type="text" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
+          <button onClick={(e) => sortEvents("date", e)}> Date {sortOrder.date === "asc" ? "↑" : "↓"}</button>
+          <button onClick={(e) => sortEvents("location", e)}>Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}</button>
           <select id="activities" multiple value={selectedActivities} onChange={(e) => handleMultiSelectChange(e, "activities")}>
-  {activities.map((activity) => (
-    <option key={activity.id} value={activity.name}>{activity.name}</option>
-  ))}
-</select>
-
-<select id="schools" multiple value={selectedSchools} onChange={(e) => handleMultiSelectChange(e, "schools")}>
-  {schools.map((school) => (
-    <option key={school.id} value={school.name}>{school.name}</option>
-  ))}
-</select>
-
+          {activities.map((activity) => (<option key={activity.id} value={activity.name}>{activity.name}</option>))}</select>
+          <select id="schools" multiple value={selectedSchools} onChange={(e) => handleMultiSelectChange(e, "schools")}>
+            {schools.map((school) => (<option key={school.id} value={school.name}>{school.name}</option>))}</select>
+          <button onClick={handleSearch}>Search</button>
           <button onClick={() => { 
             setSelectedSchools([]); 
             setSelectedActivities([]); 
             setSearchResults([]); 
-          }}>
-            Clear All
+          }}>Clear All
           </button>
         </div>
       </div>
       <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
-      
-
       <div className='eventCard'>
   {eventList.length > 0 ? (
     eventList.map((event, index) => {
@@ -267,87 +247,6 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
 }
 
 export default StudentHomePage;
-
-/// Working Search axios GET 
-    // const Search = () => {
-    //   console.log("Fetching query:", searchQuery);
-    
-    //   axios
-    //     .get(`/api/events?q=${searchQuery}`)
-    //     .then((response) => {
-    //       console.log("Raw search response:", response.data); // Log raw search results
-    
-    //       if (!Array.isArray(response.data) || response.data.length === 0) {
-    //         console.warn("Search API returned empty or non-array data.");
-    //         return; // Stop execution if no results
-    //       }
-    
-    //       // Extract titles instead of IDs
-    //       const eventTitles = response.data.map(event => event.title);
-    //       console.log("Extracted Event Titles:", eventTitles); // Debug titles
-    
-    //       // Fetch all event details
-    //       axios
-    //         .get('/api/events/all')
-    //         .then(fullResponse => {
-    //           console.log("Raw full events data:", fullResponse.data); // Log full event details
-    
-    //           if (!Array.isArray(fullResponse.data)) {
-    //             console.warn("Full events API returned non-array data.");
-    //             return;
-    //           }
-    
-    //           // Filter full events using title instead of id
-    //           const fullEvents = fullResponse.data.filter(event => eventTitles.includes(event.title));
-    
-    //           console.log("Filtered full event details:", fullEvents);
-    
-    //           if (fullEvents.length === 0) {
-    //             console.warn("No matching full event details found.");
-    //           }
-    
-    //           // Update state
-    //           setSearchResults(fullEvents);
-    //           setEventList(fullEvents);
-    //         })
-    //         .catch(error => console.log("Error fetching full event details:", error));
-    //     })
-    //     .catch(error => console.log("Error on GET", error));
-    // };
-    
-
-    // const handleMultiSelectChange = (event, type) => {
-    //   const selectedOptions = Array.from(event.target.selectedOptions, option => option.value);
-    //   if (type === "schools") {
-    //     setSelectedSchools(selectedOptions);
-    //   } else if (type === "activities") {
-    //     setSelectedActivities(selectedOptions);
-    //   }
-    //   filterEvents(selectedOptions, type); // Auto-search on selection
-    // };
-  
-    // const SearchFilter = () => {
-    //   filterEvents([...selectedActivities], "activities");
-    //   filterEvents([...selectedSchools], "schools");
-    // };
-  
-    // const filterEvents = (selectedValues, type) => {
-    //   let filteredResults = eventList;
-  
-    //   if (type === "activities" && selectedValues.length > 0) {
-    //     filteredResults = filteredResults.filter(event =>
-    //       selectedValues.some(activity => event.activity.includes(activity))
-    //     );
-    //   }
-  
-    //   if (type === "schools" && selectedValues.length > 0) {
-    //     filteredResults = filteredResults.filter(event =>
-    //       selectedValues.some(school => event.school_name.includes(school))
-    //     );
-    //   }
-  
-    //   setSearchResults(filteredResults);
-    // };
 
       // const Search = () => {
   //   console.log( "Fetching query:", searchQuery, selectedSchools, selectedActivities );
