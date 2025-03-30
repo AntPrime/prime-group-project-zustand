@@ -171,6 +171,7 @@ function App() {
             }
           />
 
+<Route path="/studentHomePage" element={<StudentHomePage />} />
 <Route path="/updateEvent/:eventId/:eventTitle" element={<UpdateEvent />} />
 
 

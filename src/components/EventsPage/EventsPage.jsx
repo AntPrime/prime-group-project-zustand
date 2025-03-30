@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import useStore from '../../zustand/store';
+import { useNavigate } from 'react-router-dom';
 import './EventsPage.css';
 
 
@@ -17,6 +18,7 @@ function EventsPage() {
   });
   const [ eventList, setEventList ] = useState([]);
   const fetchEvents = useStore((state) => state.fetchEvents)
+  const navigate = useNavigate(); // Initialize useNavigate
 
 useEffect(()=> {
   fetchEvents()
@@ -41,6 +43,7 @@ useEffect(()=> {
     axios.post( '/api/events', newEvent).then(function (response){
         console.log( response.data );
         fetchEvents();
+        navigate("/studentHomePage");
       }).catch(function ( err ){
         console.log( err );
         alert( 'error creating new event' );
@@ -80,7 +83,8 @@ useEffect(()=> {
           </select>
           <input type="text" placeholder="notes" onChange={(e) => setNewEvent({...newEvent,notes: e.target.value,})}/>
         </form>
-        <button onClick={ createEvent }>Add An Event</button>
+        <button onClick={createEvent}>Add An Event</button>
+        
       </div>
     </div>
  );
