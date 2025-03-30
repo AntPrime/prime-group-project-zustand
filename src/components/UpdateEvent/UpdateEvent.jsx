@@ -8,7 +8,6 @@ function UpdateEvent( ) {
   const location = useLocation();
   const navigate = useNavigate();
   const { event } = location.state || {};
-  // const [ updateEvents, setUpdateEvents ] = useState( { eventTitle: event.title });
   const [ updatedEvent, setUpdatedEvent ]=useState(event ||{ 
     activities_id: 0,
     title: "",
@@ -23,7 +22,7 @@ function UpdateEvent( ) {
   const update=(e)=>{
     axios.put(`/api/events`, updatedEvent ).then(( response  )=>{
       console.log( "UpdateEvent PUT", response.data );
-      navigate("/events"); 
+      navigate("/"); 
         }).catch(( err )=>{
           console.log("error in UpdateEvent", err );
         });

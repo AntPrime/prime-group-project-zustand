@@ -222,15 +222,16 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
                 >
                   Color Commentator: {event.color_commentator_username || "(Unassigned)"}
                 </Button>
-                {/* Use NavLink to navigate to the updateEvent page */}
-                <NavLink to={`/updateEvent/${event.id}/${encodeURIComponent(event.title)}`} 
+                <NavLink 
+  to={`/updateEvent/${event.id}/${event.title}`} 
   style={{ textDecoration: 'none' }} 
-  state={{ event }}  // Pass the event data as state
+  state={{ event }}
 >
   <Button size="small">
     Update Event
   </Button>
 </NavLink>
+
 
               </CardActions>
             </Card>

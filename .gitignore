@@ -74,7 +74,6 @@ SEARCHQUERY
 
 DROPDOWN
 --Update dropdown
----update is feasible need to update the update page for that/PUT 
 
 --Delete dropdown
 ---?
@@ -84,7 +83,7 @@ DROPDOWN
 
 UPDATE
 --Updatepage 
-# Setup complete
+# Complete Update
 ---Fix navigates to EventPage when completing update event instead of StudentPage
 --Style?
 
@@ -93,5 +92,4 @@ STUDENTPAGE
 
 --studentPage functionality 
 # Search completed 
-# --Roles button works--
----ASSIGHN ROLE BUTTON NOW WORKING!!!!!!!
+# --Roles button works
