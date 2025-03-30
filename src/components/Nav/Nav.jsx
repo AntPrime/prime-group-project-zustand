@@ -8,42 +8,47 @@ function Nav() {
   return (
     <nav>
       <ul>
-      { // User is not logged in, render these links:
-        !user.id && (
-          <>
-            <li>
-              <NavLink to="/login">Login</NavLink>
-            </li>
-            <li>
-              <NavLink to="/registration">Register</NavLink>
-            </li>
-          </>
-        )
-      }
-      { // User is logged in, render these links:
-        user.id && (
-          <>
-            <li>
-              <NavLink to="/">Home</NavLink>
-            </li>
-            
-            <li>
-          <NavLink to="/events">Events</NavLink>
-        </li>
-          </>
-        )
-      }
-      {/* Show these links regardless of auth status: */}
+        { // User is not logged in, render these links:
+          !user.id && (
+            <>
+              <li>
+                <NavLink to="/login">Login</NavLink>
+              </li>
+              <li>
+                <NavLink to="/registration">Register</NavLink>
+              </li>
+            </>
+          )
+        }
+        { // User is logged in, render these links:
+          user.id && (
+            <>
+              <li>
+                <NavLink to="/">Student Home</NavLink>
+              </li>
+              <li>
+                <NavLink to="/adminHome">Admin Home</NavLink>
+              </li>
+              <li>
+                <NavLink to="/superAdminHome"> Super Admin Home</NavLink>
+              </li>
+              <li>
+                <NavLink to="/events">Events</NavLink>
+              </li>
+            </>
+          )
+        }
+        {/* Show these links regardless of auth status: */}
         <li>
           <NavLink to="/about">About</NavLink>
         </li>
         {/* <li>
           <NavLink to="/events">Events</NavLink>
         </li> */}
-  
+
       </ul>
     </nav>
-      
+
   );
 }
 
