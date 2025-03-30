@@ -8,6 +8,7 @@ function UpdateEvent( ) {
   const location = useLocation();
   const navigate = useNavigate();
   const { event } = location.state || {};
+  // const [ updateEvents, setUpdateEvents ] = useState( { eventTitle: event.title });
   const [ updatedEvent, setUpdatedEvent ]=useState(event ||{ 
     activities_id: 0,
     title: "",
@@ -45,7 +46,7 @@ function UpdateEvent( ) {
         <p>Title</p>
         <input
           type="text"
-          placeholder="Title"
+          placeholder={updatedEvent.title}
           value={updatedEvent.title}
           onChange={(e) => setUpdatedEvent({ ...updatedEvent, title: e.target.value })}
         />
@@ -64,7 +65,7 @@ function UpdateEvent( ) {
           onChange={(e) => setUpdatedEvent({ ...updatedEvent, school_id: e.target.value })}
         >
           <option value="">School</option>
-          <option value="1">Alber Lea</option>
+          <option value="1">Albert Lea</option>
           <option value="2">Fairbault</option>
           <option value="3">Northfield</option>
         </select>
