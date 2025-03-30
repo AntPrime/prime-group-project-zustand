@@ -80,13 +80,11 @@ function HomePage() {
     axios.put('/api/events/assign', {
       eventId: event.id,
       roleColumn,
-      userId: user.id
     })
       .then(response => {
         console.log('Sending:', {
           eventId: event.id,
           roleColumn,
-          userId: user.id
         });
         console.log(`Assigned ${user.id} as ${roleColumn} for event ${event.id}`);
         // Update state with the returned event
