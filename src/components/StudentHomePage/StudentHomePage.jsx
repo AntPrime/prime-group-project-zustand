@@ -1,7 +1,8 @@
 import useStore from '../../zustand/store'
 import { useState, useEffect } from 'react';
-import { Box, Card, CardActions, CardContent, Button, Typography } from "@mui/material";
+import { Box, Accordion, AccordionSummary, AccordionDetails, AccordionActions, Button, Typography, TextField, Select, MenuItem, InputLabel, FormControl, Chip, ListItemText, Checkbox } from '@mui/material';
 import { NavLink } from 'react-router-dom';
+import { IoIosArrowDropdown } from "react-icons/io";
 import moment from 'moment';
 import axios from 'axios'
 
@@ -94,13 +95,14 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
 
    // Search MultiDropdown Handle 
   function handleMultiSelectChange(event, type) {
-    const selectedOptions = Array.from(event.target.selectedOptions, (option) => option.value);
-    if (type === "schools") {
-      setSelectedSchools(selectedOptions);
-    } else if (type === "activities") {
-      setSelectedActivities(selectedOptions);
-    }
-  }
+    const selectedOptions = event.target.value;
+        if (type === "schools") {
+          setSelectedSchools(selectedOptions);
+        } else if (type === "activities") {
+          setSelectedActivities(selectedOptions);
+        }
+      }
+
 
     // PUT Assign user role
     function assignRoles(event, roleColumn) {
@@ -153,118 +155,162 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
 
     return (
       <>
-        <div>
-          <h2>LMR STUDENT HOME PAGE</h2>
-          <div>
-            <input type="text" placeholder="Search" value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)}/>
-            <button onClick={(e) => sortEvents("date", e)}> Date {sortOrder.date === "asc" ? "↑" : "↓"}</button>
-            <button onClick={(e) => sortEvents("location", e)}>Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}</button>
-            <select id="activities" multiple value={selectedActivities} onChange={(e) => handleMultiSelectChange(e, "activities")}>
-            {activities.map((activity) => (<option key={activity.id} value={activity.name}>{activity.name}</option>))}</select>
-            <select id="schools" multiple value={selectedSchools} onChange={(e) => handleMultiSelectChange(e, "schools")}>
-              {schools.map((school) => (<option key={school.id} value={school.name}>{school.name}</option>))}</select>
-            <button onClick={handleSearch}>Search</button>
-            <button onClick={() => { 
-              setSelectedSchools([]); 
-              setSelectedActivities([]); 
-              setSearchQuery(""); 
-              setSearchResults([]); 
-              fetchEventList(); // Refresh the event list
-            }}>
-              Clear All
-            </button>
-          </div>
-        </div>
-  
+<div>
+  <h2>LMR STUDENT HOME PAGE</h2>
+  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+    {/* First Row: Search Input, Schools, and Activities */}
+    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
+      {/* Search Input */}
+      <TextField
+        label="Search"
+        variant="outlined"
+        value={searchQuery}
+        onChange={(e) => setSearchQuery(e.target.value)}
+        sx={{ flex: 2 }}
+      />
+      {/* Multi-Select Dropdowns */}
+      <FormControl fullWidth sx={{ flex: 1 }}>
+        <InputLabel>Schools</InputLabel>
+        <Select
+          multiple
+          value={selectedSchools}
+          onChange={(e) => handleMultiSelectChange(e, "schools")}
+          renderValue={(selected) => selected.join(', ')}
+        >
+          {schools.map((school) => (
+            <MenuItem key={school.id} value={school.name}>
+              <Checkbox checked={selectedSchools.indexOf(school.name) > -1} />
+              <ListItemText primary={school.name} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+      <FormControl fullWidth sx={{ flex: 1 }}>
+        <InputLabel>Activities</InputLabel>
+        <Select
+          multiple
+          value={selectedActivities}
+          onChange={(e) => handleMultiSelectChange(e, "activities")}
+          renderValue={(selected) => selected.join(', ')}
+        >
+          {activities.map((activity) => (
+            <MenuItem key={activity.id} value={activity.name}>
+              <Checkbox checked={selectedActivities.indexOf(activity.name) > -1} />
+              <ListItemText primary={activity.name} />
+            </MenuItem>
+          ))}
+        </Select>
+      </FormControl>
+    </Box>
+
+    {/* Second Row: Sorting Buttons, Search, and Clear Buttons */}
+    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
+      {/* Sorting Buttons */}
+      <Box sx={{ display: 'flex', gap: 2, flex: 1 }}>
+        <Button variant="contained" onClick={(e) => sortEvents("date", e)}>
+          Date {sortOrder.date === "asc" ? "↑" : "↓"}
+        </Button>
+        <Button variant="contained" onClick={(e) => sortEvents("location", e)}>
+          Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
+        </Button>
+      </Box>
+
+      {/* Search and Clear Buttons */}
+      <Box sx={{ display: 'flex', gap: 2, flex: 1 }}>
+        <Button variant="contained" onClick={handleSearch}>Search</Button>
+        <Button
+          variant="outlined"
+          onClick={() => {
+            setSelectedSchools([]);
+            setSelectedActivities([]);
+            setSearchQuery("");
+            setSearchResults([]);
+            fetchEventList(); // Refresh the event list
+          }}
+        >
+          Clear All
+        </Button>
+      </Box>
+    </Box>
+  </Box>
+</div>
+
+
+
         <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
-  
+
         <div className='eventCard'>
-          {eventList.length > 0 ? (
-            eventList.map((event, index) => {
-              return (
-                <div key={index}>
-                  <Box sx={{ minWidth: 275, mb: 2 }} >
-                    <Card variant="outlined">
-                      <CardContent>
-                        <Typography variant="h5" component="div">
-                          {event.title}
-                        </Typography>
-                      <Typography sx={{ color: 'text.secondary', mb: 1.5 }}>
-                          Created by: {event.created_by_id} <br />
-                          Date: {formatDate(event.date)} <br />
-                          Time: {formatTime(event.start_time)} - {formatTime(event.end_time)} <br />
-                          Streaming Channel: {event.channel}
-                        </Typography>
-                        <Typography variant="h7" component="div">
-                          Schools: {event.school_name} vs [Opponent Name]
-                        </Typography>
-                        <Typography variant="h7" component="div">
-                          Location: {event.location}
-                        </Typography>
-                        <Typography variant="body2">
-                          <br />
-                          Notes: {event.notes}
-                        </Typography>
-                      </CardContent>
-                      <CardActions>
-                        <Button size="small" onClick={() => assignRoles(event, "producer")} disabled={!!event.producer}>
-                          Producer: {event.producer_username || "(Unassigned)"}
-                        </Button>
-                        <Button size="small" onClick={() => assignRoles(event, "camera")} disabled={!!event.camera}>
-                          Camera: {event.camera_username || "(Unassigned)"}
-                        </Button>
-                        <Button size="small" onClick={() => assignRoles(event, "play_by_play")} disabled={!!event.play_by_play}>
-                          Play-by-play: {event.play_by_play_username || "(Unassigned)"}
-                        </Button>
-                        <Button size="small" onClick={() => assignRoles(event, "color_commentator")} disabled={!!event.color_commentator}>
-                          Color Commentator: {event.color_commentator_username || "(Unassigned)"}
-                        </Button>
-                        <NavLink to={`/updateEvent/${event.id}/${event.title}`} style={{ textDecoration: 'none' }} state={{ event }}>
-                          <Button size="small">Edit Event</Button>
-                        </NavLink>
-                      </CardActions>
-                    </Card>
-                  </Box>
-                </div>
-              );
-            })
-          ) : (
-            <h4>No events found</h4>
-          )}
-        </div>
-      </>
-    );
-  }
+        {eventList.length > 0 ? (
+          eventList.map((event, index) => (
+            <Accordion key={index} sx={{ mb: 2 }}>
+              <AccordionSummary
+                expandIcon={<IoIosArrowDropdown />}
+                aria-controls={`panel${index}-content`}
+                id={`panel${index}-header`}
+              >
+                <Typography component="span" sx={{ fontWeight: 'bold' }}>
+                  {event.title} - {event.date} | {event.time}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Created by:</strong> {event.created_by_id}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Date:</strong> {formatDate(event.date)}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Time:</strong> {formatTime(event.start_time)} - {formatTime(event.end_time)}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Streaming Channel:</strong> {event.channel}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Schools:</strong> {event.school_name} vs {event.opponent_name}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Location:</strong> {event.location}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Notes:</strong> {event.notes}
+                </Typography>
+              </AccordionDetails>
+              <AccordionActions>
+                <Button size="small" onClick={() => assignRoles(event, "producer")} disabled={!!event.producer}>
+                  Producer: {event.producer_username || "(Unassigned)"}
+                </Button>
+                <Button size="small" onClick={() => assignRoles(event, "camera")} disabled={!!event.camera}>
+                  Camera: {event.camera_username || "(Unassigned)"}
+                </Button>
+                <Button size="small" onClick={() => assignRoles(event, "play_by_play")} disabled={!!event.play_by_play}>
+                  Play-by-play: {event.play_by_play_username || "(Unassigned)"}
+                </Button>
+                <Button size="small" onClick={() => assignRoles(event, "color_commentator")} disabled={!!event.color_commentator}>
+                  Color Commentator: {event.color_commentator_username || "(Unassigned)"}
+                </Button>
+                <NavLink to={`/updateEvent/${event.id}/${event.title}`} state={{ event }}>
+                  <Button size="small">Update Event</Button>
+                </NavLink>
+              </AccordionActions>
+            </Accordion>
+          ))
+        ) : (
+          <h4>No events found</h4>
+        )}
+      </div>
+    </>
+  );
+}
 
 export default StudentHomePage;
 
-      // const Search = () => {
-  //   console.log( "Fetching query:", searchQuery, selectedSchools, selectedActivities );
-  //   axios.get(`/api/events?q=${searchQuery}`).then(( searchResponse ) => {
-  //     const searchResults = searchResponse.data;
-  //     console.log("searchResponse:", searchResults );
-  //     // Search Input Apply
-  //     if (!Array.isArray( searchResults )|| searchResults.length === 0 ) {
-  //       console.log("No results searched");
-  //       setSearchResults([]);
-  //       setEventList([]);
-  //       return;
-  //     }
-  //     const eventTitles = searchResults.map(event => event.title );
-  //     console.log("Extracted Event Titles:", eventTitles );
-  //     axios.get(`/api/events/all`).then((fullResponse)=> {
-  //       const allEvents = fullResponse.data;
-  //       console.log( "Full events:", allEvents );
-  //       // Search Filter
-  //       if (!Array.isArray(allEvents)) {
-  //         console.log( "Invalid full events:");
-  //         return;
-  //       }
-  //       const filteredEvents = allEvents.filter(event => eventTitles.includes(event.title));
-  //       console.log("Filtered full event details:", filteredEvents);
-  //       setSearchResults(filteredEvents);
-  //       setEventList(filteredEvents);
-  //     }).catch(error => console.error("Error fetching full event details:", error));
-  //   })
-  //   .catch(error => console.error("Error on GET", error));
-  // };
+//                 {/* Use NavLink to navigate to the updateEvent page */}
+//                 <NavLink 
+//   to={`/updateEvent/${event.id}/${event.title}`} 
+//   style={{ textDecoration: 'none' }} 
+//   state={{ event }}
+// >
+//   <Button size="small">
+//     Update Event
+//   </Button>
+// </NavLink>

@@ -169,22 +169,27 @@ router.put('/', rejectUnauthenticated,(req, res)=>{
   const eventUpdate = req.body;
   const queryText = `
   UPDATE "events"
-  SET activities_id = ($1),
-  title = ($2),
-  date = ($3),
-  time = ($4),
-  school_id = ($5),
-  location = ($6),
-  notes = ($7)
-  WHERE events.id = 2;`;
+  SET activities_id = $1,
+      title = $2,
+      date = $3,
+      start_time = $4,   
+      end_time = $5,     
+      school_id = $6,
+      location = $7,
+      notes = $8
+    WHERE id = $9;
+  `;
   pool.query( queryText,[ 
     eventUpdate.activities_id, 
     eventUpdate.title, 
     eventUpdate.date, 
-    eventUpdate.time, 
+    eventUpdate.start_time,
+    eventUpdate.end_time,
     eventUpdate.school_id, 
     eventUpdate.location,
-    eventUpdate.notes])
+    eventUpdate.notes,
+    eventUpdate.id 
+  ])
   .then((results)=>{
     console.log("put in events.router", results)
     res.sendStatus(200);

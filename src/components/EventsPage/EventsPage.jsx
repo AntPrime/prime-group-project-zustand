@@ -53,35 +53,39 @@ useEffect(()=> {
         sx={{ marginBottom: 2 }}
       />
 
-      {/* Use Grid for Date and Time fields */}
-      <Grid container spacing={2} sx={{ marginBottom: 2 }}>
-        <Grid item xs={6}>
-          <TextField
-            fullWidth
-            type="date"
-            value={newEvent.date}
-            onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
-          />
-        </Grid>
-     
-        <Grid item xs={6}>
-          <TextField
-            fullWidth
-            type="time"
-            label="Start Time"    // Label for start time
-            value={newEvent.start_time}  // Bind to start_time state
-            onChange={(e) => setNewEvent({ ...newEvent, start_time: e.target.value })}
-          />
-        </Grid>
-      </Grid>
-
 <Grid container spacing={2} sx={{ marginBottom: 2 }}>
-  <Grid item xs={6}>
+  {/* Date Field */}
+  <Grid item xs={4}>
+    <TextField
+      fullWidth
+      type="date"
+      label="Date"
+      InputLabelProps={{ shrink: true }}
+      value={newEvent.date}
+      onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
+    />
+  </Grid>
+
+  {/* Start Time Field */}
+  <Grid item xs={4}>
     <TextField
       fullWidth
       type="time"
-      label="End Time"      // Label for end time
-      value={newEvent.end_time}    // Bind to end_time state
+      label="Start Time"
+      InputLabelProps={{ shrink: true }}
+      value={newEvent.start_time}
+      onChange={(e) => setNewEvent({ ...newEvent, start_time: e.target.value })}
+    />
+  </Grid>
+
+  {/* End Time Field */}
+  <Grid item xs={4}>
+    <TextField
+      fullWidth
+      type="time"
+      label="End Time"
+      InputLabelProps={{ shrink: true }}
+      value={newEvent.end_time}
       onChange={(e) => setNewEvent({ ...newEvent, end_time: e.target.value })}
     />
   </Grid>
