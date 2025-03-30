@@ -7,7 +7,8 @@ import CardContent from '@mui/material/CardContent';
 import Button from '@mui/material/Button';
 import Typography from '@mui/material/Typography';
 import { NavLink } from 'react-router-dom';
-import axios from 'axios'
+import axios from 'axios';
+import DeleteEvent from '../DeleteEvent/DeleteEvent';
 
 function StudentHomePage() {
   const user = useStore((state) => state.user);
@@ -228,6 +229,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
                     Update Event
                   </Button>
                 </NavLink>
+                <DeleteEvent eventId={event.id} />
               </CardActions>
             </Card>
           </Box>
