@@ -18,6 +18,15 @@ const createEventsSlice = (set, get) => ({
     }
   },
 
+  assignRoles: async (eventId, roleColumn) => {
+    try {
+        await axios.put("/api/assignRole", { eventId, roleColumn });
+        await useEventStore.getState().fetchEvents(); // Refresh events
+    } catch (error) {
+        console.error("Error assigning role", error);
+    }
+},
+
   // Fetch event by id
   fetchEventById: async (id) => {
     set({ isLoading: true, error: null });

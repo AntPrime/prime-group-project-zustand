@@ -9,13 +9,15 @@ import {
 
 import useStore from '../../zustand/store';
 import Nav from '../Nav/Nav';
-import HomePage from '../StudentHomePage/StudentHomePage';
+import StudentHomePage from '../StudentHomePage/StudentHomePage';
 import LoginPage from '../LoginPage/LoginPage';
 import RegisterPage from '../RegisterPage/RegisterPage';
 import EventsPage from '../EventsPage/EventsPage';
 import SuccessPage from '../../SuccessPage/SuccessPage';
+import UpdateEvent from '../UpdateEvent/UpdateEvent';
 import AdminHome from '../AdminHome.jsx/AdminHome';
 import SuperAdminHome from '../SuperAdminHome.jsx/SuperAdminHome';
+
 
 function App() {
   const user = useStore((state) => state.user);
@@ -65,7 +67,7 @@ function App() {
             exact path="/"
             element={
               user.id ? (
-                <HomePage />
+                <StudentHomePage />
               ) : (
                 <Navigate to="/login" replace />
               )
@@ -169,6 +171,7 @@ function App() {
             }
           />
 
+<Route path="/updateEvent/:id" element={<UpdateEvent />} />
 
           <Route
             path="*"

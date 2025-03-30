@@ -49,15 +49,35 @@ OR producer.username ILIKE $1
 OR events.channel ILIKE $1;`;
 const values = [`%${searchQuery}%`]
   pool.query(queryText, values)
-  .then((results)=>{
-   // console.log("results from db", results.rows)
-    res.send(results.rows)
-  })
-  .catch((err)=>{
-    console.log("error in events.router get", err)
-    res.sendStatus(400);
-  })
-})
+    .then(result => {
+      // Transform raw data to enforce consistent naming
+      const cleanedEvents = result.rows.map(event => ({
+        id: event.event_id,
+        title: event.title,
+        activity: event.activity,
+        date: event.date,  // Already formatted as YYYY-MM-DD
+        time: event.time,   // Already formatted as HH:MM
+        location: event.location,
+        school_name: event.school_name,
+        channel: event.channel,
+        notes: event.notes,
+        play_by_play: event.play_by_play,
+        color_commentator: event.color_commentator,
+        camera: event.camera,
+        producer: event.producer,
+        play_by_play_username: event.play_by_play_username,
+        color_commentator_username: event.color_commentator_username,
+        camera_username: event.camera_username,
+        producer_username: event.producer_username
+      }));
+      
+      res.status(200).json(cleanedEvents);
+    })
+    .catch(err => {
+      console.error('[GET /clean Error]', err);
+      res.status(500).json({ error: 'Database error' });
+    });
+});
 
 //GET ROUTE to map through and select roles on events: 
 router.get('/all', (req, res) => {
@@ -141,7 +161,6 @@ VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9);
   })
 })
 
-
 //PUT route to handle updating an event
 router.put('/', rejectUnauthenticated,(req, res)=>{
   const eventUpdate = req.body;
@@ -172,6 +191,5 @@ router.put('/', rejectUnauthenticated,(req, res)=>{
     res.sendStatus(400)
   })
 })
-
 
 module.exports = router;
