@@ -51,7 +51,7 @@ function SuperAdminHome() {
 
   // Data fetching
   const fetchEvent = () => {
-    axios.get("/api/events/payments/admin")
+    axios.get("/api/events/all")
       .then((response) => {
         setEventList(response.data);
       })
@@ -74,25 +74,25 @@ function SuperAdminHome() {
         {
           role: 'Play-by-Play',
           userId: event.play_by_play,
-          username: event.play_by_play,
+          username: event.play_by_play_username,
           paid: event.payments?.[event.play_by_play]?.paid || false
         },
         {
           role: 'Color Commentator',
           userId: event.color_commentator,
-          username: event.color_commentator,
+          username: event.color_commentator_username,
           paid: event.payments?.[event.color_commentator]?.paid || false
         },
         {
           role: 'Camera',
           userId: event.camera,
-          username: event.camera,
+          username: event.camera_username,
           paid: event.payments?.[event.camera]?.paid || false
         },
         {
           role: 'Producer',
           userId: event.producer,
-          username: event.producer,
+          username: event.producer_username,
           paid: event.payments?.[event.producer]?.paid || false
         }
       ].filter(p => p.userId) 

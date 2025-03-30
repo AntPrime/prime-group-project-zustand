@@ -94,7 +94,7 @@ function AdminHome( ) {
       <div className='eventCard'>
   {eventList.length > 0 ? (
     eventList.map((event, index) => (
-      <Accordion key={index} sx={{ mb: 2 }} defaultExpanded>
+      <Accordion key={index} sx={{ mb: 2 }}>
         <AccordionSummary
           expandIcon={<IoIosArrowDropdown />}
           aria-controls={`panel${index}-content`}
