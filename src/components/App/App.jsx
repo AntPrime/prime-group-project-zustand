@@ -3,7 +3,7 @@ import {
   Routes,
   Route,
   Navigate,
-  Link, 
+  Link,
   useNavigate
 } from "react-router-dom";
 
@@ -15,6 +15,8 @@ import RegisterPage from '../RegisterPage/RegisterPage';
 import EventsPage from '../EventsPage/EventsPage';
 import SuccessPage from '../../SuccessPage/SuccessPage';
 import UpdateEvent from '../UpdateEvent/UpdateEvent';
+import AdminHome from '../AdminHome.jsx/AdminHome';
+import SuperAdminHome from '../SuperAdminHome.jsx/SuperAdminHome';
 
 
 function App() {
@@ -38,7 +40,7 @@ function App() {
           <nav className="main-nav">
             {/* <Link to="/about" className="nav-link">Abou</Link> */}
             {user?.id ? (
-              <button 
+              <button
                 className="nav-link logout-button"
                 onClick={async () => {
                   await logOut();
@@ -47,9 +49,9 @@ function App() {
               >
                 Logout
               </button>
-    
+
             ) : (
-    
+
               <>
                 {/* <Link to="/login" className="nav-link">Login</Link>
                 <Link to="/registration" className="nav-link">Register</Link> */}
@@ -71,6 +73,26 @@ function App() {
               )
             }
           />
+          <Route
+            exact path="/adminHome"
+            element={
+              user.id ? (
+                <AdminHome />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+          <Route
+            exact path="/superAdminHome"
+            element={
+              user.id ? (
+                <SuperAdminHome />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
 
           <Route
             exact path="/login"
@@ -86,24 +108,24 @@ function App() {
           <Route
             exact path="/login-success"
             element={
-              <SuccessPage 
-                message="Successfully logged in!" 
+              <SuccessPage
+                message="Successfully logged in!"
                 redirectTo="/"
                 delay={1500}
               />
             }
           />
 
-           <Route
+          <Route
             exact path="/logout-success"
             element={
-              <SuccessPage 
-                message="Successfully logged out!" 
+              <SuccessPage
+                message="Successfully logged out!"
                 redirectTo="/login"
                 delay={1500}
               />
             }
-          /> 
+          />
 
           <Route
             exact path="/registration"
@@ -121,13 +143,13 @@ function App() {
             element={
               <div className="about-container">
                 <h2 className="about-title">About Page</h2>
-                
-             
+
+
                 <p className="about-quote">
-                  
- The technologies We used were React, Node.js, Express, Tailwind CSS and PostgreSQL to build this app.
+
+                  The technologies We used were React, Node.js, Express, Tailwind CSS and PostgreSQL to build this app.
                 </p>
-               
+
                 {user?.id && (
                   <Link to="/events" className="back-to-Events-button">
                     Back to Events Page
@@ -137,17 +159,17 @@ function App() {
             }
           />
 
-<Route
-        exact
-             path="/events"
-             element={
-               user.id ? (
-                <EventsPage/>// Render HomePage for authenticated user.
-               ) : (
-                 <Navigate to="/" replace /> // Redirect unauthenticated user.
-               )
-             }
-           />
+          <Route
+            exact
+            path="/events"
+            element={
+              user.id ? (
+                <EventsPage />// Render HomePage for authenticated user.
+              ) : (
+                <Navigate to="/" replace /> // Redirect unauthenticated user.
+              )
+            }
+          />
 
 <Route path="/updateEvent/:id" element={<UpdateEvent />} />
 
