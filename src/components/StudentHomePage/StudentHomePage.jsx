@@ -161,11 +161,15 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
             {schools.map((school) => (<option key={school.id} value={school.name}>{school.name}</option>))}</select>
           <button onClick={handleSearch}>Search</button>
           <button onClick={() => { 
-            setSelectedSchools([]); 
-            setSelectedActivities([]); 
-            setSearchResults([]); 
-          }}>Clear All
-          </button>
+  setSelectedSchools([]); 
+  setSelectedActivities([]); 
+  setSearchQuery(""); 
+  setSearchResults([]); 
+  fetchEventList(); // Refresh the event list
+}}>
+  Clear All
+</button>
+
         </div>
       </div>
       <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
