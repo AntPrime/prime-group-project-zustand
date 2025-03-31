@@ -7,11 +7,7 @@ const {
   rejectUnauthenticated,
 } = require('../modules/authentication-middleware');
 
-
 const router = express.Router();
-
-
-
 
 //GET route for search feature for events
 router.get('/', (req, res)=>{
