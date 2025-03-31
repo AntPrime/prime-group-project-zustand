@@ -17,7 +17,6 @@ import {
 import { IoIosArrowDropdown } from "react-icons/io";
 import Button from '@mui/material/Button';
 import axios from 'axios';
-import CreateNewSchool from '../CreateNewSchool/CreateNewSchool';
 
 function SuperAdminHome() {
   const user = useStore((state) => state.user);
