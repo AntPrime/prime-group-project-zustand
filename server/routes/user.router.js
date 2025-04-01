@@ -3,8 +3,11 @@ const encryptLib = require('../modules/encryption');
 const pool = require('../modules/pool');
 const userStrategy = require('../strategies/user.strategy');
 
-
 const router = express.Router();
+// LMR PLEASE NOTE: This route came with our standard build, and also uses auth in an effort
+// to not accidentally mis-manage the user login/auth we have left this router alone
+// functions like getting a list of users or changing a users access (admin & super admin)
+// are handled in a separate router
 
 // If the request came from an authenticated user, this route
 // sends back an object containing that user's information.
