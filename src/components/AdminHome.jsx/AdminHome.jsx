@@ -17,7 +17,7 @@ import {
 } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
 import Button from '@mui/material/Button';
-
+import { NavLink } from 'react-router-dom';
 import axios from 'axios'
 
 function AdminHome() {
@@ -208,6 +208,11 @@ function AdminHome() {
                   ))}
                 </List>
               </AccordionDetails>
+              <NavLink to={`/updateEvent/${event.id}`} style={{ textDecoration: 'none' }}>
+                  <Button size="small">
+                    Update Event
+                  </Button>
+                </NavLink>
             </Accordion>
           ))
         ) : (

@@ -224,12 +224,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
                   Color Commentator: {event.color_commentator_username || "(Unassigned)"}
                 </Button>
                 {/* Use NavLink to navigate to the updateEvent page */}
-                <NavLink to={`/updateEvent/${event.id}`} style={{ textDecoration: 'none' }}>
-                  <Button size="small">
-                    Update Event
-                  </Button>
-                </NavLink>
-                <DeleteEvent eventId={event.id} />
+                
               </CardActions>
             </Card>
           </Box>
