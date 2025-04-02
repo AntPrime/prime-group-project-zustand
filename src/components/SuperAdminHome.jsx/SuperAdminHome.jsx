@@ -202,7 +202,7 @@ function SuperAdminHome() {
                           color={participant.isPaid ? 'success' : 'primary'}
                           onClick={() => handleParticipantPaid(index, participant.userId)}
                         >
-                          {participant.isPaid ? 'Paid ✓' : 'Mark Paid'}
+                          {participant.isPaid ? 'Attended ✓' : 'Signed Up'}
                         </Button>
                       </Box>
                     </ListItem>
@@ -215,7 +215,7 @@ function SuperAdminHome() {
                   onClick={() => handleMarkPaid(index)}
                   sx={{ mt: 2 }}
                 >
-                  {event.isPaid ? 'Mark Event Unpaid' : 'Mark Entire Event Paid'}
+                  {event.isPaid ? 'Mark Event Unpaid' : 'Mark Entire Event Reviewed'}
                 </Button>
               </AccordionDetails>
             </Accordion>

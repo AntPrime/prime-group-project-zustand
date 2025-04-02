@@ -40,7 +40,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
   
 
   useEffect(()=> {
-    fetchEvents()
+    // fetchEvents()
     fetchEventList()
   }, [] );
 
