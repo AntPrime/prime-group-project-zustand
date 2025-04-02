@@ -1,6 +1,6 @@
 import useStore from '../../zustand/store'
 import { useState, useEffect } from 'react';
-import { Box, Accordion, AccordionSummary, AccordionDetails, AccordionActions, Button, Typography, TextField, Select, MenuItem, InputLabel, FormControl, Chip, ListItemText, Checkbox } from '@mui/material';
+import { Box, Accordion, AccordionSummary, AccordionDetails, AccordionActions, Button, Typography, TextField, Select, MenuItem, InputLabel, FormControl, ListItemText, Checkbox } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { IoIosArrowDropdown } from "react-icons/io";
 import moment from 'moment';
@@ -156,86 +156,73 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
     return (
       <>
 <div>
-  <h2>LMR STUDENT HOME PAGE</h2>
-  <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-    {/* First Row: Search Input, Schools, and Activities */}
-    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap' }}>
-      {/* Search Input */}
-      <TextField
-        label="Search"
-        variant="outlined"
-        value={searchQuery}
-        onChange={(e) => setSearchQuery(e.target.value)}
-        sx={{ flex: 2 }}
-      />
-      {/* Multi-Select Dropdowns */}
-      <FormControl fullWidth sx={{ flex: 1 }}>
-        <InputLabel>Schools</InputLabel>
-        <Select
-          multiple
-          value={selectedSchools}
-          onChange={(e) => handleMultiSelectChange(e, "schools")}
-          renderValue={(selected) => selected.join(', ')}
-        >
-          {schools.map((school) => (
-            <MenuItem key={school.id} value={school.name}>
-              <Checkbox checked={selectedSchools.indexOf(school.name) > -1} />
-              <ListItemText primary={school.name} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-      <FormControl fullWidth sx={{ flex: 1 }}>
-        <InputLabel>Activities</InputLabel>
-        <Select
-          multiple
-          value={selectedActivities}
-          onChange={(e) => handleMultiSelectChange(e, "activities")}
-          renderValue={(selected) => selected.join(', ')}
-        >
-          {activities.map((activity) => (
-            <MenuItem key={activity.id} value={activity.name}>
-              <Checkbox checked={selectedActivities.indexOf(activity.name) > -1} />
-              <ListItemText primary={activity.name} />
-            </MenuItem>
-          ))}
-        </Select>
-      </FormControl>
-    </Box>
-
-    {/* Second Row: Sorting Buttons, Search, and Clear Buttons */}
-    <Box sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center' }}>
-      {/* Sorting Buttons */}
-      <Box sx={{ display: 'flex', gap: 2, flex: 1 }}>
-        <Button variant="contained" onClick={(e) => sortEvents("date", e)}>
-          Date {sortOrder.date === "asc" ? "↑" : "↓"}
-        </Button>
-        <Button variant="contained" onClick={(e) => sortEvents("location", e)}>
-          Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
-        </Button>
+      <h2>LMR STUDENT HOME PAGE</h2>
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
+        {/* First Row: Search Input, Schools, Activities, Sorting, and Action Buttons */}
+        <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-start', width: '100%' }}>
+          <TextField
+            label="Search"
+            variant="outlined"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            sx={{ width: 200, minWidth: 120 }}
+          />
+          <FormControl sx={{ width: 200, minWidth: 120 }}>
+            <InputLabel sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Schools</InputLabel>
+            <Select
+              multiple
+              value={selectedSchools}
+              onChange={(e) => handleMultiSelectChange(e, "schools")}
+              renderValue={(selected) => selected.join(', ')}
+              sx={{ overflow: 'hidden' }}
+            >
+              {schools.map((school) => (
+                <MenuItem key={school.id} value={school.name}>
+                  <Checkbox checked={selectedSchools.indexOf(school.name) > -1} />
+                  <ListItemText primary={school.name} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl sx={{ width: 200, minWidth: 120 }}>
+            <InputLabel sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Activities</InputLabel>
+            <Select
+              multiple
+              value={selectedActivities}
+              onChange={(e) => handleMultiSelectChange(e, "activities")}
+              renderValue={(selected) => selected.join(', ')}
+              sx={{ overflow: 'hidden' }}
+            >
+              {activities.map((activity) => (
+                <MenuItem key={activity.id} value={activity.name}>
+                  <Checkbox checked={selectedActivities.indexOf(activity.name) > -1} />
+                  <ListItemText primary={activity.name} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <Button variant="contained" onClick={(e) => sortEvents("date", e)}>
+            Date {sortOrder.date === "asc" ? "↑" : "↓"}
+          </Button>
+          <Button variant="contained" onClick={(e) => sortEvents("location", e)}>
+            Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
+          </Button>
+          <Button variant="contained" onClick={handleSearch}>Search</Button>
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setSelectedSchools([]);
+              setSelectedActivities([]);
+              setSearchQuery("");
+              setSearchResults([]);
+              fetchEventList();
+            }}
+          >
+            Clear All
+          </Button>
+        </Box>
       </Box>
-
-      {/* Search and Clear Buttons */}
-      <Box sx={{ display: 'flex', gap: 2, flex: 1 }}>
-        <Button variant="contained" onClick={handleSearch}>Search</Button>
-        <Button
-          variant="outlined"
-          onClick={() => {
-            setSelectedSchools([]);
-            setSelectedActivities([]);
-            setSearchQuery("");
-            setSearchResults([]);
-            fetchEventList(); // Refresh the event list
-          }}
-        >
-          Clear All
-        </Button>
-      </Box>
-    </Box>
-  </Box>
-</div>
-
-
+    </div>
 
         <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
 
