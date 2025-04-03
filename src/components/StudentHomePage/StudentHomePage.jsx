@@ -1,6 +1,6 @@
 import useStore from '../../zustand/store'
 import { useState, useEffect } from 'react';
-import { Box, Accordion, AccordionSummary, AccordionDetails, AccordionActions, Button, Typography, TextField, Select, MenuItem, InputLabel, FormControl, ListItemText, Checkbox } from '@mui/material';
+import { Box, Accordion, AccordionSummary, AccordionDetails, AccordionActions, Button, Typography, TextField, Select, MenuItem, InputLabel, FormControl, Chip, ListItemText, Checkbox } from '@mui/material';
 import { NavLink } from 'react-router-dom';
 import { IoIosArrowDropdown } from "react-icons/io";
 import moment from 'moment';
@@ -14,6 +14,7 @@ function StudentHomePage() {
   const [eventList, setEventList] = useState([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [searchResults, setSearchResults] = useState([]);
+  const [appliedFilters, setAppliedFilters] = useState('');
 // Multi-select states
 const [sortBy, setSortBy] = useState(null);
 const [selectedSchools, setSelectedSchools] = useState([]);
@@ -68,28 +69,46 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
       })
     }
   // Filter events selected
-    function filterEvents(searchResults, selectedSchools, selectedActivities) {
-      axios.get('/api/events/all').then((fullResponse) => {
-          const allEvents = fullResponse.data || [];
-          console.log("All Events:", allEvents);
-          // Filter events based on search, schools, and activities
-          const filteredEvents = allEvents.filter(event => {
-            const eventMatchesSearch = searchResults.some(result => result.title === event.title);
-            const eventMatchesSchool = selectedSchools.length === 0 || selectedSchools.includes(event.school_name);
-            const eventMatchesActivity = selectedActivities.length === 0 || selectedActivities.includes(event.activity);
-            return eventMatchesSearch && eventMatchesSchool && eventMatchesActivity;
-          });
-          console.log("Filtered events:", filteredEvents);
-          setSearchResults(filteredEvents);
-          setEventList(filteredEvents);
-        })
-        .catch((error) => {
-          console.error("Error fetching all events:", error);
-        });
-    }
+  function filterEvents(searchResults, selectedSchools, selectedActivities) {
+    axios.get('/api/events/all').then((fullResponse) => {
+      const allEvents = fullResponse.data || [];
+      console.log("All Events:", allEvents);
+      
+      // Filter events based on search, schools, and activities
+      const filteredEvents = allEvents.filter(event => {
+        const eventMatchesSearch = searchResults.some(result => result.title === event.title);
+        const eventMatchesSchool = selectedSchools.length === 0 || selectedSchools.includes(event.school_name);
+        const eventMatchesActivity = selectedActivities.length === 0 || selectedActivities.includes(event.activity);
+        return eventMatchesSearch && eventMatchesSchool && eventMatchesActivity;
+      });
+  
+      console.log("Filtered events:", filteredEvents);
+      setSearchResults(filteredEvents);
+      setEventList(filteredEvents);
+    })
+    .catch((error) => {
+      console.error("Error fetching all events:", error);
+    });
+  }
+  
 
   // Search Dropdown Handle 
   function handleSearch() {
+    // Track applied filters
+    let appliedFilterText = '';
+    if (searchQuery) {
+      appliedFilterText += `SEARCH ${searchQuery} `;
+    }
+    if (selectedSchools.length > 0) {
+      appliedFilterText += `SCHOOL ${selectedSchools.join(', ')} `;
+    }
+    if (selectedActivities.length > 0) {
+      appliedFilterText += `ACTIVITY ${selectedActivities.join(', ')} `;
+    }
+    else {
+      appliedFilterText += 'No sorting applied';
+    }
+    setAppliedFilters(appliedFilterText); // Set the filter message
     searchEvents(searchQuery, selectedSchools, selectedActivities);
   }
 
@@ -215,6 +234,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
               setSelectedActivities([]);
               setSearchQuery("");
               setSearchResults([]);
+              setAppliedFilters('');  // Clear the applied filter text
               fetchEventList();
             }}
           >
@@ -224,8 +244,8 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
       </Box>
     </div>
 
-        <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
-
+    <h4>Filter Applied: {appliedFilters} {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
+    {/* <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4> */}
         <div className='eventCard'>
         {eventList.length > 0 ? (
           eventList.map((event, index) => (
