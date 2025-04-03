@@ -92,6 +92,10 @@ router.get('/all', (req, res) => {
       events.color_commentator,
       events.camera,
       events.producer,
+      events.play_by_play_attended,  
+      events.color_commentator_attended,  
+      events.camera_attended,  
+      events.producer_attended,  
       pbp_user.username AS play_by_play_username,
       cc_user.username AS color_commentator_username,
       cam_user.username AS camera_username,
@@ -108,13 +112,12 @@ router.get('/all', (req, res) => {
 
   pool.query(queryText)
     .then(result => {
-      // Transform raw data to enforce consistent naming
       const cleanedEvents = result.rows.map(event => ({
         id: event.event_id,
         title: event.title,
         activity: event.activity,
-        date: event.date,  // Already formatted as YYYY-MM-DD
-        time: event.time,   // Already formatted as HH:MM
+        date: event.date,
+        time: event.time,
         location: event.location,
         school_name: event.school_name,
         channel: event.channel,
@@ -123,6 +126,10 @@ router.get('/all', (req, res) => {
         color_commentator: event.color_commentator,
         camera: event.camera,
         producer: event.producer,
+        play_by_play_attended: event.play_by_play_attended,  // added
+        color_commentator_attended: event.color_commentator_attended,  // added
+        camera_attended: event.camera_attended,  // added
+        producer_attended: event.producer_attended,  // added
         play_by_play_username: event.play_by_play_username,
         color_commentator_username: event.color_commentator_username,
         camera_username: event.camera_username,

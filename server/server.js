@@ -16,7 +16,7 @@ const userRouter = require('./routes/user.router');
 const actionsUserRouter = require('./routes/actions.user.router');
 const eventsRouter = require('./routes/events.router');
 const assignRoleRouter = require('./routes/assignRole.router');
-const paymentRouter = require('./routes/payment.router');
+const attendedRouter = require('./routes/attended.router');
 const createSchoolRouter = require('./routes/createSchool.router');
 const createActivityRouter = require('./routes/createActivity.router');
 
@@ -33,7 +33,7 @@ app.use('/api/user', userRouter);
 app.use('/api/actionsuser',actionsUserRouter)
 app.use('/api/events', eventsRouter);
 app.use('/api/assignRole', assignRoleRouter);
-app.use('/api/events/payments', paymentRouter);
+app.use('/api/events/attended', attendedRouter);
 app.use('/api/createSchool', createSchoolRouter);
 app.use('/api/createActivity', createActivityRouter);
 
