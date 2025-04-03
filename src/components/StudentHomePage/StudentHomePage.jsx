@@ -38,7 +38,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
   
 
   useEffect(()=> {
-    fetchEvents()
+    // fetchEvents()
     fetchEventList()
   }, [] );
 
@@ -297,10 +297,6 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
                 <Button size="small" onClick={() => assignRoles(event, "color_commentator")} disabled={!!event.color_commentator}>
                   Color Commentator: {event.color_commentator_username || "(Unassigned)"}
                 </Button>
-                <NavLink to={`/updateEvent/${event.id}/${event.title}`} state={{ event }}>
-                  <Button size="small">Update Event</Button>
-                </NavLink>
-                <DeleteEvent eventId={event.id} />
               </AccordionActions>
             </Accordion>
           ))

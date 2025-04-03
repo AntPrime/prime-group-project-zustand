@@ -21,7 +21,7 @@ function DeleteEvent({eventId}) {
   
   return (
      <div className='DeleteEvent'>
-      <Button onClick={eventDelete} >Delete</Button>
+      <Button style={{color: 'white'}} onClick={eventDelete} >Delete</Button>
     </div>
   );
   }

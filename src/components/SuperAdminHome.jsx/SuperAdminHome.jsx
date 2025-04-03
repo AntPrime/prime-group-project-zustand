@@ -17,6 +17,8 @@ import {
 import { IoIosArrowDropdown } from "react-icons/io";
 import Button from '@mui/material/Button';
 import axios from 'axios';
+import DeleteEvent from '../DeleteEvent/DeleteEvent';
+import { NavLink } from 'react-router-dom';
 
 function SuperAdminHome() {
   const user = useStore((state) => state.user);
@@ -30,20 +32,20 @@ function SuperAdminHome() {
   const [events, setEvents] = useState([]);
 
   // Payment handlers
-  const handleMarkPaid = (index) => {
+  const handleMarkmarked = (index) => {
     setEvents(prev => prev.map((event, idx) => {
       if (idx !== index) return event;
-      return { ...event, isPaid: !event.isPaid };
+      return { ...event, isMarked: !event.isMarked };
     }));
   };
 
-  const handleParticipantPaid = (eventIndex, userId) => {
+  const handleParticipantmarked = (eventIndex, userId) => {
     setEvents(prev => prev.map((event, idx) => {
       if (idx !== eventIndex) return event;
       return {
         ...event,
         participants: event.participants.map(p =>
-          p.userId === userId ? { ...p, isPaid: !p.isPaid } : p
+          p.userId === userId ? { ...p, isMarked: !p.isMarked } : p
         )
       };
     }));
@@ -75,25 +77,25 @@ function SuperAdminHome() {
           role: 'Play-by-Play',
           userId: event.play_by_play,
           username: event.play_by_play_username,
-          paid: event.payments?.[event.play_by_play]?.paid || false
+          marked: event.payments?.[event.play_by_play]?.marked || false
         },
         {
           role: 'Color Commentator',
           userId: event.color_commentator,
           username: event.color_commentator_username,
-          paid: event.payments?.[event.color_commentator]?.paid || false
+          marked: event.payments?.[event.color_commentator]?.marked || false
         },
         {
           role: 'Camera',
           userId: event.camera,
           username: event.camera_username,
-          paid: event.payments?.[event.camera]?.paid || false
+          marked: event.payments?.[event.camera]?.marked || false
         },
         {
           role: 'Producer',
           userId: event.producer,
           username: event.producer_username,
-          paid: event.payments?.[event.producer]?.paid || false
+          marked: event.payments?.[event.producer]?.marked || false
         }
       ].filter(p => p.userId) 
     })));
@@ -150,14 +152,14 @@ function SuperAdminHome() {
               key={index}
               sx={{
                 mb: 2,
-                backgroundColor: event.isPaid ? 'lightgreen' : 'inherit',
+                backgroundColor: event.isMarked ? 'lightgreen' : 'inherit',
                 transition: 'background-color 0.3s ease'
               }}
             >
               <AccordionSummary expandIcon={<IoIosArrowDropdown />}>
                 <div style={{ width: '100%' }}>
                   <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                    {event.title} {event.isPaid && ' ✓'}
+                    {event.title} {event.isMarked && ' ✓'}
                   </Typography>
                   <Typography variant="body2" color="text.secondary">
                     Date: {event.date} | Time: {event.time} | Channel: {event.channel}
@@ -167,19 +169,26 @@ function SuperAdminHome() {
                   </Typography>
                 </div>
               </AccordionSummary>
-
+              <NavLink to={`/updateEvent/${event.id}`} style={{ textDecoration: 'none' }}>
+                  <Button variant="contained">
+                    Update Event
+                  </Button>
+                </NavLink>
+                <Button variant="contained" className='float-button' style={{backgroundColor: 'red'}} >
+                <DeleteEvent eventId={event.id} />
+                </Button>
               <AccordionDetails>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6" sx={{ mb: 1 }}>
                   Assigned Roles ({event.participants.length})
                 </Typography>
-
+               
                 <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
                   {event.participants.map((participant, pIndex) => (
                     <ListItem
                       key={pIndex}
                       sx={{
-                        backgroundColor: participant.isPaid ? 'lightgreen' : 'inherit',
+                        backgroundColor: participant.isMarked ? 'lightgreen' : 'inherit',
                         transition: 'background-color 0.3s ease',
                         mb: 1,
                         borderRadius: 1
@@ -199,10 +208,10 @@ function SuperAdminHome() {
                         <Button
                           size="small"
                           variant="outlined"
-                          color={participant.isPaid ? 'success' : 'primary'}
-                          onClick={() => handleParticipantPaid(index, participant.userId)}
+                          color={participant.isMarked ? 'success' : 'primary'}
+                          onClick={() => handleParticipantmarked(index, participant.userId)}
                         >
-                          {participant.isPaid ? 'Paid ✓' : 'Mark Paid'}
+                          {participant.isMarked ? 'Attended ✓' : 'Signed Up'}
                         </Button>
                       </Box>
                     </ListItem>
@@ -211,13 +220,16 @@ function SuperAdminHome() {
 
                 <Button
                   variant="contained"
-                  color={event.isPaid ? 'success' : 'primary'}
-                  onClick={() => handleMarkPaid(index)}
+                  color={event.isMarked ? 'success' : 'primary'}
+                  onClick={() => handleMarkmarked(index)}
                   sx={{ mt: 2 }}
                 >
-                  {event.isPaid ? 'Mark Event Unpaid' : 'Mark Entire Event Paid'}
+                  {event.isMarked ? 'Mark Event Unmarked' : 'Mark Entire Event Reviewed'}
                 </Button>
+               
               </AccordionDetails>
+             
+              
             </Accordion>
           ))
         ) : (
