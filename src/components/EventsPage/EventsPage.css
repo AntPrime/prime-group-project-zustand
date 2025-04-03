@@ -1,42 +1,58 @@
-/* General table styles */
-table {
-    width: 100%;
-    border-collapse: collapse;
-    margin: 20px 0;
-    font-family: Arial, sans-serif;
-  }
-  
-  /* Table header styles */
-  th {
-    background-color: #4CAF50;
-    color: white;
-    padding: 10px;
-    text-align: left;
-  }
-  
-  /* Table data cell styles */
-  td {
-    padding: 10px;
-    border: 1px solid #ddd;
-    text-align: left;
-  }
-  
-  /* Zebra striping for table rows */
-  tr:nth-child(even) {
-    background-color: #f2f2f2;
-  }
-  
-  /* Hover effect for rows */
-  tr:hover {
-    background-color: #ddd;
-  }
-  
-  /* Styling for the table container */
-  table.container {
-    overflow-x: auto;
-    margin: 0 auto;
-    border-radius: 10px;
-  }
-  
-  /* Optional: Styling*
-  
+/* .event-page {
+  width: 80%;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+h2 {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.event-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.event-form label {
+  font-weight: bold;
+  margin-bottom: 5px;
+}
+
+.event-form input, .event-form select, .event-form textarea {
+  padding: 10px;
+  font-size: 16px;
+  width: 100%;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+}
+
+.event-form .input-group {
+  display: flex;
+  gap: 15px;
+}
+
+.event-form .input-item {
+  flex: 1;
+}
+
+textarea {
+  resize: vertical;
+}
+
+button {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+button:hover {
+  background-color: #45a049;
+}
+
+   */

@@ -74,7 +74,6 @@ SEARCHQUERY
 
 DROPDOWN
 --Update dropdown
----update is feasible need to update the update page for that/PUT 
 
 --Delete dropdown
 ---?
@@ -84,8 +83,8 @@ DROPDOWN
 
 UPDATE
 --Updatepage 
-# Setup complete
----Fix navigates to EventPage when completing update event instead of StudentPage
+# Complete Update
+# Complete Update naviage to studentHomePage
 --Style?
 
 STUDENTPAGE
@@ -93,5 +92,5 @@ STUDENTPAGE
 
 --studentPage functionality 
 # Search completed 
-# --Roles button works--
----ASSIGHN ROLE BUTTON NOW WORKING!!!!!!!
+# --Roles button works
+---Role button works however when clicking the role events move around if many many events are displayed?
