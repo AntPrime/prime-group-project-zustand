@@ -175,6 +175,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
 
     return (
       <>
+
 <div>
       <h2>LMR STUDENT HOME PAGE</h2>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
@@ -299,10 +300,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
                 <NavLink to={`/updateEvent/${event.id}/${event.title}`} state={{ event }}>
                   <Button size="small">Update Event</Button>
                 </NavLink>
-                 <DeleteEvent eventId={event.id} />
-              </CardActions>
-            </Card>
-          </Box>
+                <DeleteEvent eventId={event.id} />
               </AccordionActions>
             </Accordion>
           ))
@@ -310,20 +308,10 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
           <h4>No events found</h4>
         )}
       </div>
-        </div>
-      );
-    })
-  ) : (
-    <p>No events available</p>
-  )}
-</div>
-
-      <h5></h5>
-      <p>Your ID is: {user.id}</p>
-      <button onClick={logOut}>Log Out</button>
     </>
   );
 }
+
 
 export default StudentHomePage;
 
@@ -337,3 +325,5 @@ export default StudentHomePage;
 //     Update Event
 //   </Button>
 // </NavLink>
+
+
