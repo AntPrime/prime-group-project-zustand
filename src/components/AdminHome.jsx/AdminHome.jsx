@@ -166,7 +166,7 @@ function AdminHome() {
                   </Typography>
                 </div>
               </AccordionSummary>
-              <NavLink to={`/updateEvent/${event.id}`} style={{ textDecoration: 'none' }}>
+              <NavLink to={`/updateEvent/${event.id}`} state={{event}}  style={{ textDecoration: 'none' }}>
                   <Button variant="contained">
                     Update Event
                   </Button>
