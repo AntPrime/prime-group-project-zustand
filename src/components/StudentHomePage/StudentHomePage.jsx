@@ -4,7 +4,8 @@ import { Box, Accordion, AccordionSummary, AccordionDetails, AccordionActions, B
 import { NavLink } from 'react-router-dom';
 import { IoIosArrowDropdown } from "react-icons/io";
 import moment from 'moment';
-import axios from 'axios'
+import axios from 'axios';
+import DeleteEvent from '../DeleteEvent/DeleteEvent';
 
 function StudentHomePage() {
   const user = useStore((state) => state.user);
@@ -298,6 +299,10 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
                 <NavLink to={`/updateEvent/${event.id}/${event.title}`} state={{ event }}>
                   <Button size="small">Update Event</Button>
                 </NavLink>
+                 <DeleteEvent eventId={event.id} />
+              </CardActions>
+            </Card>
+          </Box>
               </AccordionActions>
             </Accordion>
           ))
@@ -305,6 +310,17 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
           <h4>No events found</h4>
         )}
       </div>
+        </div>
+      );
+    })
+  ) : (
+    <p>No events available</p>
+  )}
+</div>
+
+      <h5></h5>
+      <p>Your ID is: {user.id}</p>
+      <button onClick={logOut}>Log Out</button>
     </>
   );
 }

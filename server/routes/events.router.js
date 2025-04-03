@@ -7,11 +7,7 @@ const {
   rejectUnauthenticated,
 } = require('../modules/authentication-middleware');
 
-
 const router = express.Router();
-
-
-
 
 //GET route for search feature for events
 router.get('/', (req, res)=>{
@@ -200,4 +196,18 @@ router.put('/', rejectUnauthenticated,(req, res)=>{
   })
 })
 
+//DELETE for deleting an event
+router.delete("/:id", ( req, res )=>{
+  const eventId = req.params.id;
+  const queryText = `DELETE FROM "events"
+                     WHERE events.id = ($1);`;
+
+  pool.query( queryText, [eventId])
+  .then(( results )=>{
+      res.sendStatus( 201  );
+  }).catch(( err )=>{
+      console.log( err );
+      res.sendStatus( 400 );
+  })
+})
 module.exports = router;
