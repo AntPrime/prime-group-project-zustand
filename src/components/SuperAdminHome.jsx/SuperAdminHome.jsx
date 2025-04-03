@@ -127,20 +127,20 @@ function SuperAdminHome() {
       <h2>LMR SUPER ADMIN HOME PAGE</h2>
       <input placeholder='Search Event' />
       <div>
-        <button onClick={(e) => sortEvents("date", e)}>
+        <Button onClick={(e) => sortEvents("date", e)}>
           Date {sortOrder.date === "asc" ? "↑" : "↓"}
-        </button>
-        <button onClick={(e) => sortEvents("location", e)}>
+        </Button>
+        <Button onClick={(e) => sortEvents("location", e)}>
           Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
-        </button>
+        </Button>
         <select>
           <option value="">Category</option>
         </select>
         <select>
           <option value="">School</option>
         </select>
-        <button>Search</button>
-        <button>Clear All</button>
+        <Button>Search</Button>
+        <Button>Clear All</Button>
       </div>
 
       <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
@@ -169,13 +169,14 @@ function SuperAdminHome() {
                   </Typography>
                 </div>
               </AccordionSummary>
+             
               <NavLink to={`/updateEvent/${event.id}`} style={{ textDecoration: 'none' }}>
                   <Button variant="contained">
                     Update Event
                   </Button>
                 </NavLink>
                 
-                <Button variant="contained" className='float-button' style={{backgroundColor: 'red'}} >
+                <Button variant="contained" className='float-Button' style={{backgroundColor: 'red'}} >
                 <DeleteEvent eventId={event.id} />
                 </Button>
               <AccordionDetails>
@@ -239,7 +240,7 @@ function SuperAdminHome() {
       </div>
       <h5></h5>
       <p>Your ID is: {user.id}</p>
-      <button onClick={logOut}>Log Out</button>
+      <Button onClick={logOut}>Log Out</Button>
     </>
   );
 }
