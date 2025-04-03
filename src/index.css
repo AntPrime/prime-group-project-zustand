@@ -102,3 +102,7 @@ button:hover, button:focus {
   text-decoration-color: #20c997;
   text-decoration-thickness: 2px;
 }
+.float-button{
+  float: right;
+  color: white;
+}

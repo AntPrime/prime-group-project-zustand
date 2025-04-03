@@ -169,13 +169,20 @@ function SuperAdminHome() {
                   </Typography>
                 </div>
               </AccordionSummary>
-
+              <NavLink to={`/updateEvent/${event.id}`} style={{ textDecoration: 'none' }}>
+                  <Button variant="contained">
+                    Update Event
+                  </Button>
+                </NavLink>
+                <Button variant="contained" className='float-button' style={{backgroundColor: 'red'}} >
+                <DeleteEvent eventId={event.id} />
+                </Button>
               <AccordionDetails>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6" sx={{ mb: 1 }}>
                   Assigned Roles ({event.participants.length})
                 </Typography>
-
+               
                 <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
                   {event.participants.map((participant, pIndex) => (
                     <ListItem
@@ -219,14 +226,7 @@ function SuperAdminHome() {
                 >
                   {event.isMarked ? 'Mark Event Unmarked' : 'Mark Entire Event Reviewed'}
                 </Button>
-                <Button>
-                <DeleteEvent eventId={event.id} />
-                </Button>
-                <NavLink to={`/updateEvent/${event.id}`} style={{ textDecoration: 'none' }}>
-                  <Button size="small">
-                    Update Event
-                  </Button>
-                </NavLink>
+               
               </AccordionDetails>
              
               
