@@ -12,8 +12,7 @@ function UpdateEvent( ) {
     activities_id: 0,
     title: "",
     date: "",
-    start_time: "",
-    end_time: "",
+    time: "",
     school_id: 0,
     location: "",
     channel: "",
@@ -64,22 +63,13 @@ function UpdateEvent( ) {
               type="time"
               label="Start Time"
               InputLabelProps={{ shrink: true }}
-              value={updatedEvent.start_time}
-              onChange={(e) => setUpdatedEvent({ ...updatedEvent, start_time: e.target.value })}
+              value={updatedEvent.time}
+              onChange={(e) => setUpdatedEvent({ ...updatedEvent, time: e.target.value })}
             />
           </Grid>
   
           {/* End Time Field */}
-          <Grid item xs={4}>
-            <TextField
-              fullWidth
-              type="time"
-              label="End Time"
-              InputLabelProps={{ shrink: true }}
-              value={updatedEvent.end_time}
-              onChange={(e) => setUpdatedEvent({ ...updatedEvent, end_time: e.target.value })}
-            />
-          </Grid>
+    
         </Grid>
   
         <TextField

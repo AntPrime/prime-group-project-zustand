@@ -269,7 +269,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
                   <strong>Date:</strong> {formatDate(event.date)}
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}>
-                  <strong>Time:</strong> {formatTime(event.start_time)} - {formatTime(event.end_time)}
+                  <strong>Time:</strong> {formatTime(event.time)} 
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}>
                   <strong>Streaming Channel:</strong> {event.channel}

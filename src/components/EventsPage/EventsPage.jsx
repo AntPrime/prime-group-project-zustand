@@ -10,8 +10,7 @@ function EventsPage() {
     activities_id: 0,
     title: "",
     date: "",
-    start_time: "",
-    end_time: "",
+    time: "",
     school_id: 0,
     location: "",
     channel: "",
@@ -73,22 +72,13 @@ useEffect(()=> {
       type="time"
       label="Start Time"
       InputLabelProps={{ shrink: true }}
-      value={newEvent.start_time}
-      onChange={(e) => setNewEvent({ ...newEvent, start_time: e.target.value })}
+      value={newEvent.time}
+      onChange={(e) => setNewEvent({ ...newEvent, time: e.target.value })}
     />
   </Grid>
 
   {/* End Time Field */}
-  <Grid item xs={4}>
-    <TextField
-      fullWidth
-      type="time"
-      label="End Time"
-      InputLabelProps={{ shrink: true }}
-      value={newEvent.end_time}
-      onChange={(e) => setNewEvent({ ...newEvent, end_time: e.target.value })}
-    />
-  </Grid>
+  
 </Grid>
 
       <TextField
