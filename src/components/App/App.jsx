@@ -93,7 +93,16 @@ function App() {
               )
             }
           />
-
+       <Route
+            exact path="/updateEvent"
+            element={
+              user.id ? (
+                <SuperAdminHome />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
           <Route
             exact path="/login"
             element={
@@ -172,7 +181,7 @@ function App() {
           />
 
 <Route path="/studentHomePage" element={<StudentHomePage />} />
-<Route path="/updateEvent/:eventId/:eventTitle" element={<UpdateEvent />} />
+<Route exact path="/updateEvent/:eventId" element={<UpdateEvent />} />
 
 
           <Route

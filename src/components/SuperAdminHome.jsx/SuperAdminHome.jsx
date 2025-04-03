@@ -174,6 +174,7 @@ function SuperAdminHome() {
                     Update Event
                   </Button>
                 </NavLink>
+                
                 <Button variant="contained" className='float-button' style={{backgroundColor: 'red'}} >
                 <DeleteEvent eventId={event.id} />
                 </Button>
