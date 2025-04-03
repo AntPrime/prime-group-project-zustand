@@ -166,7 +166,11 @@ function AdminHome() {
                   </Typography>
                 </div>
               </AccordionSummary>
-
+              <NavLink to={`/updateEvent/${event.id}`} style={{ textDecoration: 'none' }}>
+                  <Button variant="contained">
+                    Update Event
+                  </Button>
+                </NavLink>
               <AccordionDetails>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6" sx={{ mb: 1 }}>
@@ -208,11 +212,7 @@ function AdminHome() {
                   ))}
                 </List>
               </AccordionDetails>
-              <NavLink to={`/updateEvent/${event.id}`} style={{ textDecoration: 'none' }}>
-                  <Button size="small">
-                    Update Event
-                  </Button>
-                </NavLink>
+            
             </Accordion>
           ))
         ) : (
