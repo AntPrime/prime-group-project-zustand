@@ -39,16 +39,29 @@ function SuperAdminHome() {
     }));
   };
 
-  const handleParticipantmarked = (eventIndex, userId) => {
-    setEvents(prev => prev.map((event, idx) => {
-      if (idx !== eventIndex) return event;
-      return {
-        ...event,
-        participants: event.participants.map(p =>
-          p.userId === userId ? { ...p, isMarked: !p.isMarked } : p
-        )
-      };
-    }));
+  const ROLE_MAPPING = {
+    'play-by-play': 'play_by_play',
+    'color commentator': 'color_commentator',
+    'camera': 'camera',
+    'producer': 'producer'
+  };
+  const handleParticipantmarked = (eventId, role) => {
+    // Convert role to snake_case for the API
+    const apiRole = ROLE_MAPPING[role.toLowerCase()];
+    
+    // No need to calculate current status - server handles the toggle
+    axios({
+      method: 'PUT',
+      url: `/api/events/attended/${eventId}`,
+      data: { role: apiRole }
+    })
+    .then(() => {
+      console.log('Successfully toggled attendance');
+      fetchEvent(); // Refresh the event list after update
+    })
+    .catch((error) => {
+      console.log('Error updating attendance', error);
+    });
   };
 
   // Data fetching
@@ -68,38 +81,38 @@ function SuperAdminHome() {
   }, []);
 
   // Update events when eventList changes
-  useEffect(() => {
-    console.log(eventList)
-    setEvents(eventList.map(event => ({
-      ...event,
-      participants: [
-        {
-          role: 'Play-by-Play',
-          userId: event.play_by_play,
-          username: event.play_by_play_username,
-          marked: event.payments?.[event.play_by_play]?.marked || false
-        },
-        {
-          role: 'Color Commentator',
-          userId: event.color_commentator,
-          username: event.color_commentator_username,
-          marked: event.payments?.[event.color_commentator]?.marked || false
-        },
-        {
-          role: 'Camera',
-          userId: event.camera,
-          username: event.camera_username,
-          marked: event.payments?.[event.camera]?.marked || false
-        },
-        {
-          role: 'Producer',
-          userId: event.producer,
-          username: event.producer_username,
-          marked: event.payments?.[event.producer]?.marked || false
-        }
-      ].filter(p => p.userId) 
-    })));
-  }, [eventList]);
+   useEffect(() => {
+     console.log(eventList);
+     setEvents(eventList.map(event => ({
+       ...event,
+       participants: [
+         {
+           role: 'Play-by-Play',
+           userId: event.play_by_play,
+           username: event.play_by_play_username,
+           marked: event.play_by_play_attended || false
+         },
+         {
+           role: 'Color Commentator',
+           userId: event.color_commentator,
+           username: event.color_commentator_username,
+           marked: event.color_commentator_attended || false
+         },
+         {
+           role: 'Camera',
+           userId: event.camera,
+           username: event.camera_username,
+           marked: event.camera_attended || false
+         },
+         {
+           role: 'Producer',
+           userId: event.producer,
+           username: event.producer_username,
+           marked: event.producer_attended || false
+         }
+       ].filter(p => p.userId)
+     })));
+   }, [eventList]);
 
   // Sorting function
   const sortEvents = (criteria, event) => {
@@ -127,20 +140,20 @@ function SuperAdminHome() {
       <h2>LMR SUPER ADMIN HOME PAGE</h2>
       <input placeholder='Search Event' />
       <div>
-        <button onClick={(e) => sortEvents("date", e)}>
+        <Button onClick={(e) => sortEvents("date", e)}>
           Date {sortOrder.date === "asc" ? "↑" : "↓"}
-        </button>
-        <button onClick={(e) => sortEvents("location", e)}>
+        </Button>
+        <Button onClick={(e) => sortEvents("location", e)}>
           Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
-        </button>
+        </Button>
         <select>
           <option value="">Category</option>
         </select>
         <select>
           <option value="">School</option>
         </select>
-        <button>Search</button>
-        <button>Clear All</button>
+        <Button>Search</Button>
+        <Button>Clear All</Button>
       </div>
 
       <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
@@ -169,13 +182,15 @@ function SuperAdminHome() {
                   </Typography>
                 </div>
               </AccordionSummary>
+
               <NavLink to={`/updateEvent/${event.id}`} state={{event}} style={{ textDecoration: 'none' }}>
+
                   <Button variant="contained">
                     Update Event
                   </Button>
                 </NavLink>
                 
-                <Button variant="contained" className='float-button' style={{backgroundColor: 'red'}} >
+                <Button variant="contained" className='float-Button' style={{backgroundColor: 'red'}} >
                 <DeleteEvent eventId={event.id} />
                 </Button>
               <AccordionDetails>
@@ -206,13 +221,13 @@ function SuperAdminHome() {
                         }}
                       />
                       <Box sx={{ ml: 'auto' }}>
-                        <Button
+                      <Button
                           size="small"
                           variant="outlined"
-                          color={participant.isMarked ? 'success' : 'primary'}
-                          onClick={() => handleParticipantmarked(index, participant.userId)}
+                          color={participant.marked ? 'success' : 'primary'}
+                          onClick={() => handleParticipantmarked(event.id, participant.role)}
                         >
-                          {participant.isMarked ? 'Attended ✓' : 'Signed Up'}
+                          {participant.marked ? 'Attended ✓' : 'Signed Up'}
                         </Button>
                       </Box>
                     </ListItem>
@@ -239,7 +254,7 @@ function SuperAdminHome() {
       </div>
       <h5></h5>
       <p>Your ID is: {user.id}</p>
-      <button onClick={logOut}>Log Out</button>
+      <Button onClick={logOut}>Log Out</Button>
     </>
   );
 }
