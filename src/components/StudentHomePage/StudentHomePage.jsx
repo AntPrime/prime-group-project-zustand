@@ -1,11 +1,9 @@
 import useStore from '../../zustand/store'
 import { useState, useEffect } from 'react';
-import { Box, Accordion, AccordionSummary, AccordionDetails, AccordionActions, Button, Typography, TextField, Select, MenuItem, InputLabel, FormControl, Chip, ListItemText, Checkbox } from '@mui/material';
-import { NavLink } from 'react-router-dom';
+import { Box, Accordion, AccordionSummary, AccordionDetails, AccordionActions, Button, Typography, TextField, Select, MenuItem, InputLabel, FormControl, ListItemText, Checkbox } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
 import moment from 'moment';
 import axios from 'axios';
-import DeleteEvent from '../DeleteEvent/DeleteEvent';
 
 function StudentHomePage() {
   const user = useStore((state) => state.user);
@@ -20,6 +18,7 @@ function StudentHomePage() {
 const [sortBy, setSortBy] = useState(null);
 const [selectedSchools, setSelectedSchools] = useState([]);
 const [selectedActivities, setSelectedActivities] = useState([]);
+const [selectedChannels, setSelectedChannels] = useState([]);
 const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
 
   const [schools, setSchools] = useState([
@@ -36,6 +35,12 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
     { id: 5, name: 'Hockey' },
   ]);
   
+  const [channels, setChannels] = useState([
+    { id: 1, name: 'ZTV' },
+    { id: 2, name: 'LeafsTv' },
+    { id: 3, name: 'ERTv' },
+    { id: 3, name: 'RogersTv' },
+  ]);
 
   useEffect(()=> {
     // fetchEvents()
@@ -55,7 +60,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
     }
 
    // GET Search
-    function searchEvents(searchQuery, selectedSchools, selectedActivities) {
+    function searchEvents(searchQuery, selectedSchools, selectedActivities, selectedChannels) {
       axios.get(`/api/events?q=${searchQuery}`).then((searchResponse) => {
         const searchResults = searchResponse.data || [];
         console.log("Search response:", searchResults);
@@ -66,11 +71,11 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
           setEventList([]);
           return;
         }
-        filterEvents(searchResults, selectedSchools, selectedActivities);
+        filterEvents(searchResults, selectedSchools, selectedActivities, selectedChannels);
       })
     }
   // Filter events selected
-  function filterEvents(searchResults, selectedSchools, selectedActivities) {
+  function filterEvents(searchResults, selectedSchools, selectedActivities, selectedChannels) {
     axios.get('/api/events/all').then((fullResponse) => {
       const allEvents = fullResponse.data || [];
       console.log("All Events:", allEvents);
@@ -80,7 +85,8 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
         const eventMatchesSearch = searchResults.some(result => result.title === event.title);
         const eventMatchesSchool = selectedSchools.length === 0 || selectedSchools.includes(event.school_name);
         const eventMatchesActivity = selectedActivities.length === 0 || selectedActivities.includes(event.activity);
-        return eventMatchesSearch && eventMatchesSchool && eventMatchesActivity;
+        const eventMatchesChannel = selectedChannels.length === 0 || selectedChannels.includes(event.channel);
+        return eventMatchesSearch && eventMatchesSchool && eventMatchesActivity && eventMatchesChannel;
       });
   
       console.log("Filtered events:", filteredEvents);
@@ -106,11 +112,14 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
     if (selectedActivities.length > 0) {
       appliedFilterText += `ACTIVITY ${selectedActivities.join(', ')} `;
     }
+    if (selectedChannels.length > 0) {
+      appliedFilterText += `CHANNEL ${selectedChannels.join(', ')} `;
+    }
     else {
       appliedFilterText += 'No sorting applied';
     }
     setAppliedFilters(appliedFilterText); // Set the filter message
-    searchEvents(searchQuery, selectedSchools, selectedActivities);
+    searchEvents(searchQuery, selectedSchools, selectedActivities, selectedChannels);
   }
 
    // Search MultiDropdown Handle 
@@ -118,7 +127,11 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
     const selectedOptions = event.target.value;
         if (type === "schools") {
           setSelectedSchools(selectedOptions);
-        } else if (type === "activities") {
+        }
+        if (type === "channels") {
+          setSelectedChannels(selectedOptions);
+        } 
+        else if (type === "activities") {
           setSelectedActivities(selectedOptions);
         }
       }
@@ -222,6 +235,25 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
               ))}
             </Select>
           </FormControl>
+          
+          <FormControl sx={{ width: 200, minWidth: 120 }}>
+            <InputLabel sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Channels</InputLabel>
+            <Select
+              multiple
+              value={selectedChannels}
+              onChange={(e) => handleMultiSelectChange(e, "channels")}
+              renderValue={(selected) => selected.join(', ')}
+              sx={{ overflow: 'hidden' }}
+            >
+              {channels.map((channel) => (
+                <MenuItem key={channel.id} value={channel.name}>
+                  <Checkbox checked={selectedChannels.indexOf(channel.name) > -1} />
+                  <ListItemText primary={channel.name} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
           <Button variant="contained" onClick={(e) => sortEvents("date", e)}>
             Date {sortOrder.date === "asc" ? "↑" : "↓"}
           </Button>
@@ -234,6 +266,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
             onClick={() => {
               setSelectedSchools([]);
               setSelectedActivities([]);
+              setSelectedChannels([]);
               setSearchQuery("");
               setSearchResults([]);
               setAppliedFilters('');  // Clear the applied filter text
