@@ -38,20 +38,10 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
 
   useEffect(() => {
     fetchEvents();
-  }, []);
-  
-
-    // // GET fetchEventList 
-    // function fetchEventList() {
-    //   console.log( 'in fetchEventList' );
-    //   axios.get( '/api/events/all' ).then(function( response ){
-    //     console.log( response.data )
-    //     setEventList( response.data ) 
-    //   }).catch( function( err ){
-    //         console.log( err );
-    //         alert( 'error getting test list' );
-    //       })
-    // }
+    if (sortBy) {
+      handleSearch(); // always uses the latest state
+    }
+  }, [sortBy, sortOrder]);
 
    // GET Search
     function searchEvents(searchQuery, selectedSchools, selectedActivities, selectedChannels) {
@@ -94,8 +84,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
             ? a.location.localeCompare(b.location)
             : b.location.localeCompare(a.location)
         );
-      }
-  
+      }      
       setSearchResults(filteredEvents);
       setEventList(filteredEvents);
     })
@@ -147,47 +136,15 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
     handleSearch();
   }
 
-      const handleSort = (sortBy) => {
-        let newSortOrder = 'asc'; // default sort order
-      
-        // Toggle the sort order (asc -> desc -> asc)
-        if (sortBy === 'date') {
-          newSortOrder = sortOrder.date === 'asc' ? 'desc' : 'asc';
-          setSortBy('date');
-          setSortOrder((prev) => ({ ...prev, date: newSortOrder }));
-        } else if (sortBy === 'location') {
-          newSortOrder = sortOrder.location === 'asc' ? 'desc' : 'asc';
-          setSortBy('location');
-          setSortOrder((prev) => ({ ...prev, location: newSortOrder }));
-        }
-        // After updating sort state, trigger handleSearch to update the applied filters text and search results
-        handleSearch();
-      };
-      
-
-    // // Sorting function
-    // const sortEvents = (criteria, event) => {
-    //   event.preventDefault();
-    //   let sortedEvents = [...eventList];
-    //   let newOrder = sortOrder[criteria] === "asc" ? "desc" : "asc"; // Toggle order
-    //   if (criteria === "date") {
-    //     sortedEvents.sort((a, b) => 
-    //       newOrder === "asc" 
-    //         ? new Date(a.date) - new Date(b.date) // Soonest first
-    //         : new Date(b.date) - new Date(a.date) // Latest first
-    //     );
-    //   } else if (criteria === "location") {
-    //     sortedEvents.sort((a, b) =>
-    //       newOrder === "asc"
-    //         ? a.location.localeCompare(b.location) // A-Z
-    //         : b.location.localeCompare(a.location) // Z-A
-    //     );
-    //   }
-    //   setSortOrder((prev) => ({ ...prev, [criteria]: newOrder })); // Update sorting order
-    //   setSortBy(criteria);
-    //   setEventList(sortedEvents);
-    // };
-
+  const handleSort = (criteria) => {
+    const newSortOrderValue = sortOrder[criteria] === 'asc' ? 'desc' : 'asc';
+    setSortBy(criteria);
+    setSortOrder((prev) => ({
+      ...prev,
+      [criteria]: newSortOrderValue,
+    }));
+  };
+  
     const handleClearAll = () => {
       // Reset all filters and sorting
       setSelectedSchools([]);
@@ -198,7 +155,6 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
       setSortBy(null); // Reset sorting
       setSortOrder({ date: "asc", location: "asc" }); // Reset sort order
       setAppliedFilters('Clear all');
-
       // Clear event list and refetch
       setEventList([]); // Clear DOM display
       fetchEvents();    // Re-populate with all events
@@ -277,17 +233,49 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
           <Button variant="contained" onClick={() => handleSort("location")}>
             Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
           </Button>
-
           <Button variant="contained" onClick={handleSearch}>Search</Button>
           <Button variant="outlined" onClick={handleClearAll}>Clear All</Button>
-
         </Box>
       </Box>
       <h4>Filters Applied: {appliedFilters}</h4>
-
     </div>
     </>
   );
 }
 
 export default SearchEvent;
+
+    // // GET fetchEventList 
+    // function fetchEventList() {
+    //   console.log( 'in fetchEventList' );
+    //   axios.get( '/api/events/all' ).then(function( response ){
+    //     console.log( response.data )
+    //     setEventList( response.data ) 
+    //   }).catch( function( err ){
+    //         console.log( err );
+    //         alert( 'error getting test list' );
+    //       })
+    // }
+
+    // // Sorting function
+    // const sortEvents = (criteria, event) => {
+    //   event.preventDefault();
+    //   let sortedEvents = [...eventList];
+    //   let newOrder = sortOrder[criteria] === "asc" ? "desc" : "asc"; // Toggle order
+    //   if (criteria === "date") {
+    //     sortedEvents.sort((a, b) => 
+    //       newOrder === "asc" 
+    //         ? new Date(a.date) - new Date(b.date) // Soonest first
+    //         : new Date(b.date) - new Date(a.date) // Latest first
+    //     );
+    //   } else if (criteria === "location") {
+    //     sortedEvents.sort((a, b) =>
+    //       newOrder === "asc"
+    //         ? a.location.localeCompare(b.location) // A-Z
+    //         : b.location.localeCompare(a.location) // Z-A
+    //     );
+    //   }
+    //   setSortOrder((prev) => ({ ...prev, [criteria]: newOrder })); // Update sorting order
+    //   setSortBy(criteria);
+    //   setEventList(sortedEvents);
+    // };

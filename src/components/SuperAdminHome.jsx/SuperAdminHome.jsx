@@ -1,35 +1,17 @@
+import axios from 'axios';
 import useStore from '../../zustand/store';
 import { useState, useEffect } from 'react';
 import * as React from 'react';
-import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography
-} from '@mui/material';
-import {
-  List,
-  ListItem,
-  ListItemText,
-  Box,
-  Divider
-} from '@mui/material';
+import { NavLink } from 'react-router-dom';
+import { Accordion, Button, AccordionSummary, AccordionDetails, Typography, List, ListItem, ListItemText, Box, Divider } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
-import Button from '@mui/material/Button';
-import axios from 'axios';
 import DeleteEvent from '../DeleteEvent/DeleteEvent';
 import SearchEvent from '../SearchEvent/SearchEvent';
-import { NavLink } from 'react-router-dom';
 
 function SuperAdminHome() {
   const user = useStore((state) => state.user);
   const logOut = useStore((state) => state.logOut);
   const [eventList, setEventList] = useState([]);
-  const [sortBy, setSortBy] = useState(null);
-  const [sortOrder, setSortOrder] = useState({
-    date: "asc",
-    location: "asc",
-  });
   const [events, setEvents] = useState([]);
 
   // Payment handlers
@@ -115,49 +97,10 @@ function SuperAdminHome() {
      })));
    }, [eventList]);
 
-  // // Sorting function
-  // const sortEvents = (criteria, event) => {
-  //   event.preventDefault();
-  //   let sortedEvents = [...eventList];
-  //   const newOrder = sortOrder[criteria] === "asc" ? "desc" : "asc";
-
-  //   if (criteria === "date") {
-  //     sortedEvents.sort((a, b) => newOrder === "asc"
-  //       ? new Date(a.date) - new Date(b.date)
-  //       : new Date(b.date) - new Date(a.date));
-  //   } else if (criteria === "location") {
-  //     sortedEvents.sort((a, b) => newOrder === "asc"
-  //       ? a.location.localeCompare(b.location)
-  //       : b.location.localeCompare(a.location));
-  //   }
-
-  //   setSortOrder(prev => ({ ...prev, [criteria]: newOrder }));
-  //   setSortBy(criteria);
-  //   setEventList(sortedEvents);
-  // };
-
   return (
     <>
       <h2>LMR SUPER ADMIN HOME PAGE</h2>
       <SearchEvent eventList={eventList} setEventList={setEventList}/>
-      {/* <input placeholder='Search Event' />
-      <div>
-        <Button onClick={(e) => sortEvents("date", e)}>
-          Date {sortOrder.date === "asc" ? "↑" : "↓"}
-        </Button>
-        <Button onClick={(e) => sortEvents("location", e)}>
-          Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
-        </Button>
-        <select>
-          <option value="">Category</option>
-        </select>
-        <select>
-          <option value="">School</option>
-        </select>
-        <Button>Search</Button>
-        <Button>Clear All</Button>
-      </div> */}
-      {/* <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4> */}
 
       <div className='eventCard'>
         {events.length > 0 ? (
@@ -183,23 +126,19 @@ function SuperAdminHome() {
                   </Typography>
                 </div>
               </AccordionSummary>
-
               <NavLink to={`/updateEvent/${event.id}`} state={{event}} style={{ textDecoration: 'none' }}>
-
                   <Button variant="contained">
                     Update Event
                   </Button>
                 </NavLink>
-                
-                <Button variant="contained" className='float-Button' style={{backgroundColor: 'red'}} >
+                <Box className="float-Button" sx={{ backgroundColor: 'red', display: 'inline-block' }}>
                 <DeleteEvent eventId={event.id} />
-                </Button>
+              </Box>
               <AccordionDetails>
                 <Divider sx={{ my: 2 }} />
                 <Typography variant="h6" sx={{ mb: 1 }}>
                   Assigned Roles ({event.participants.length})
                 </Typography>
-               
                 <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
                   {event.participants.map((participant, pIndex) => (
                     <ListItem

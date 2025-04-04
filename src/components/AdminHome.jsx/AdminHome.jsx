@@ -17,6 +17,7 @@ import {
 } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
 import Button from '@mui/material/Button';
+import SearchEvent from '../SearchEvent/SearchEvent';
 import { NavLink } from 'react-router-dom';
 import axios from 'axios'
 
@@ -70,32 +71,6 @@ function AdminHome() {
         console.log("GET /api/event is broken")
       })
   }
-  // Sorting function
-  const sortEvents = (criteria, event) => {
-    event.preventDefault();
-
-    let sortedEvents = [...eventList];
-    let newOrder = sortOrder[criteria] === "asc" ? "desc" : "asc"; // Toggle order
-
-    if (criteria === "date") {
-      sortedEvents.sort((a, b) =>
-        newOrder === "asc"
-          ? new Date(a.date) - new Date(b.date) // Soonest first
-          : new Date(b.date) - new Date(a.date) // Latest first
-      );
-    } else if (criteria === "location") {
-      sortedEvents.sort((a, b) =>
-        newOrder === "asc"
-          ? a.location.localeCompare(b.location) // A-Z
-          : b.location.localeCompare(a.location) // Z-A
-      );
-    }
-
-    setSortOrder((prev) => ({ ...prev, [criteria]: newOrder })); // Update sorting order
-    setSortBy(criteria);
-    setEventList(sortedEvents);
-  };
-
 
   useEffect(() => {
     fetchEvent();
@@ -135,26 +110,8 @@ function AdminHome() {
   
   return (
     <>
-      <h2>LMR SUPER ADMIN HOME PAGE</h2>
-      <input placeholder='Search Event' />
-      <div>
-        <button onClick={(e) => sortEvents("date", e)}>
-          Date {sortOrder.date === "asc" ? "↑" : "↓"}
-        </button>
-        <button onClick={(e) => sortEvents("location", e)}>
-          Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
-        </button>
-        <select>
-          <option value="">Category</option>
-        </select>
-        <select>
-          <option value="">School</option>
-        </select>
-        <button>Search</button>
-        <button>Clear All</button>
-      </div>
-
-      <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
+      <h2>LMR ADMIN HOME PAGE</h2>
+      <SearchEvent eventList={eventList} setEventList={setEventList}/>
       <div className='eventCard'>
         {events.length > 0 ? (
           events.map((event, index) => ( // Changed from eventList to events
@@ -233,9 +190,9 @@ function AdminHome() {
         )}
       </div>
 
-      <h5></h5>
+      {/* <h5></h5>
       <p>Your ID is: {user.id}</p>
-      <button onClick={logOut}>Log Out</button>
+      <button onClick={logOut}>Log Out</button> */}
     </>
   );
 }
