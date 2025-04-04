@@ -311,15 +311,4 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
 
 export default StudentHomePage;
 
-//                 {/* Use NavLink to navigate to the updateEvent page */}
-//                 <NavLink 
-//   to={`/updateEvent/${event.id}/${event.title}`} 
-//   style={{ textDecoration: 'none' }} 
-//   state={{ event }}
-// >
-//   <Button size="small">
-//     Update Event
-//   </Button>
-// </NavLink>
-
 
