@@ -18,6 +18,7 @@ import { IoIosArrowDropdown } from "react-icons/io";
 import Button from '@mui/material/Button';
 import axios from 'axios';
 import DeleteEvent from '../DeleteEvent/DeleteEvent';
+import SearchEvent from '../SearchEvent/SearchEvent';
 import { NavLink } from 'react-router-dom';
 
 function SuperAdminHome() {
@@ -114,31 +115,32 @@ function SuperAdminHome() {
      })));
    }, [eventList]);
 
-  // Sorting function
-  const sortEvents = (criteria, event) => {
-    event.preventDefault();
-    let sortedEvents = [...eventList];
-    const newOrder = sortOrder[criteria] === "asc" ? "desc" : "asc";
+  // // Sorting function
+  // const sortEvents = (criteria, event) => {
+  //   event.preventDefault();
+  //   let sortedEvents = [...eventList];
+  //   const newOrder = sortOrder[criteria] === "asc" ? "desc" : "asc";
 
-    if (criteria === "date") {
-      sortedEvents.sort((a, b) => newOrder === "asc"
-        ? new Date(a.date) - new Date(b.date)
-        : new Date(b.date) - new Date(a.date));
-    } else if (criteria === "location") {
-      sortedEvents.sort((a, b) => newOrder === "asc"
-        ? a.location.localeCompare(b.location)
-        : b.location.localeCompare(a.location));
-    }
+  //   if (criteria === "date") {
+  //     sortedEvents.sort((a, b) => newOrder === "asc"
+  //       ? new Date(a.date) - new Date(b.date)
+  //       : new Date(b.date) - new Date(a.date));
+  //   } else if (criteria === "location") {
+  //     sortedEvents.sort((a, b) => newOrder === "asc"
+  //       ? a.location.localeCompare(b.location)
+  //       : b.location.localeCompare(a.location));
+  //   }
 
-    setSortOrder(prev => ({ ...prev, [criteria]: newOrder }));
-    setSortBy(criteria);
-    setEventList(sortedEvents);
-  };
+  //   setSortOrder(prev => ({ ...prev, [criteria]: newOrder }));
+  //   setSortBy(criteria);
+  //   setEventList(sortedEvents);
+  // };
 
   return (
     <>
       <h2>LMR SUPER ADMIN HOME PAGE</h2>
-      <input placeholder='Search Event' />
+      <SearchEvent eventList={eventList} setEventList={setEventList}/>
+      {/* <input placeholder='Search Event' />
       <div>
         <Button onClick={(e) => sortEvents("date", e)}>
           Date {sortOrder.date === "asc" ? "↑" : "↓"}
@@ -154,9 +156,8 @@ function SuperAdminHome() {
         </select>
         <Button>Search</Button>
         <Button>Clear All</Button>
-      </div>
-
-      <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
+      </div> */}
+      {/* <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4> */}
 
       <div className='eventCard'>
         {events.length > 0 ? (
@@ -252,9 +253,9 @@ function SuperAdminHome() {
           <p>No events available</p>
         )}
       </div>
-      <h5></h5>
-      <p>Your ID is: {user.id}</p>
-      <Button onClick={logOut}>Log Out</Button>
+      {/* <h5></h5> */}
+      {/* <p>Your ID is: {user.id}</p> */}
+      {/* <Button onClick={logOut}>Log Out</Button> */}
     </>
   );
 }

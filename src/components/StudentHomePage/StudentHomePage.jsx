@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react';
 import { Box, Accordion, AccordionSummary, AccordionDetails, AccordionActions, Button, Typography, TextField, Select, MenuItem, InputLabel, FormControl, ListItemText, Checkbox } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
 import moment from 'moment';
+import SearchEvent from '../SearchEvent/SearchEvent';
 import axios from 'axios';
 
 function StudentHomePage() {
@@ -191,6 +192,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
 
 <div>
       <h2>LMR STUDENT HOME PAGE</h2>
+      <SearchEvent eventList={eventList} setEventList={setEventList}/>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
         {/* First Row: Search Input, Schools, Activities, Sorting, and Action Buttons */}
         <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-start', width: '100%' }}>
