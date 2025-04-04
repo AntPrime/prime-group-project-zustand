@@ -9,71 +9,71 @@ const {
 
 const router = express.Router();
 
-//GET route for search feature for events
-// router.get('/', (req, res)=>{
-//   const searchQuery = req.query.q || '';
-//   const queryText = ` 
-// SELECT events.id AS "events id", 
-// events.title AS "title",
-// categories.activity AS "activity", 
-// events.date AS "date",
-// events.time AS "time",
-// events.location AS "location",  
-// schools.name AS "schoolname", 
-// pbp_user.username AS "play-by-play",
-// color_comm_user.username AS "color comm.",
-// camera.username AS "camera",
-// producer.username AS "producer",
-// events.channel AS "channel", 
-// events.notes AS "notes"
-// FROM "events"
-// LEFT JOIN "categories" ON events.activities_id = categories.id
-// LEFT JOIN "user" AS "pbp_user" ON pbp_user.id = events.play_by_play
-// LEFT JOIN "user" AS "color_comm_user" ON color_comm_user.id = events.color_commentator
-// LEFT JOIN "user" AS "camera" ON camera.id = events.camera
-// LEFT JOIN "user" AS "producer" ON producer.id = events.producer
-// LEFT JOIN "schools" ON schools.id = events.school_id 
-// WHERE events.title ILIKE $1
-// OR categories.activity ILIKE $1
-// OR TO_CHAR(events.date, 'YYYY-MM-DD') ILIKE $1
-// OR events.location ILIKE $1
-// OR schools.name ILIKE $1
-// OR pbp_user.username ILIKE $1
-// OR color_comm_user.username ILIKE $1
-// OR camera.username ILIKE $1
-// OR producer.username ILIKE $1
-// OR events.channel ILIKE $1;`;
-// const values = [`%${searchQuery}%`]
-//   pool.query(queryText, values)
-//     .then(result => {
-//       // Transform raw data to enforce consistent naming
-//       const cleanedEvents = result.rows.map(event => ({
-//         id: event.event_id,
-//         title: event.title,
-//         activity: event.activity,
-//         date: event.date,  // Already formatted as YYYY-MM-DD
-//         time: event.time,   // Already formatted as HH:MM
-//         location: event.location,
-//         school_name: event.school_name,
-//         channel: event.channel,
-//         notes: event.notes,
-//         play_by_play: event.play_by_play,
-//         color_commentator: event.color_commentator,
-//         camera: event.camera,
-//         producer: event.producer,
-//         play_by_play_username: event.play_by_play_username,
-//         color_commentator_username: event.color_commentator_username,
-//         camera_username: event.camera_username,
-//         producer_username: event.producer_username
-//       }));
+// GET route for search feature for events
+router.get('/', (req, res)=>{
+  const searchQuery = req.query.q || '';
+  const queryText = ` 
+SELECT events.id AS "events id", 
+events.title AS "title",
+categories.activity AS "activity", 
+events.date AS "date",
+events.time AS "time",
+events.location AS "location",  
+schools.name AS "schoolname", 
+pbp_user.username AS "play-by-play",
+color_comm_user.username AS "color comm.",
+camera.username AS "camera",
+producer.username AS "producer",
+events.channel AS "channel", 
+events.notes AS "notes"
+FROM "events"
+LEFT JOIN "categories" ON events.activities_id = categories.id
+LEFT JOIN "user" AS "pbp_user" ON pbp_user.id = events.play_by_play
+LEFT JOIN "user" AS "color_comm_user" ON color_comm_user.id = events.color_commentator
+LEFT JOIN "user" AS "camera" ON camera.id = events.camera
+LEFT JOIN "user" AS "producer" ON producer.id = events.producer
+LEFT JOIN "schools" ON schools.id = events.school_id 
+WHERE events.title ILIKE $1
+OR categories.activity ILIKE $1
+OR TO_CHAR(events.date, 'YYYY-MM-DD') ILIKE $1
+OR events.location ILIKE $1
+OR schools.name ILIKE $1
+OR pbp_user.username ILIKE $1
+OR color_comm_user.username ILIKE $1
+OR camera.username ILIKE $1
+OR producer.username ILIKE $1
+OR events.channel ILIKE $1;`;
+const values = [`%${searchQuery}%`]
+  pool.query(queryText, values)
+    .then(result => {
+      // Transform raw data to enforce consistent naming
+      const cleanedEvents = result.rows.map(event => ({
+        id: event.event_id,
+        title: event.title,
+        activity: event.activity,
+        date: event.date,  // Already formatted as YYYY-MM-DD
+        time: event.time,   // Already formatted as HH:MM
+        location: event.location,
+        school_name: event.school_name,
+        channel: event.channel,
+        notes: event.notes,
+        play_by_play: event.play_by_play,
+        color_commentator: event.color_commentator,
+        camera: event.camera,
+        producer: event.producer,
+        play_by_play_username: event.play_by_play_username,
+        color_commentator_username: event.color_commentator_username,
+        camera_username: event.camera_username,
+        producer_username: event.producer_username
+      }));
       
-//       res.status(200).json(cleanedEvents);
-//     })
-//     .catch(err => {
-//       console.error('[GET /clean Error]', err);
-//       res.status(500).json({ error: 'Database error' });
-//     });
-// });
+      res.status(200).json(cleanedEvents);
+    })
+    .catch(err => {
+      console.error('[GET /clean Error]', err);
+      res.status(500).json({ error: 'Database error' });
+    });
+});
 
 //GET ROUTE to map through and select roles on events: 
 router.get('/all', (req, res) => {
