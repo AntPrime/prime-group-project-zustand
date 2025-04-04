@@ -203,4 +203,105 @@ router.delete("/:id", ( req, res )=>{
       res.sendStatus( 400 );
   })
 })
+
+// Add this new route to update a user's event role
+router.put('/update-role', async (req, res) => {
+  try {
+    const { eventId, userId, role } = req.body;
+    
+    // Validate required parameters
+    if (!eventId || !userId || !role) {
+      return res.status(400).send({ error: 'Missing required parameters' });
+    }
+    
+    // Determine which column to update based on the role
+    let roleColumn;
+    switch (role) {
+      case 'Play-by-Play':
+        roleColumn = 'play_by_play';
+        break;
+      case 'Color Commentator':
+        roleColumn = 'color_commentator';
+        break;
+      case 'Camera':
+        roleColumn = 'camera';
+        break;
+      case 'Producer':
+        roleColumn = 'producer';
+        break;
+      default:
+        return res.status(400).send({ error: 'Invalid role' });
+    }
+    
+    // Update the event with the new user ID for the specified role
+    const query = `
+      UPDATE events
+      SET ${roleColumn} = $1
+      WHERE id = $2
+      RETURNING *
+    `;
+    
+    const result = await pool.query(query, [userId, eventId]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).send({ error: 'Event not found' });
+    }
+    
+    res.send(result.rows[0]);
+  } catch (err) {
+    console.error('Error updating event role:', err);
+    res.status(500).send({ error: 'Server error', details: err.message });
+  }
+});
+
+// Add this new route to delete a user's event role
+router.put('/delete-role', async (req, res) => {
+  try {
+    const { eventId, role } = req.body;
+    
+    // Validate required parameters
+    if (!eventId || !role) {
+      return res.status(400).send({ error: 'Missing required parameters' });
+    }
+    
+    // Determine which column to update based on the role
+    let roleColumn;
+    switch (role) {
+      case 'Play-by-Play':
+        roleColumn = 'play_by_play';
+        break;
+      case 'Color Commentator':
+        roleColumn = 'color_commentator';
+        break;
+      case 'Camera':
+        roleColumn = 'camera';
+        break;
+      case 'Producer':
+        roleColumn = 'producer';
+        break;
+      default:
+        return res.status(400).send({ error: 'Invalid role' });
+    }
+    
+    // Set the role column to NULL to remove the user from the role
+    const query = `
+      UPDATE events
+      SET ${roleColumn} = NULL
+      WHERE id = $1
+      RETURNING *
+    `;
+    
+    const result = await pool.query(query, [eventId]);
+    
+    if (result.rows.length === 0) {
+      return res.status(404).send({ error: 'Event not found' });
+    }
+    
+    res.send(result.rows[0]);
+  } catch (err) {
+    console.error('Error deleting event role:', err);
+    res.status(500).send({ error: 'Server error', details: err.message });
+  }
+});
+
 module.exports = router;
