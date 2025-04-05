@@ -49,16 +49,16 @@ function StudentHomePage() {
       return moment(dateString).format("MM/DD/YYYY"); // Example: 03/30/2025
     }
     function formatTime(timeString) {
-      return moment(timeString, "HH:mm:ss").format("h:mm A"); // Example: 3:30 PM
-    }
+      return moment(timeString, "HH:mm:ss").format("h:mm a"); // 'a' gives you am/pm
+    }    
     
     return (
       <>
-<div>
-      <h2>LMR STUDENT HOME PAGE</h2>
-      <SearchEvent eventList={eventList} setEventList={setEventList}/>
-    </div>
-        <div className='eventCard'>
+      <div>
+        <h2>LMR STUDENT HOME PAGE</h2>
+        <SearchEvent eventList={eventList} setEventList={setEventList} />
+      </div>
+      <div className='eventCard'>
         {eventList.length > 0 ? (
           eventList.map((event, index) => (
             <Accordion key={index} sx={{ mb: 2 }}>
@@ -79,19 +79,22 @@ function StudentHomePage() {
                   <strong>Date:</strong> {formatDate(event.date)}
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}>
-                  <strong>Time:</strong> {formatTime(event.time)} 
+                  <strong>Time:</strong> {formatTime(event.time)}
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}>
                   <strong>Streaming Channel:</strong> {event.channel}
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}>
-                  <strong>Schools:</strong> {event.school_name} vs {event.opponent_name}
+                  <strong>School:</strong> {event.school_name || "N/A"}
                 </Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}>
-                  <strong>Location:</strong> {event.location}
+                  <strong>Activity:</strong> {event.activity || "N/A"}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Location:</strong> {event.location || "N/A"}
                 </Typography>
                 <Typography variant="body2">
-                  <strong>Notes:</strong> {event.notes}
+                  <strong>Notes:</strong> {event.notes || "N/A"}
                 </Typography>
               </AccordionDetails>
               <AccordionActions>

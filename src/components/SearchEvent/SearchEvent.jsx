@@ -6,7 +6,7 @@ import axios from 'axios';
 function SearchEvent({ eventList, setEventList }) {
   const fetchEvents = useStore((state) => state.fetchEvents);
   const [searchQuery, setSearchQuery] = useState("");
-  const [searchResults, setSearchResults] = useState([]);
+  // const [searchResults, setSearchResults] = useState([]);
   const [appliedFilters, setAppliedFilters] = useState('');
 // Multi-select states
 const [sortBy, setSortBy] = useState(null);
@@ -36,28 +36,29 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
     { id: 4, name: 'RogersTv' },
   ]);
 
+  // useEffect(() => {
+  //   fetchEvents(); // This might fetch all events initially
+  // }, [fetchEvents]);
+
   useEffect(() => {
     fetchEvents();
     if (sortBy) {
-      handleSearch(); // always uses the latest state
+      handleSearch();
     }
-  }, [sortBy, sortOrder]);
+  }, [fetchEvents, sortBy, sortOrder]);  
+
+  function handleSearch() {
+    searchEvents(searchQuery, selectedSchools, selectedActivities, selectedChannels);
+  }
 
    // GET Search
-    function searchEvents(searchQuery, selectedSchools, selectedActivities, selectedChannels) {
-      axios.get(`/api/events?q=${searchQuery}`).then((searchResponse) => {
-        const searchResults = searchResponse.data || [];
-        console.log("Search response:", searchResults);
-        // No Search results
-        if (!searchResults.length) {
-          console.log("No results searched");
-          setSearchResults([]);
-          setEventList([]);
-          return;
-        }
-        filterEvents(searchResults, selectedSchools, selectedActivities, selectedChannels);
-      })
-    }
+   function searchEvents(searchQuery, selectedSchools, selectedActivities, selectedChannels) {
+    axios.get(`/api/events?q=${searchQuery}`).then((searchResponse) => {
+      const searchResults = searchResponse.data || [];
+      filterEvents(searchResults, selectedSchools, selectedActivities, selectedChannels);
+    });
+  }
+
   // Filter events selected
   function filterEvents(searchResults, selectedSchools, selectedActivities, selectedChannels) {
     axios.get('/api/events/all').then((fullResponse) => {
@@ -68,8 +69,10 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
         const eventMatchesSchool = selectedSchools.length === 0 || selectedSchools.includes(event.school_name);
         const eventMatchesActivity = selectedActivities.length === 0 || selectedActivities.includes(event.activity);
         const eventMatchesChannel = selectedChannels.length === 0 || selectedChannels.includes(event.channel);
+
         return eventMatchesSearch && eventMatchesSchool && eventMatchesActivity && eventMatchesChannel;
       });
+
   
       // Sort filteredEvents based on sortBy and sortOrder
       if (sortBy === 'date') {
@@ -85,15 +88,46 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
             : b.location.localeCompare(a.location)
         );
       }      
-      setSearchResults(filteredEvents);
+      // setSearchResults(filteredEvents);
       setEventList(filteredEvents);
     })
     .catch((error) => {
       console.error("Error fetching all events:", error);
     });
   }    
+  
+  function handleMultiSelectChange(event, type) {
+    const selectedOptions = event.target.value;
+    if (type === "schools") {
+      setSelectedSchools(selectedOptions);
+    } else if (type === "channels") {
+      setSelectedChannels(selectedOptions);
+    } else if (type === "activities") {
+      setSelectedActivities(selectedOptions);
+    }
+  }
 
-  function handleSearch() {
+  const handleSort = (criteria) => {
+    const newSortOrderValue = sortOrder[criteria] === 'asc' ? 'desc' : 'asc';
+    setSortBy(criteria);
+    setSortOrder((prev) => ({
+      ...prev,
+      [criteria]: newSortOrderValue,
+    }));
+  };
+  
+  const handleClearAll = () => {
+    setSelectedSchools([]);
+    setSelectedActivities([]);
+    setSelectedChannels([]);
+    setSearchQuery("");
+    setSortOrder({ date: "asc", location: "asc" });
+    setAppliedFilters('Clear all');
+    setEventList([]);
+    fetchEvents();
+  };
+
+  useEffect(() => {
     let appliedFilterText = [];
     if (searchQuery) {
       appliedFilterText.push(`SEARCH ${searchQuery}`);
@@ -107,59 +141,9 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
     if (selectedChannels.length > 0) {
       appliedFilterText.push(`CHANNEL ${selectedChannels.join(', ')}`);
     }
-    // Add sorting filter text for date and location
-    if (sortBy && sortOrder[sortBy]) {
-      if (sortBy === 'date') {
-        appliedFilterText.push(`DATE ${sortOrder.date}`);
-      } else if (sortBy === 'location') {
-        appliedFilterText.push(`LOCATION ${sortOrder.location}`);
-      }
-    }
-    // If no filters or sorting are applied, display "No sorting applied"
     setAppliedFilters(appliedFilterText.length > 0 ? appliedFilterText.join(' | ') : 'No sorting applied');
-    // Trigger search with current filters
-    searchEvents(searchQuery, selectedSchools, selectedActivities, selectedChannels);
-  }
+  }, [searchQuery, selectedSchools, selectedActivities, selectedChannels, sortOrder]);
 
-  function handleMultiSelectChange(event, type) {
-    const selectedOptions = event.target.value;
-    if (type === "schools") {
-      setSelectedSchools(selectedOptions);
-    }
-    else if (type === "channels") {
-      setSelectedChannels(selectedOptions);
-    } 
-    else if (type === "activities") {
-      setSelectedActivities(selectedOptions);
-    }
-    // After updating the selection, trigger handleSearch to update filter text and search results
-    handleSearch();
-  }
-
-  const handleSort = (criteria) => {
-    const newSortOrderValue = sortOrder[criteria] === 'asc' ? 'desc' : 'asc';
-    setSortBy(criteria);
-    setSortOrder((prev) => ({
-      ...prev,
-      [criteria]: newSortOrderValue,
-    }));
-  };
-  
-    const handleClearAll = () => {
-      // Reset all filters and sorting
-      setSelectedSchools([]);
-      setSelectedActivities([]);
-      setSelectedChannels([]);
-      setSearchQuery("");
-      setSearchResults([]);
-      setSortBy(null); // Reset sorting
-      setSortOrder({ date: "asc", location: "asc" }); // Reset sort order
-      setAppliedFilters('Clear all');
-      // Clear event list and refetch
-      setEventList([]); // Clear DOM display
-      fetchEvents();    // Re-populate with all events
-};
-      
 
     return (
       <>
@@ -172,7 +156,19 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
             variant="outlined"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            sx={{ width: 200, minWidth: 120 }}
+            sx={{ 
+              backgroundColor: '#fafafa',
+              borderRadius: 1,
+              boxShadow: 1,
+              '& .MuiOutlinedInput-root': {
+                '& fieldset': {
+                  borderColor: '#bdbdbd',
+                },
+                '&:hover fieldset': {
+                  borderColor: '#4caf50',
+                },
+              },
+             }}
           />
           <FormControl sx={{ width: 200, minWidth: 120 }}>
             <InputLabel sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Schools</InputLabel>
@@ -181,7 +177,19 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
               value={selectedSchools}
               onChange={(e) => handleMultiSelectChange(e, "schools")}
               renderValue={(selected) => selected.join(', ')}
-              sx={{ overflow: 'hidden' }}
+              sx={{ 
+                backgroundColor: '#fafafa',
+                borderRadius: 1,
+                boxShadow: 1,
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#bdbdbd',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#4caf50',
+                  },
+                },
+              }}
             >
               {schools.map((school) => (
                 <MenuItem key={school.id} value={school.name}>
@@ -198,7 +206,18 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
               value={selectedActivities}
               onChange={(e) => handleMultiSelectChange(e, "activities")}
               renderValue={(selected) => selected.join(', ')}
-              sx={{ overflow: 'hidden' }}
+              sx={{  backgroundColor: '#fafafa',
+                borderRadius: 1,
+                boxShadow: 1,
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#bdbdbd',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#4caf50',
+                  },
+                }, 
+              }}
             >
               {activities.map((activity) => (
                 <MenuItem key={activity.id} value={activity.name}>
@@ -216,7 +235,18 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
               value={selectedChannels}
               onChange={(e) => handleMultiSelectChange(e, "channels")}
               renderValue={(selected) => selected.join(', ')}
-              sx={{ overflow: 'hidden' }}
+              sx={{  backgroundColor: '#fafafa',
+                borderRadius: 1,
+                boxShadow: 1,
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#bdbdbd',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#4caf50',
+                  },
+                }, 
+              }}
             >
               {channels.map((channel) => (
                 <MenuItem key={channel.id} value={channel.name}>
@@ -237,7 +267,20 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
           <Button variant="outlined" onClick={handleClearAll}>Clear All</Button>
         </Box>
       </Box>
-      <h4>Filters Applied: {appliedFilters}</h4>
+      <Box
+      sx={{
+          mt: 2,
+          mb: 4,
+          p: 2,
+          backgroundColor: 'rgba(0, 128, 0, 0.1)', // soft green
+          border: '1px solid rgba(0, 128, 0, 0.3)',
+          borderRadius: 1,
+          color: '#004d00',
+          fontWeight: 'bold',
+        }}
+      > Filters Applied: {appliedFilters}
+    </Box>
+
     </div>
     </>
   );
@@ -279,3 +322,99 @@ export default SearchEvent;
     //   setSortBy(criteria);
     //   setEventList(sortedEvents);
     // };
+
+
+
+    // function SearchEvent({ eventList, setEventList }) {
+    //   const fetchEvents = useStore((state) => state.fetchEvents);
+    //   const [searchQuery, setSearchQuery] = useState('');
+    //   const [selectedSchools, setSelectedSchools] = useState([]);
+    //   const [selectedActivities, setSelectedActivities] = useState([]);
+    //   const [selectedChannels, setSelectedChannels] = useState([]);
+    //   const [sortOrder, setSortOrder] = useState({ date: 'asc', location: 'asc' });
+    
+    //   // Your internal states for schools, activities, and channels
+    //   const [schools, setSchools] = useState([
+    //     { id: 1, name: 'Albert Lea' },
+    //     { id: 2, name: 'Fairbault' },
+    //     { id: 3, name: 'Northfield' },
+    //   ]);
+      
+    //   const [activities, setActivities] = useState([
+    //     { id: 1, name: 'Basketball' },
+    //     { id: 2, name: 'Tennis' },
+    //     { id: 3, name: 'Football' },
+    //     { id: 4, name: 'Lacrosse' },
+    //     { id: 5, name: 'Hockey' },
+    //   ]);
+    
+    //   const [channels, setChannels] = useState([
+    //     { id: 1, name: 'ZTV' },
+    //     { id: 2, name: 'LeafsTv' },
+    //     { id: 3, name: 'ERTv' },
+    //     { id: 4, name: 'RogersTv' },
+    //   ]);
+    
+    //   useEffect(() => {
+    //     fetchEvents(); // This might fetch all events initially
+    //   }, [fetchEvents]);
+    
+    //   function handleSearch() {
+    //     searchEvents(searchQuery, selectedSchools, selectedActivities, selectedChannels);
+    //   }
+    
+    //   function searchEvents(searchQuery, selectedSchools, selectedActivities, selectedChannels) {
+    //     axios.get(`/api/events?q=${searchQuery}`).then((searchResponse) => {
+    //       const searchResults = searchResponse.data || [];
+    //       if (searchResults.length) {
+    //         filterEvents(searchResults, selectedSchools, selectedActivities, selectedChannels);
+    //       } else {
+    //         setEventList([]);
+    //       }
+    //     });
+    //   }
+    
+    //   function filterEvents(searchResults, selectedSchools, selectedActivities, selectedChannels) {
+    //     axios.get('/api/events/all').then((fullResponse) => {
+    //       const allEvents = fullResponse.data || [];
+    //       const filteredEvents = allEvents.filter(event => {
+    //         const eventMatchesSearch = searchResults.some(result => result.title === event.title);
+    //         const eventMatchesSchool = selectedSchools.length === 0 || selectedSchools.includes(event.school_name);
+    //         const eventMatchesActivity = selectedActivities.length === 0 || selectedActivities.includes(event.activity);
+    //         const eventMatchesChannel = selectedChannels.length === 0 || selectedChannels.includes(event.channel);
+            
+    //         return eventMatchesSearch && eventMatchesSchool && eventMatchesActivity && eventMatchesChannel;
+    //       });
+    
+    //       setEventList(filteredEvents);
+    //     });
+    //   }
+    
+    //   return (
+    //     <div>
+    //       <Box>
+    //         {/* UI components for searching and filtering */}
+    //         <TextField
+    //           value={searchQuery}
+    //           onChange={(e) => setSearchQuery(e.target.value)}
+    //           label="Search"
+    //         />
+    //         {/* Multi-select inputs for schools, activities, and channels */}
+    //         {/* You can pass 'schools', 'activities', 'channels' state and set the filters as needed */}
+    //         <Button onClick={handleSearch}>Search</Button>
+    //       </Box>
+    
+    //       {/* Render events */}
+    //       {eventList.length > 0 ? (
+    //         <ul>
+    //           {eventList.map((event) => (
+    //             <li key={event.id}>{event.title}</li>
+    //           ))}
+    //         </ul>
+    //       ) : (
+    //         <p>No events found</p>
+    //       )}
+    //     </div>
+    //   );
+    // }
+    
