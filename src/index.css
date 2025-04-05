@@ -12,11 +12,12 @@ html, body {
   margin: 0;
   padding: 0;
 }
-
+/* 
+f0f0f0 */
 /* Typography: */
 body {
   font-family: sans-serif;
-  background-color: #f0f0f0;
+  background-color: #ffffff; 
   color: rgba(0, 0, 0, 0.75);
 }
 
@@ -74,13 +75,12 @@ input {
   display: block;
   padding: 5px;
   outline: none;
-  border: 1px solid rgba(0, 0, 0, 0.75);
   margin-bottom: 10px;
 }
 
 input:focus {
   outline: none;
-  box-shadow: 0 0 3px 1px #20c997;
+  /* box-shadow: 0 0 3px 1px #20c997; */
   transition: 0.7s;
 }
 

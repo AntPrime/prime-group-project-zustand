@@ -179,7 +179,6 @@ function App() {
               )
             }
           />
-<Route exact path="/searchEvent" element={<SearchEvent />} />
 <Route path="/studentHomePage" element={<StudentHomePage />} />
 <Route exact path="/updateEvent/:eventId" element={<UpdateEvent />} />
 

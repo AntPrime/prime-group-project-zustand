@@ -35,9 +35,6 @@ function Nav() {
               <li>
                 <NavLink to="/events">Events</NavLink>
               </li>
-              <li>
-                <NavLink to="/searchEvent">searchEvent</NavLink>
-              </li>
             </>
           )
         }
