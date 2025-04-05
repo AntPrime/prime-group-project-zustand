@@ -19,6 +19,7 @@ const assignRoleRouter = require('./routes/assignRole.router');
 const attendedRouter = require('./routes/attended.router');
 const createSchoolRouter = require('./routes/createSchool.router');
 const createActivityRouter = require('./routes/createActivity.router');
+const reportingRouter = require('./routes/reporting.router');
 
 // Apply middleware:
 app.use(express.json());
@@ -36,7 +37,7 @@ app.use('/api/assignRole', assignRoleRouter);
 app.use('/api/events/attended', attendedRouter);
 app.use('/api/createSchool', createSchoolRouter);
 app.use('/api/createActivity', createActivityRouter);
-
+app.use('/api/reporting', reportingRouter);
 
 // Start the server:
 app.listen(PORT, () => {
