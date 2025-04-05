@@ -21,4 +21,5 @@ return (
   </div>
 );
 }
+
 export default CreateNewActivity;
