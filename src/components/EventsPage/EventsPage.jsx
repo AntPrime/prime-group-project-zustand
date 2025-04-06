@@ -3,7 +3,7 @@ import axios from "axios";
 import useStore from '../../zustand/store';
 import { useNavigate } from 'react-router-dom';
 import './EventsPage.css';
-import { Box, Container, TextField, Select, MenuItem, Button, Typography, Divider } from "@mui/material";
+import { Box, Container, TextField, Select, MenuItem, Button, Typography, Divider, Snackbar, Alert} from "@mui/material";
 import CreateNewSchool from "../CreateNewSchool/CreateNewSchool";
 import CreateNewActivity from "../CreateNewActivity/CreateNewActivity"; 
 import ActivitySelect from "../ActivitySelect/ActivitySelect"; 
@@ -25,18 +25,20 @@ function EventsPage() {
   const fetchEvents = useStore((state) => state.fetchEvents);
   const navigate = useNavigate();
   const [schools, setSchools] = useState([]);
-  const [activities, setActivities] = useState([]); // Store activities
+  const [activities, setActivities] = useState([]); 
   const [activeTab, setActiveTab] = useState('details');
-  const [selectedSchoolIds, setSelectedSchoolIds] = useState([]);
+  const [selectedSchoolIds, setSelectedSchoolIds] = useState([]); // Update to manage selected school IDs
   const [selectedActivityIds, setSelectedActivityIds] = useState([]);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
     fetchEvents();
     // Fetch all schools when the component mounts
     axios.get('/api/createSchool/schools')
       .then((res) => {
-        console.log('Schools fetched:', res.data);  // Debugging the fetched schools data
-        setSchools(res.data);  // Update the list of schools in the state
+        console.log('Schools fetched:', res.data);
+        setSchools(res.data);
       })
       .catch((err) => {
         console.error('Error fetching schools:', err.response || err.message);
@@ -44,10 +46,10 @@ function EventsPage() {
       });
     
     // Fetch activities when the component mounts
-    axios.get('/api/createActivity/activities')  // Ensure this matches the updated GET route for fetching activities
+    axios.get('/api/createActivity/activities')
       .then((res) => {
-        console.log('Activities fetched:', res.data);  // Debugging the fetched activities data
-        setActivities(res.data);  // Update the list of activities in the state
+        console.log('Activities fetched:', res.data);
+        setActivities(res.data);
       })
       .catch((err) => {
         console.error('Error fetching activities:', err.response || err.message);
@@ -55,15 +57,14 @@ function EventsPage() {
       });
   }, [fetchEvents]);
 
-  //POST to create a new event 
+  // POST to create a new event
   const createEvent = () => {
     console.log('in createEvent');
     console.log('newEvent:', newEvent);
   
-    // Ensure that selectedSchoolIds and selectedActivityIds are passed correctly
     const updatedEvent = {
       ...newEvent,
-      school_id: selectedSchoolIds[0], // If only one school is selected
+      school_id: selectedSchoolIds[0], // If only one school is selected, pick the first school
       activities_id: selectedActivityIds[0], // If only one activity is selected
     };
   
@@ -71,21 +72,21 @@ function EventsPage() {
       .then(function (response) {
         console.log(response.data);
         fetchEvents();
-        navigate("/studentHomePage"); // navigate to studentHomePage can be changed to the adminPage
+        setSnackbarMessage(`✅ Event "${newEvent.title}" created!`);
+        setSnackbarOpen(true); 
+        setTimeout(() => navigate("/studentHomePage"), 1500);
       })
       .catch(function (err) {
         console.log(err);
         alert('Error creating new event');
       });
   };
-  
 
   return (
     <Box sx={{ display: 'flex', height: '100%', padding: 2 }}>
       {/* Sidebar */}
       <Box sx={{ width: '220px', paddingRight: 4, borderRight: '1px solid #ccc' }}>
         <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold' }}>Settings</Typography>
-  
         <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
           <Typography
             variant="body1"
@@ -99,7 +100,6 @@ function EventsPage() {
           >
             Details
           </Typography>
-  
           <Typography
             variant="body1"
             sx={{
@@ -114,7 +114,7 @@ function EventsPage() {
           </Typography>
         </Box>
       </Box>
-  
+
       {/* Main Content */}
       <Container maxWidth="md" sx={{ flex: 1, marginLeft: 4 }}>
         <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 4 }}>
@@ -147,13 +147,6 @@ function EventsPage() {
           />
         </Box>
 
-        {/* Description Text */}
-        {(newEvent.date || newEvent.time) && (
-          <Typography sx={{ mb: 2, fontStyle: 'italic' }}>
-            {`This event will take place${newEvent.date ? ` on ${moment(newEvent.date).format("MMMM D, YYYY")}` : ''}${newEvent.time ? ` at ${moment(newEvent.time, "HH:mm").format("h:mm A")}` : ''}`}
-          </Typography>
-        )}
-
         {/* Location */}
         <Typography variant="h6" sx={{ mb: 1 }}>Location</Typography>
         <TextField fullWidth variant="outlined" placeholder="Enter location"
@@ -168,7 +161,7 @@ function EventsPage() {
             <SchoolSelect
               schools={schools}
               selectedSchools={selectedSchoolIds}
-              onChange={setSelectedSchoolIds}
+              onChange={setSelectedSchoolIds} // Ensure this is updating correctly
             />
             <ActivitySelect
               activities={activities}
@@ -199,22 +192,13 @@ function EventsPage() {
           onChange={(e) => setNewEvent({ ...newEvent, channel: e.target.value })}
           displayEmpty
           sx={{
-            ...textFieldStyle, // Reuse the existing style
-            '& .MuiOutlinedInput-notchedOutline': {
-              border: 'none',
-            },
-            '&:hover .MuiOutlinedInput-notchedOutline': {
-              border: 'none',
-            },
-            '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
-              border: '2px solid #b0b0b0', // Grey focus border
-            },
-          }}
+            ...textFieldStyle,
+          }} 
           renderValue={(selected) => {
             if (!selected) {
-              return <span style={{ color: '#aaa' }}>Select channel</span>; // Placeholder text
+              return <span style={{ color: '#aaa' }}>Select channel</span>;
             }
-            return selected; // Display the selected channel name
+            return selected;
           }}
         >
           <MenuItem value="Albert Lea Live">Albert Lea Live</MenuItem>
@@ -237,9 +221,46 @@ function EventsPage() {
 
         {/* Buttons */}
         <Box sx={{ display: 'flex', gap: 2 }}>
-          <Button fullWidth variant="contained" sx={cancelBtnStyle}>Cancel</Button>
-          <Button fullWidth variant="contained" onClick={createEvent} sx={saveBtnStyle}>Add Event</Button>
+          <Button fullWidth variant="contained" sx={cancelBtnStyle} onClick={() => navigate("/studentHomePage")}>
+            Cancel
+          </Button>
+          <Button fullWidth variant="contained" onClick={createEvent} sx={saveBtnStyle}>
+            Create
+          </Button>
         </Box>
+
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={2000}
+          onClose={() => setSnackbarOpen(false)}
+          anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+          sx={{
+            top: '40%',
+            transform: 'translateY(-50%)',
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <Alert
+            onClose={() => setSnackbarOpen(false)}
+            severity="success"
+            variant="filled"
+            sx={{
+              width: '50%',
+              fontSize: '1.2rem',
+              padding: 3,
+              borderRadius: 2,
+              boxShadow: 5,
+              textAlign: 'center',
+              backgroundColor: '#d0f0c0',
+              color: '#1a4d1a',
+            }}
+          >
+            {snackbarMessage}
+          </Alert>
+        </Snackbar>
       </Container>
     </Box>
   );
@@ -249,13 +270,20 @@ const textFieldStyle = {
   backgroundColor: '#F2F4F5',
   mb: 2,
   '& .MuiOutlinedInput-root': {
-    '& fieldset': { border: 'none' },
-    '&:hover fieldset': { border: 'none' },
-    '&.Mui-focused fieldset': { border: '2px solid #b0b0b0' },
+    '& fieldset': {
+      borderColor: 'rgba(0, 0, 0, 0.23)',
+    },
+    '&:hover fieldset': {
+      borderColor: '#1976d2',
+    },
+    '&.Mui-focused fieldset': {
+      borderColor: '#1976d2',
+      borderWidth: 2,
+    },
   },
 };
 
 const cancelBtnStyle = { backgroundColor: '#B0B0B0', color: '#fff' };
-const saveBtnStyle = { backgroundColor: '#4CAF50', color: '#fff' };
+const saveBtnStyle = { backgroundColor: '#1976d2', color: '#fff' };
 
 export default EventsPage;

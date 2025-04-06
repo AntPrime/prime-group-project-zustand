@@ -7,22 +7,18 @@ import {
   InputLabel,
   Select,
   MenuItem,
-  Checkbox,
-  ListItemText,
   IconButton,
   TextField,
   Snackbar
 } from "@mui/material";
-import DeleteIcon from '@mui/icons-material/Delete';
 
-function CreateNewActivity({ setActivities, activities }) {
-  const [newActivity, setNewActivity] = useState({ name: '' });
-  const [selectedActivities, setSelectedActivities] = useState([]);
+function CreateNewActivity({ setActivities, activities, selectedActivityId, setSelectedActivityId }) {
   const [isAddingActivity, setIsAddingActivity] = useState(false);
   const [activityName, setActivityName] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
 
-  // Fetch existing activities
+
+  // Fetch activities
   const fetchActivities = () => {
     axios.get('/api/createActivity/activities')
       .then((response) => setActivities(response.data))
@@ -36,29 +32,89 @@ function CreateNewActivity({ setActivities, activities }) {
     fetchActivities();
   }, []);
 
-  // Create a new activity
-const createNewActivity = () => {
-  const newActivityData = { activity: activityName };  // Ensure key is `activity`
-  axios.post('/api/createActivity/activities', newActivityData)
-    .then((response) => {
-      fetchActivities();
-      setActivityName("");
-      setNewActivity({ name: '' });
-      setIsAddingActivity(false);  // Switch back to multi-select mode
-      setSnackbarOpen(true);  // Show snackbar
-      setSelectedActivities((prev) => [...prev, response.id]);  // Select newly created activity by ID
-    })
-    .catch((err) => {
-      console.log('Error creating new activity:', err);
-      alert('Error creating new activity');
-    });
-};
-
-  const handleActivityChange = (event) => {
-    const { value } = event.target;
-    setSelectedActivities(value);
+  const createNewActivity = () => {
+    const newActivityData = { activity: activityName };
+    axios.post('/api/createActivity/activities', newActivityData)
+      .then((response) => {
+        console.log("Create activity response:", response.data); // <-- ADD THIS
+        fetchActivities();
+        setActivityName("");
+        setIsAddingActivity(false);
+        setSnackbarOpen(true);
+        // Optionally auto-select the new one
+        setSelectedActivityId(response.data.id);
+      })
+      .catch((err) => {
+        console.log('Error creating new activity:', err);
+      });
   };
 
+  return (
+    <Box sx={{ marginTop: 4 }}>
+      <Button onClick={() => setIsAddingActivity(!isAddingActivity)}>
+        {isAddingActivity ? "Cancel Adding" : "Add New Activity"}
+      </Button>
+
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        message="New activity added!"
+      />
+
+      <FormControl fullWidth sx={{ marginTop: 2 }}>
+        <InputLabel>Activity</InputLabel>
+        <Select
+          value={selectedActivityId || ""}
+          onChange={(e) => setSelectedActivityId(e.target.value)}
+          sx={{
+            backgroundColor: '#F2F4F5',
+            borderRadius: '8px',
+            '& .MuiOutlinedInput-root': {
+              '& fieldset': { border: 'none' },
+              '&:hover fieldset': { border: 'none' },
+              '&.Mui-focused fieldset': { border: '2px solid #b0b0b0' },
+            },
+          }}
+        >
+          {isAddingActivity ? (
+            <MenuItem disableRipple sx={{ paddingY: 2, paddingX: 2 }}>
+              <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                <TextField
+                  label="New Activity Name"
+                  variant="outlined"
+                  value={activityName}
+                  onChange={(e) => setActivityName(e.target.value)}
+                  fullWidth
+                />
+                <Button
+                  variant="contained"
+                  color="primary"
+                  onClick={createNewActivity}
+                  disabled={!activityName.trim()}
+                  fullWidth
+                >
+                  Add Activity
+                </Button>
+              </Box>
+            </MenuItem>
+          ) : (
+            activities.map((activity) => (
+              <MenuItem key={activity.id} value={activity.id}>
+                {activity.activity}
+              </MenuItem>
+            ))
+          )}
+        </Select>
+      </FormControl>
+    </Box>
+  );
+}
+
+export default CreateNewActivity;
+
+
+// import DeleteIcon from '@mui/icons-material/Delete';
   // const handleDeleteActivity = (activityId) => {
   //   axios.delete(`/api/createActivity/activities/${activityId}`)
   //     .then(() => {
@@ -71,88 +127,10 @@ const createNewActivity = () => {
   //     });
   // };
 
-  return (
-    <Box sx={{ marginTop: 4 }}>
-
-    <Button onClick={() => setIsAddingActivity(!isAddingActivity)}>
-      {isAddingActivity ? "Cancel Adding" : "Add New Activity"}
-    </Button>
-
-    <Snackbar
-      open={snackbarOpen}
-      autoHideDuration={3000}
-      onClose={() => setSnackbarOpen(false)}
-      message="New activity added!"
-    />
-
-    <FormControl fullWidth sx={{ marginTop: 2 }}>
-      <InputLabel>Activities</InputLabel>
-      <Select
-        multiple
-        value={selectedActivities}
-        onChange={handleActivityChange}
-        renderValue={(selected) => {
-          const selectedNames = activities
-            .filter(activity => selected.includes(activity.id))
-            .map(activity => activity.activity);
-          return selectedNames.join(', ') || 'No activities selected';
-        }}
-        sx={{
-          backgroundColor: '#F2F4F5',
-          borderRadius: '8px',
-          '& .MuiOutlinedInput-root': {
-            '& fieldset': { border: 'none' },
-            '&:hover fieldset': { border: 'none' },
-            '&.Mui-focused fieldset': { border: '2px solid #b0b0b0' },
-          },
-          '& .MuiCheckbox-root': {
-            color: '#081C32', // Dark blue checkmarks
-          },
-          '& .Mui-checked': {
-            color: '#081C32', // Dark blue checked state
-          },
-        }}
-      >
-        {isAddingActivity ? (
-          <MenuItem disableRipple sx={{ paddingY: 2, paddingX: 2 }}>
-            <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}>
-              <TextField
-                label="New Activity Name"
-                variant="outlined"
-                value={activityName}
-                onChange={(e) => setActivityName(e.target.value)}
-                fullWidth
-              />
-              <Button
-                variant="contained"
-                color="primary"
-                onClick={createNewActivity}
-                disabled={!activityName.trim()}
-                fullWidth
-              >
-                Add Activity
-              </Button>
-            </Box>
-          </MenuItem>
-        ) : (
-          activities.map((activity) => (
-            <MenuItem key={activity.id} value={activity.id}>
-              <Checkbox checked={selectedActivities.includes(activity.id)} />
-              <ListItemText primary={activity.activity} />
-              {/* <IconButton
+   {/* <IconButton
                 onClick={() => handleDeleteActivity(activity.id)}
                 color="secondary"
                 size="small"
               >
                 <DeleteIcon />
               </IconButton> */}
-            </MenuItem>
-          ))
-        )}
-      </Select>
-    </FormControl>
-  </Box>
-);
-}
-
-export default CreateNewActivity;

@@ -95,7 +95,7 @@ STUDENTPAGE
 # --Roles button works
 ---Role button works however when clicking the role events move around if many many events are displayed?
 
-get rid of delete function 
-comment out channel
-git rid of created by:
+ # get rid of delete function 
+ # comment out channel
+ # git rid of created by:
 might change event looks
