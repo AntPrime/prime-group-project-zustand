@@ -59,17 +59,17 @@ function CreateNewSchool({ setSchools, schools }) {
     setSelectedSchools(value);
   };
 
-  const handleDeleteSchools = (schoolId) => {
-    axios.delete(`/api/createSchool/schools/${schoolId}`)
-      .then(() => {
-        setSchools(prev => prev.filter(school => school.id !== schoolId));
-        setSelectedSchools(prev => prev.filter(id => id !== schoolId));
-      })
-      .catch(err => {
-        console.log('Error deleting school:', err);
-        alert('Error deleting school');
-      });
-  };
+  // const handleDeleteSchools = (schoolId) => {
+  //   axios.delete(`/api/createSchool/schools/${schoolId}`)
+  //     .then(() => {
+  //       setSchools(prev => prev.filter(school => school.id !== schoolId));
+  //       setSelectedSchools(prev => prev.filter(id => id !== schoolId));
+  //     })
+  //     .catch(err => {
+  //       console.log('Error deleting school:', err);
+  //       alert('Error deleting school');
+  //     });
+  // };
 
   return (
     <Box sx={{ marginTop: 4 }}>
@@ -125,13 +125,13 @@ function CreateNewSchool({ setSchools, schools }) {
               <MenuItem key={school.id} value={school.id}>
                 <Checkbox checked={selectedSchools.includes(school.id)} />
                 <ListItemText primary={school.name} />
-                <IconButton
+                {/* <IconButton
                   onClick={() => handleDeleteSchools(school.id)}
                   color="secondary"
                   size="small"
                 >
                   <DeleteIcon />
-                </IconButton>
+                </IconButton> */}
               </MenuItem>
             ))
           )}

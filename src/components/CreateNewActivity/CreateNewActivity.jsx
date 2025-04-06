@@ -59,17 +59,17 @@ const createNewActivity = () => {
     setSelectedActivities(value);
   };
 
-  const handleDeleteActivity = (activityId) => {
-    axios.delete(`/api/createActivity/activities/${activityId}`)
-      .then(() => {
-        setActivities(prev => prev.filter(activity => activity.id !== activityId));
-        setSelectedActivities(prev => prev.filter(id => id !== activityId));
-      })
-      .catch((err) => {
-        console.log('Error deleting activity:', err);
-        alert('Error deleting activity');
-      });
-  };
+  // const handleDeleteActivity = (activityId) => {
+  //   axios.delete(`/api/createActivity/activities/${activityId}`)
+  //     .then(() => {
+  //       setActivities(prev => prev.filter(activity => activity.id !== activityId));
+  //       setSelectedActivities(prev => prev.filter(id => id !== activityId));
+  //     })
+  //     .catch((err) => {
+  //       console.log('Error deleting activity:', err);
+  //       alert('Error deleting activity');
+  //     });
+  // };
 
   return (
     <Box sx={{ marginTop: 4 }}>
@@ -139,13 +139,13 @@ const createNewActivity = () => {
             <MenuItem key={activity.id} value={activity.id}>
               <Checkbox checked={selectedActivities.includes(activity.id)} />
               <ListItemText primary={activity.activity} />
-              <IconButton
+              {/* <IconButton
                 onClick={() => handleDeleteActivity(activity.id)}
                 color="secondary"
                 size="small"
               >
                 <DeleteIcon />
-              </IconButton>
+              </IconButton> */}
             </MenuItem>
           ))
         )}
