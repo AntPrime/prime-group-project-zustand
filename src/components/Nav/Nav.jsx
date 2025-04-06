@@ -24,7 +24,7 @@ function Nav() {
           user.id && (
             <>
               <li>
-                <NavLink to="/">Student Home</NavLink>
+                <NavLink to="/">Event Home</NavLink>
               </li>
               <li>
                 <NavLink to="/adminHome">Admin Home</NavLink>
@@ -34,6 +34,9 @@ function Nav() {
               </li>
               <li>
                 <NavLink to="/events">Events</NavLink>
+              </li>
+              <li> 
+                <NavLink to="/userAttended">User Homepage</NavLink>
               </li>
             </>
           )
