@@ -2,6 +2,7 @@ import useStore from '../../zustand/store'
 import { useState, useEffect } from 'react';
 import { Box, Button, TextField, Select, MenuItem, InputLabel, FormControl, ListItemText, Checkbox } from '@mui/material';
 import axios from 'axios';
+import SchoolSelect from '../SchoolSelect/SchoolSelect';
 
 function SearchEvent({ eventList, setEventList }) {
   const fetchEvents = useStore((state) => state.fetchEvents);
@@ -170,6 +171,9 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
               },
              }}
           />
+
+
+
           <FormControl sx={{ width: 200, minWidth: 120 }}>
             <InputLabel sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Schools</InputLabel>
             <Select
@@ -191,6 +195,7 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
                 },
               }}
             >
+              do someting with this
               {schools.map((school) => (
                 <MenuItem key={school.id} value={school.name}>
                   <Checkbox checked={selectedSchools.indexOf(school.name) > -1} />
@@ -227,7 +232,12 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
               ))}
             </Select>
           </FormControl>
-          
+           
+
+
+
+
+
           <FormControl sx={{ width: 200, minWidth: 120 }}>
             <InputLabel sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Channels</InputLabel>
             <Select
@@ -287,3 +297,62 @@ const [sortOrder, setSortOrder] = useState({ date: "asc", location: "asc"});
 }
 
 export default SearchEvent;
+
+          {/* {/* <FormControl sx={{ width: 200, minWidth: 120 }}>
+            <InputLabel sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Schools</InputLabel>
+            <Select
+              multiple
+              value={selectedSchools}
+              onChange={(e) => handleMultiSelectChange(e, "schools")}
+              renderValue={(selected) => selected.join(', ')}
+              sx={{ 
+                backgroundColor: '#fafafa',
+                borderRadius: 1,
+                boxShadow: 1,
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#bdbdbd',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#4caf50',
+                  },
+                },
+              }}
+            >
+              {/* do someting with this */}
+              {/* {schools.map((school) => (
+                <MenuItem key={school.id} value={school.name}>
+                  <Checkbox checked={selectedSchools.indexOf(school.name) > -1} />
+                  <ListItemText primary={school.name} />
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+          <FormControl sx={{ width: 200, minWidth: 120 }}>
+            <InputLabel sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Activities</InputLabel>
+            <Select
+              multiple
+              value={selectedActivities}
+              onChange={(e) => handleMultiSelectChange(e, "activities")}
+              renderValue={(selected) => selected.join(', ')}
+              sx={{  backgroundColor: '#fafafa',
+                borderRadius: 1,
+                boxShadow: 1,
+                '& .MuiOutlinedInput-root': {
+                  '& fieldset': {
+                    borderColor: '#bdbdbd',
+                  },
+                  '&:hover fieldset': {
+                    borderColor: '#4caf50',
+                  },
+                }, 
+              }}
+            >
+              {activities.map((activity) => (
+                <MenuItem key={activity.id} value={activity.name}>
+                  <Checkbox checked={selectedActivities.indexOf(activity.name) > -1} />
+                  <ListItemText primary={activity.name} />
+                </MenuItem>
+              ))}
+            </Select> */}
+          {/* </FormControl> */}

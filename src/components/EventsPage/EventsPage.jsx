@@ -6,7 +6,8 @@ import './EventsPage.css';
 import { Box, Container, TextField, Select, MenuItem, Button, Typography, Grid, Divider } from "@mui/material";
 import CreateNewSchool from "../CreateNewSchool/CreateNewSchool";
 import CreateNewActivity from "../CreateNewActivity/CreateNewActivity"; 
-import ActivitySelect from "../ActivitySelect/ActivitySelect";  
+import ActivitySelect from "../ActivitySelect/ActivitySelect"; 
+import SchoolSelect from "../SchoolSelect/SchoolSelect";
 import moment from 'moment';
 
 function EventsPage() {
@@ -176,7 +177,7 @@ function EventsPage() {
   <MenuItem value="">Select Activity</MenuItem>
   {activities.map((activity) => (
     <MenuItem key={activity.id} value={activity.id}>
-      {activity.name}
+      {activity.activity}
     </MenuItem>
   ))}
 </Select>

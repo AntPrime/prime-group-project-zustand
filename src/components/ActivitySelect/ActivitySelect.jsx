@@ -1,43 +1,44 @@
-// ActivitySelect.js (new component for multi-select)
 import React from 'react';
-import { Select, MenuItem, Checkbox, ListItemText } from "@mui/material";
+import { Select, MenuItem, Typography } from '@mui/material';
 
-function ActivitySelect({ activities, selectedActivities, handleActivityChange }) {
+function ActivitySelect({ activities, newEvent, setNewEvent }) {
   return (
-    <Select
-      multiple
-      value={selectedActivities}
-      onChange={handleActivityChange}
-      renderValue={(selected) => {
-        const selectedNames = activities
-          .filter(activity => selected.includes(activity.id))
-          .map(activity => activity.activity);
-        return selectedNames.join(', ') || 'No activities selected';
-      }}
-      sx={{
-        backgroundColor: '#F2F4F5',
-        borderRadius: '8px',
-        '& .MuiOutlinedInput-root': {
-          '& fieldset': { border: 'none' },
-          '&:hover fieldset': { border: 'none' },
-          '&.Mui-focused fieldset': { border: '2px solid #b0b0b0' },
-        },
-        '& .MuiCheckbox-root': {
-          color: '#081C32', // Dark blue checkmarks
-        },
-        '& .Mui-checked': {
-          color: '#081C32', // Dark blue checked state
-        },
-      }}
-    >
-      {activities.map((activity) => (
-        <MenuItem key={activity.id} value={activity.id}>
-          <Checkbox checked={selectedActivities.includes(activity.id)} />
-          <ListItemText primary={activity.activity} />
-        </MenuItem>
-      ))}
-    </Select>
+    <>
+      <Typography variant="h6" sx={{ mb: 1 }}>
+        Select Activity
+      </Typography>
+      <Select
+        fullWidth
+        value={newEvent.activities_id || ''}
+        onChange={(e) => setNewEvent({ ...newEvent, activities_id: e.target.value })}
+        displayEmpty
+        sx={{
+          backgroundColor: '#F2F4F5',
+          mb: 2,
+          borderRadius: '8px',
+          '& .MuiOutlinedInput-notchedOutline': {
+            border: 'none',
+          },
+          '&:hover .MuiOutlinedInput-notchedOutline': {
+            border: 'none',
+          },
+          '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
+            border: '2px solid #b0b0b0',
+          },
+        }}
+      >
+        <MenuItem value="">Select Activity</MenuItem>
+        {activities.map((activity) => (
+          <MenuItem key={activity.id} value={activity.id}>
+            {activity.activity}
+          </MenuItem>
+        ))}
+      </Select>
+    </>
   );
 }
 
 export default ActivitySelect;
+
+
+
