@@ -22,7 +22,7 @@ function UpdateEvent( ) {
   const update=(e)=>{
     axios.put(`/api/events`, updatedEvent ).then(( response  )=>{
       console.log( "UpdateEvent PUT", response.data );
-      navigate("/"); 
+      navigate("/superAdminHome", "/adminHome"); 
         }).catch(( err )=>{
           console.log("error in UpdateEvent", err );
         });

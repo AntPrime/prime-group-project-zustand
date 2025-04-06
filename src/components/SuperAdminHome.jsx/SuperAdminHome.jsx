@@ -43,16 +43,29 @@ function SuperAdminHome() {
     }));
   };
 
-  const handleParticipantmarked = (eventIndex, userId) => {
-    setEvents(prev => prev.map((event, idx) => {
-      if (idx !== eventIndex) return event;
-      return {
-        ...event,
-        participants: event.participants.map(p =>
-          p.userId === userId ? { ...p, isMarked: !p.isMarked } : p
-        )
-      };
-    }));
+  const ROLE_MAPPING = {
+    'play-by-play': 'play_by_play',
+    'color commentator': 'color_commentator',
+    'camera': 'camera',
+    'producer': 'producer'
+  };
+  const handleParticipantmarked = (eventId, role) => {
+    // Convert role to snake_case for the API
+    const apiRole = ROLE_MAPPING[role.toLowerCase()];
+    
+    // No need to calculate current status - server handles the toggle
+    axios({
+      method: 'PUT',
+      url: `/api/events/attended/${eventId}`,
+      data: { role: apiRole }
+    })
+    .then(() => {
+      console.log('Successfully toggled attendance');
+      fetchEvent(); // Refresh the event list after update
+    })
+    .catch((error) => {
+      console.log('Error updating attendance', error);
+    });
   };
 
   // Data fetching
@@ -72,38 +85,38 @@ function SuperAdminHome() {
   }, []);
 
   // Update events when eventList changes
-  useEffect(() => {
-    console.log(eventList)
-    setEvents(eventList.map(event => ({
-      ...event,
-      participants: [
-        {
-          role: 'Play-by-Play',
-          userId: event.play_by_play,
-          username: event.play_by_play_username,
-          marked: event.payments?.[event.play_by_play]?.marked || false
-        },
-        {
-          role: 'Color Commentator',
-          userId: event.color_commentator,
-          username: event.color_commentator_username,
-          marked: event.payments?.[event.color_commentator]?.marked || false
-        },
-        {
-          role: 'Camera',
-          userId: event.camera,
-          username: event.camera_username,
-          marked: event.payments?.[event.camera]?.marked || false
-        },
-        {
-          role: 'Producer',
-          userId: event.producer,
-          username: event.producer_username,
-          marked: event.payments?.[event.producer]?.marked || false
-        }
-      ].filter(p => p.userId) 
-    })));
-  }, [eventList]);
+   useEffect(() => {
+     console.log(eventList);
+     setEvents(eventList.map(event => ({
+       ...event,
+       participants: [
+         {
+           role: 'Play-by-Play',
+           userId: event.play_by_play,
+           username: event.play_by_play_username,
+           marked: event.play_by_play_attended || false
+         },
+         {
+           role: 'Color Commentator',
+           userId: event.color_commentator,
+           username: event.color_commentator_username,
+           marked: event.color_commentator_attended || false
+         },
+         {
+           role: 'Camera',
+           userId: event.camera,
+           username: event.camera_username,
+           marked: event.camera_attended || false
+         },
+         {
+           role: 'Producer',
+           userId: event.producer,
+           username: event.producer_username,
+           marked: event.producer_attended || false
+         }
+       ].filter(p => p.userId)
+     })));
+   }, [eventList]);
 
   // Sorting function
   const sortEvents = (criteria, event) => {
@@ -186,6 +199,7 @@ function SuperAdminHome() {
           </div>
 
           <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
+
 
           <div className='eventCard'>
             {events.length > 0 ? (
@@ -286,7 +300,7 @@ function SuperAdminHome() {
       
       <h5></h5>
       <p>Your ID is: {user.id}</p>
-      <button onClick={logOut}>Log Out</button>
+      <Button onClick={logOut}>Log Out</Button>
     </>
   );
 }

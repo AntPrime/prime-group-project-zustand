@@ -86,6 +86,12 @@ INSERT INTO "schools" ("name")
 VALUES ('Albert Lea'),('Faibault'),('Northfield');
 
 SELECT * FROM "schools";
+
+ALTER TABLE events
+ADD COLUMN play_by_play_attended BOOLEAN DEFAULT FALSE,
+ADD COLUMN color_commentator_attended BOOLEAN DEFAULT FALSE,
+ADD COLUMN camera_attended BOOLEAN DEFAULT FALSE,
+ADD COLUMN producer_attended BOOLEAN DEFAULT FALSE;
 -------------------------------------------------------
 --------------------------------------------------
 -- AUTOMAGIC UPDATED_AT:
