@@ -65,5 +65,22 @@ router.post('/logout', (req, res, next) => {
   });
 });
 
+// Add this new route to get all users
+router.get('/all', async (req, res) => {
+  try {
+    // Query to get all users
+    const query = `
+      SELECT id, username, school_id, admin, super_admin, active
+      FROM "user"
+      ORDER BY username
+    `;
+    
+    const result = await pool.query(query);
+    res.send(result.rows);
+  } catch (err) {
+    console.error('Error fetching all users:', err);
+    res.status(500).send({ error: 'Server error' });
+  }
+});
 
 module.exports = router;
