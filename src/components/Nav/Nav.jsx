@@ -42,10 +42,14 @@ function Nav() {
                 </>
               )}
               {user.admin_level >= 2 && (
+                <>
                 <li>
                   <NavLink to="/superAdminHome"> Super Admin Home</NavLink>
                 </li>
-              )}
+                <li>
+                  <NavLink to="/alterAdmin"> Alter Admin</NavLink>
+                </li>
+             </> )}
             </>
           )
         }

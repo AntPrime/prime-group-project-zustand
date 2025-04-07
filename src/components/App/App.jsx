@@ -18,6 +18,7 @@ import UpdateEvent from '../UpdateEvent/UpdateEvent';
 import AdminHome from '../AdminHome.jsx/AdminHome';
 import SuperAdminHome from '../SuperAdminHome.jsx/SuperAdminHome';
 import UserAttended from '../UserAttended.jsx/UserAttended';
+import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
 
 function App() {
   const user = useStore((state) => state.user);
@@ -88,6 +89,17 @@ function App() {
             element={
               user.id ? (
                 <SuperAdminHome />
+              ) : (
+                <Navigate to="/login" replace />
+              )
+            }
+          />
+             <Route
+            exact path="/alterAdmin"
+            element={
+              user.id ? (
+                <AlterAdminRoles
+                 />
               ) : (
                 <Navigate to="/login" replace />
               )
