@@ -27,11 +27,12 @@ router.post('/register', (req, res, next) => {
   const username = req.body.username;
   const hashedPassword = encryptLib.encryptPassword(req.body.password);
 
+//?just added admin_level to set a new user's admin level to zero upon registering.
   const sqlText = `
     INSERT INTO "user"
-      ("username", "password")
+      ("username", "password", "admin_level")
       VALUES
-      ($1, $2);
+      ($1, $2, 0);
   `;
   const sqlValues = [username, hashedPassword];
 

@@ -8,7 +8,8 @@ function Nav() {
   return (
     <nav>
       <ul>
-        { // User is not logged in, render these links:
+        {
+          // User is not logged in, render these links:
           !user.id && (
             <>
               <li>
@@ -20,27 +21,31 @@ function Nav() {
             </>
           )
         }
-        { // User is logged in, render these links:
+        {
+          // User is logged in, render these links based on admin levels:
           user.id && (
             <>
               <li>
                 <NavLink to="/">Event Home</NavLink>
               </li>
-                 <li> 
+              <li>
                 <NavLink to="/userAttended">User Homepage</NavLink>
               </li>
-              {user.admin_level >=1 &&(
-              <li>
-                <NavLink to="/adminHome">Admin Home</NavLink>
-              </li>)}
-              {user.admin_level >=1 &&(
-              <li>
-                <NavLink to="/events">Events</NavLink>
-              </li>)}
-              {user.admin_level >=2 && (
-              <li>
-                <NavLink to="/superAdminHome"> Super Admin Home</NavLink>
-              </li>)}           
+              {user.admin_level >= 1 && (
+                <>
+                  <li>
+                    <NavLink to="/adminHome">Admin Home</NavLink>
+                  </li>
+                  <li>
+                    <NavLink to="/events">Events</NavLink>
+                  </li>
+                </>
+              )}
+              {user.admin_level >= 2 && (
+                <li>
+                  <NavLink to="/superAdminHome"> Super Admin Home</NavLink>
+                </li>
+              )}
             </>
           )
         }
@@ -48,13 +53,8 @@ function Nav() {
         <li>
           <NavLink to="/about">About</NavLink>
         </li>
-        {/* <li>
-          <NavLink to="/events">Events</NavLink>
-        </li> */}
-
       </ul>
     </nav>
-
   );
 }
 
