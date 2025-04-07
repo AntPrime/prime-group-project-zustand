@@ -71,7 +71,7 @@ router.get('/all', async (req, res) => {
   try {
     // Query to get all users
     const query = `
-      SELECT id, username, school_id, admin, super_admin, active
+      SELECT id, username, admin_level, admin, super_admin, active
       FROM "user"
       ORDER BY username
     `;

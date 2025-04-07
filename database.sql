@@ -9,37 +9,41 @@ DROP TABLE IF EXISTS "user";
 --------------------------------------------------
 -- TABLE SCHEMAS:
 
-CREATE TABLE "user"(
-"id" SERIAL PRIMARY KEY,
-"username" VARCHAR (80) UNIQUE NOT NULL,
-"password" VARCHAR (1000) NOT NULL,
-"school_id" INTEGER,
-"admin" BOOLEAN,
-"super_admin" BOOLEAN,
-"active" BOOLEAN
- );
+CREATE TABLE "user" (
+    id integer DEFAULT nextval('users_id_seq'::regclass) PRIMARY KEY,
+    username character varying(80) NOT NULL UNIQUE,
+    password character varying(1000) NOT NULL,
+    admin_level integer,
+    admin boolean,
+    super_admin boolean,
+    active boolean
+);
  
 CREATE TABLE "categories" (
 "id" SERIAL PRIMARY KEY,
 "activity" VARCHAR (100)
  );
  
- CREATE TABLE "events" (
-"id" SERIAL PRIMARY KEY,
-"created_by_id" INTEGER,
-"activities_id" INTEGER,
-"title" VARCHAR(50),
-"date" DATE,
-"time" TIME,
-"school_id" INTEGER,
-"location" VARCHAR (100),
-"play_by_play" INTEGER,
-"color_commentator" INTEGER,
-"camera" INTEGER,
-"producer" INTEGER,
-"channel" VARCHAR (50),
-"notes" VARCHAR (100)
- );
+CREATE TABLE events (
+    id SERIAL PRIMARY KEY,
+    created_by_id integer REFERENCES "user"(id),
+    activities_id integer,
+    title character varying(50),
+    date date,
+    time time without time zone,
+    school_id integer REFERENCES schools(id),
+    location character varying(100),
+    play_by_play integer REFERENCES "user"(id),
+    color_commentator integer REFERENCES "user"(id),
+    camera integer REFERENCES "user"(id),
+    producer integer REFERENCES "user"(id),
+    channel character varying(50),
+    notes character varying(100),
+    play_by_play_attended boolean DEFAULT false,
+    color_commentator_attended boolean DEFAULT false,
+    camera_attended boolean DEFAULT false,
+    producer_attended boolean DEFAULT false
+);
  
  CREATE TABLE "schools" (
 "id" SERIAL PRIMARY KEY,
@@ -87,11 +91,6 @@ VALUES ('Albert Lea'),('Faibault'),('Northfield');
 
 SELECT * FROM "schools";
 
-ALTER TABLE events
-ADD COLUMN play_by_play_attended BOOLEAN DEFAULT FALSE,
-ADD COLUMN color_commentator_attended BOOLEAN DEFAULT FALSE,
-ADD COLUMN camera_attended BOOLEAN DEFAULT FALSE,
-ADD COLUMN producer_attended BOOLEAN DEFAULT FALSE;
 -------------------------------------------------------
 --------------------------------------------------
 -- AUTOMAGIC UPDATED_AT:
