@@ -110,8 +110,6 @@ export default CreateNewSchool;
 
 
 
-
-
 // function CreateNewSchool({ setSchools, schools } ) {
 //   const [ newSchool, setNewSchool]=useState({ name: '', address: ''})
   

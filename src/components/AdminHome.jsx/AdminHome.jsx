@@ -38,10 +38,9 @@ function AdminHome() {
     'producer': 'producer'
   };
   const handleParticipantmarked = (eventId, role) => {
-    // Convert role to snake_case for the API
     const apiRole = ROLE_MAPPING[role.toLowerCase()];
     
-    // No need to calculate current status - server handles the toggle
+   
     axios({
       method: 'PUT',
       url: `/api/events/attended/${eventId}`,
@@ -49,7 +48,7 @@ function AdminHome() {
     })
     .then(() => {
       console.log('Successfully toggled attendance');
-      fetchEvent(); // Refresh the event list after update
+      fetchEvent(); 
     })
     .catch((error) => {
       console.log('Error updating attendance', error);
@@ -57,7 +56,6 @@ function AdminHome() {
   };
   const fetchEvent = () => {
     console.log("fetching..")
-
     axios({
       method: "GET",
       url: "/api/events/all"
@@ -189,10 +187,6 @@ function AdminHome() {
           <p>No events available</p>
         )}
       </div>
-
-      {/* <h5></h5>
-      <p>Your ID is: {user.id}</p>
-      <button onClick={logOut}>Log Out</button> */}
     </>
   );
 }

@@ -8,7 +8,7 @@ import CreateNewSchool from "../CreateNewSchool/CreateNewSchool";
 import CreateNewActivity from "../CreateNewActivity/CreateNewActivity"; 
 import ActivitySelect from "../ActivitySelect/ActivitySelect"; 
 import SchoolSelect from "../SchoolSelect/SchoolSelect";
-import moment from 'moment';
+
 
 function EventsPage() {
   const [newEvent, setNewEvent] = useState({
@@ -27,14 +27,14 @@ function EventsPage() {
   const [schools, setSchools] = useState([]);
   const [activities, setActivities] = useState([]); 
   const [activeTab, setActiveTab] = useState('details');
-  const [selectedSchoolIds, setSelectedSchoolIds] = useState([]); // Update to manage selected school IDs
+  const [selectedSchoolIds, setSelectedSchoolIds] = useState([]); 
   const [selectedActivityIds, setSelectedActivityIds] = useState([]);
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
 
   useEffect(() => {
     fetchEvents();
-    // Fetch all schools when the component mounts
+    // Fetch all schools 
     axios.get('/api/createSchool/schools')
       .then((res) => {
         console.log('Schools fetched:', res.data);
@@ -44,8 +44,7 @@ function EventsPage() {
         console.error('Error fetching schools:', err.response || err.message);
         alert('Error fetching schools');
       });
-    
-    // Fetch activities when the component mounts
+    // Fetch activities 
     axios.get('/api/createActivity/activities')
       .then((res) => {
         console.log('Activities fetched:', res.data);
@@ -64,8 +63,8 @@ function EventsPage() {
   
     const updatedEvent = {
       ...newEvent,
-      school_id: selectedSchoolIds[0], // If only one school is selected, pick the first school
-      activities_id: selectedActivityIds[0], // If only one activity is selected
+      school_id: selectedSchoolIds[0], 
+      activities_id: selectedActivityIds[0], 
     };
   
     axios.post('/api/events', updatedEvent)
@@ -155,7 +154,7 @@ function EventsPage() {
           sx={textFieldStyle}
         />
 
-        {/* Conditional Rendering for Details Tab */}
+        {/* Details Tab */}
         {activeTab === 'details' && (
           <>
             <SchoolSelect
@@ -171,7 +170,7 @@ function EventsPage() {
           </>
         )}
 
-        {/* Conditional Rendering for Advanced Settings Tab */}
+        {/* Advanced Settings Tab */}
         {activeTab === 'advanced' && (
           <Box sx={{ mb: 2 }}>
             <CreateNewSchool setSchools={setSchools} schools={schools} />

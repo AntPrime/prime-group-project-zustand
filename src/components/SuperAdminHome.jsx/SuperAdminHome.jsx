@@ -192,9 +192,6 @@ function SuperAdminHome() {
           <p>No events available</p>
         )}
       </div>
-      {/* <h5></h5> */}
-      {/* <p>Your ID is: {user.id}</p> */}
-      {/* <Button onClick={logOut}>Log Out</Button> */}
     </>
   );
 }

@@ -12,7 +12,6 @@ function StudentHomePage() {
   const [eventList, setEventList] = useState([]);
 
   useEffect(()=> {
-    // fetchEvents()
     fetchEventList()
   }, [] );
 
@@ -72,9 +71,6 @@ function StudentHomePage() {
                 </Typography>
               </AccordionSummary>
               <AccordionDetails>
-                <Typography variant="body1" sx={{ mb: 1 }}>
-                  <strong>Created by:</strong> {event.created_by_id}
-                </Typography>
                 <Typography variant="body1" sx={{ mb: 1 }}>
                   <strong>Date:</strong> {formatDate(event.date)}
                 </Typography>

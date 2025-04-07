@@ -5,13 +5,13 @@ const SchoolSelect = ({ schools, selectedSchools, onChange }) => {
     <FormControl fullWidth variant="outlined" sx={{ mb: 2 }}>
       <InputLabel>School</InputLabel>
       <Select
-        value={selectedSchools[0] || ""}  // Bind the selected school here
-        onChange={(e) => onChange([e.target.value])}  // Update selectedSchools when a school is selected
+        value={selectedSchools[0] || ""}  
+        onChange={(e) => onChange([e.target.value])}  
         label="School"
       >
         {schools.map((school) => (
           <MenuItem key={school.id} value={school.id}>
-            {school.name}  {/* Make sure this matches the field name in your school object */}
+            {school.name} 
           </MenuItem>
         ))}
       </Select>
