@@ -26,18 +26,21 @@ function Nav() {
               <li>
                 <NavLink to="/">Event Home</NavLink>
               </li>
-              <li>
-                <NavLink to="/adminHome">Admin Home</NavLink>
-              </li>
-              <li>
-                <NavLink to="/superAdminHome"> Super Admin Home</NavLink>
-              </li>
-              <li>
-                <NavLink to="/events">Events</NavLink>
-              </li>
-              <li> 
+                 <li> 
                 <NavLink to="/userAttended">User Homepage</NavLink>
               </li>
+              {user.admin_level >=1 &&(
+              <li>
+                <NavLink to="/adminHome">Admin Home</NavLink>
+              </li>)}
+              {user.admin_level >=1 &&(
+              <li>
+                <NavLink to="/events">Events</NavLink>
+              </li>)}
+              {user.admin_level >=2 && (
+              <li>
+                <NavLink to="/superAdminHome"> Super Admin Home</NavLink>
+              </li>)}           
             </>
           )
         }
