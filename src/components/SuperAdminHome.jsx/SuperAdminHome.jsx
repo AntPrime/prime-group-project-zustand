@@ -8,20 +8,18 @@ import {
   Typography,
   Tabs,
   Tab,
-  Box
-} from '@mui/material';
-import {
+  Box,
+  Button,
+  Divider,
   List,
   ListItem,
   ListItemText,
-  Divider
 } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
-import Button from '@mui/material/Button';
 import axios from 'axios';
-import DeleteEvent from '../DeleteEvent/DeleteEvent';
 import { NavLink } from 'react-router-dom';
 import StudentsTab from '../StudentsTab/StudentsTab';
+import DeleteEvent from '../DeleteEvent/DeleteEvent';
 
 function SuperAdminHome() {
   const user = useStore((state) => state.user);
@@ -34,6 +32,7 @@ function SuperAdminHome() {
   });
   const [events, setEvents] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
+
 
   // Payment handlers
   const handleMarkmarked = (index) => {
@@ -49,6 +48,7 @@ function SuperAdminHome() {
     'camera': 'camera',
     'producer': 'producer'
   };
+
   const handleParticipantmarked = (eventId, role) => {
     const apiRole = ROLE_MAPPING[role.toLowerCase()];
   
@@ -84,12 +84,12 @@ function SuperAdminHome() {
         // Optionally, rollback the optimistic update if necessary
       });
   };
-  
 
   // Data fetching
   const fetchEvent = () => {
     axios.get("/api/events/all")
       .then((response) => {
+        console.log(response.data);
         setEventList(response.data);
       })
       .catch((err) => {
@@ -102,37 +102,37 @@ function SuperAdminHome() {
     fetchEvent();
   }, []);
   useEffect(() => {
-    setEvents(eventList.map((event) => ({
-      ...event,
-      participants: [
-        {
-          role: 'Play-by-Play',
-          userId: event.play_by_play,
-          username: event.play_by_play_username,
-          marked: event.play_by_play_attended || false
-        },
-        {
-          role: 'Color Commentator',
-          userId: event.color_commentator,
-          username: event.color_commentator_username,
-          marked: event.color_commentator_attended || false
-        },
-        {
-          role: 'Camera',
-          userId: event.camera,
-          username: event.camera_username,
-          marked: event.camera_attended || false
-        },
-        {
-          role: 'Producer',
-          userId: event.producer,
-          username: event.producer_username,
-          marked: event.producer_attended || false
-        }
-      ].filter(p => p.userId)  // Ensure you're only adding participants with userId
-    })));
-  }, [eventList]);
-  
+  setEvents(eventList.map((event) => ({
+    ...event,
+    participants: [
+      {
+        role: 'Play-by-Play',
+        userId: event.play_by_play,
+        username: event.play_by_play_username || 'Unknown',  // Fallback to 'Unknown' if no username
+        marked: event.play_by_play_attended || false
+      },
+      {
+        role: 'Color Commentator',
+        userId: event.color_commentator,
+        username: event.color_commentator_username || 'Unknown',  // Fallback to 'Unknown' if no username
+        marked: event.color_commentator_attended || false
+      },
+      {
+        role: 'Camera',
+        userId: event.camera,
+        username: event.camera_username || 'Unknown',  // Fallback to 'Unknown' if no username
+        marked: event.camera_attended || false
+      },
+      {
+        role: 'Producer',
+        userId: event.producer,
+        username: event.producer_username || 'Unknown',  // Fallback to 'Unknown' if no username
+        marked: event.producer_attended || false
+      }
+    ].filter(p => p.userId)  // Ensure you're only adding participants with userId
+  })));
+}, [eventList]);
+
   // Sorting function
   const sortEvents = (criteria, event) => {
     event.preventDefault();
@@ -215,7 +215,6 @@ function SuperAdminHome() {
 
           <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
 
-
           <div className='eventCard'>
             {events.length > 0 ? (
               events.map((event, index) => (
@@ -245,7 +244,7 @@ function SuperAdminHome() {
                       Update Event
                     </Button>
                   </NavLink>
-                  
+
                   <Button variant="contained" className='float-button' style={{backgroundColor: 'red'}} >
                     <DeleteEvent eventId={event.id} />
                   </Button>
@@ -278,19 +277,16 @@ function SuperAdminHome() {
                           />
                          
                          <Box sx={{ ml: 'auto' }}>
-  <Button
-    size="small"
-    variant="outlined"
-    color={participant.marked ? 'success' : 'primary'}
-    onClick={() => handleParticipantmarked(event.id, participant.role)}
-    type="button" // Prevents form submission if button is inside a form
-  >
-    {participant.marked ? 'Attended ✓' : 'Signed Up'}
-  </Button>
-</Box>
-
-
-
+                           <Button
+                             size="small"
+                             variant="outlined"
+                             color={participant.marked ? 'success' : 'primary'}
+                             onClick={() => handleParticipantmarked(event.id, participant.role)}
+                             type="button"
+                           >
+                             {participant.marked ? 'Attended ✓' : 'Signed Up'}
+                           </Button>
+                         </Box>
                         </ListItem>
                       ))}
                     </List>
@@ -324,4 +320,5 @@ function SuperAdminHome() {
     </>
   );
 }
+
 export default SuperAdminHome;
