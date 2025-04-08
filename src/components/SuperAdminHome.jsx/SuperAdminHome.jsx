@@ -94,14 +94,6 @@ function SuperAdminHome() {
     setActiveTab(newValue);
   };
 
-  const TabPanel = ({ children, value, index }) => {
-    return value === index ? (
-      <Box sx={{ p: 2 }}>
-        {children}
-      </Box>
-    ) : null;
-  };
-
   return (
     <Box sx={{ display: 'flex', height: '100vh', padding: 2 }}>
       {/* Sidebar */}
@@ -113,8 +105,8 @@ function SuperAdminHome() {
           onChange={handleTabChange}
           aria-label="Vertical tabs"
         >
-          <Tab label="Events" />
-          <Tab label="Students" />
+          <Tab label="Events" onClick={() => setActiveTab(0)} />
+          <Tab label="Students" onClick={() => setActiveTab(1)} />
         </Tabs>
       </Box>
 
@@ -122,7 +114,8 @@ function SuperAdminHome() {
       <Box sx={{ flexGrow: 1, pl: 3 }}>
         <Typography variant="h4" gutterBottom>LMR SUPER ADMIN HOME PAGE</Typography>
 
-        <TabPanel value={activeTab} index={0}>
+        {/* Conditionally Render Events Tab */}
+        {activeTab === 0 && (
           <Box className='eventCard'>
             {events.length > 0 ? (
               events.map((event, index) => (
@@ -167,8 +160,8 @@ function SuperAdminHome() {
                         <ListItem
                           key={pIndex}
                           sx={{
-                            backgroundColor: participant.marked ? 'lightgreen' : 'inherit',
-                            transition: 'background-color 0.3s ease',
+                            
+                          
                             mb: 1,
                             borderRadius: 1
                           }}
@@ -212,11 +205,10 @@ function SuperAdminHome() {
               <p>No events available</p>
             )}
           </Box>
-        </TabPanel>
+        )}
 
-        <TabPanel value={activeTab} index={1}>
-          <StudentsTab />
-        </TabPanel>
+        {/* Conditionally Render Students Tab */}
+        {activeTab === 1 && <StudentsTab />}
       </Box>
     </Box>
   );
