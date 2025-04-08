@@ -50,23 +50,41 @@ function SuperAdminHome() {
     'producer': 'producer'
   };
   const handleParticipantmarked = (eventId, role) => {
-    // Convert role to snake_case for the API
     const apiRole = ROLE_MAPPING[role.toLowerCase()];
-    
-    // No need to calculate current status - server handles the toggle
+  
+    // Optimistically update the local state before the API call
+    setEventList((prevEventList) =>
+      prevEventList.map((event) => {
+        if (event.id === eventId) {
+          return {
+            ...event,
+            participants: event.participants.map((participant) =>
+              participant.role === role
+                ? { ...participant, marked: !participant.marked }
+                : participant
+            ),
+          };
+        }
+        return event;
+      })
+    );
+  
+    // Now perform the actual API call
     axios({
       method: 'PUT',
       url: `/api/events/attended/${eventId}`,
-      data: { role: apiRole }
+      data: { role: apiRole },
     })
-    .then(() => {
-      console.log('Successfully toggled attendance');
-      fetchEvent(); // Refresh the event list after update
-    })
-    .catch((error) => {
-      console.log('Error updating attendance', error);
-    });
+      .then(() => {
+        console.log('Successfully toggled attendance');
+        // Optionally, refetch events after updating
+      })
+      .catch((error) => {
+        console.error('Error updating attendance', error);
+        // Optionally, rollback the optimistic update if necessary
+      });
   };
+  
 
   // Data fetching
   const fetchEvent = () => {
@@ -83,41 +101,38 @@ function SuperAdminHome() {
   useEffect(() => {
     fetchEvent();
   }, []);
-
-  // Update events when eventList changes
-   useEffect(() => {
-     console.log(eventList);
-     setEvents(eventList.map(event => ({
-       ...event,
-       participants: [
-         {
-           role: 'Play-by-Play',
-           userId: event.play_by_play,
-           username: event.play_by_play_username,
-           marked: event.play_by_play_attended || false
-         },
-         {
-           role: 'Color Commentator',
-           userId: event.color_commentator,
-           username: event.color_commentator_username,
-           marked: event.color_commentator_attended || false
-         },
-         {
-           role: 'Camera',
-           userId: event.camera,
-           username: event.camera_username,
-           marked: event.camera_attended || false
-         },
-         {
-           role: 'Producer',
-           userId: event.producer,
-           username: event.producer_username,
-           marked: event.producer_attended || false
-         }
-       ].filter(p => p.userId)
-     })));
-   }, [eventList]);
-
+  useEffect(() => {
+    setEvents(eventList.map((event) => ({
+      ...event,
+      participants: [
+        {
+          role: 'Play-by-Play',
+          userId: event.play_by_play,
+          username: event.play_by_play_username,
+          marked: event.play_by_play_attended || false
+        },
+        {
+          role: 'Color Commentator',
+          userId: event.color_commentator,
+          username: event.color_commentator_username,
+          marked: event.color_commentator_attended || false
+        },
+        {
+          role: 'Camera',
+          userId: event.camera,
+          username: event.camera_username,
+          marked: event.camera_attended || false
+        },
+        {
+          role: 'Producer',
+          userId: event.producer,
+          username: event.producer_username,
+          marked: event.producer_attended || false
+        }
+      ].filter(p => p.userId)  // Ensure you're only adding participants with userId
+    })));
+  }, [eventList]);
+  
   // Sorting function
   const sortEvents = (criteria, event) => {
     event.preventDefault();
@@ -261,16 +276,21 @@ function SuperAdminHome() {
                               }
                             }}
                           />
-                          <Box sx={{ ml: 'auto' }}>
-                            <Button
-                              size="small"
-                              variant="outlined"
-                              color={participant.isMarked ? 'success' : 'primary'}
-                              onClick={() => handleParticipantmarked(index, participant.userId)}
-                            >
-                              {participant.isMarked ? 'Attended ✓' : 'Signed Up'}
-                            </Button>
-                          </Box>
+                         
+                         <Box sx={{ ml: 'auto' }}>
+  <Button
+    size="small"
+    variant="outlined"
+    color={participant.marked ? 'success' : 'primary'}
+    onClick={() => handleParticipantmarked(event.id, participant.role)}
+    type="button" // Prevents form submission if button is inside a form
+  >
+    {participant.marked ? 'Attended ✓' : 'Signed Up'}
+  </Button>
+</Box>
+
+
+
                         </ListItem>
                       ))}
                     </List>
