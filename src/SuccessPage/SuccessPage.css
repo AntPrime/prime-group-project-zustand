@@ -1,25 +1,27 @@
-success-page {
-  min-height: 100vh;
+/* Success Page Styles */
+.success-page {
+  min-height: 50vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #1e293b;
-  color: white;
+  background-color: #f0f0f0; 
+  color: #333;
+  font-family: 'Arial', sans-serif; 
 }
 
 .success-content {
   text-align: center;
   padding: 2rem;
-  background: rgba(255, 255, 255, 0.1);
+  background: #ffffff; 
   border-radius: 1rem;
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  animation: fadeIn 0.5s ease-out;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  width: 90%;
+  max-width: 400px;
 }
 
 .success-icon {
   font-size: 4rem;
-  color: #34d399;
+  color: #3b82f6; 
   margin-bottom: 1rem;
   animation: scaleIn 0.5s ease-out;
 }
@@ -27,11 +29,12 @@ success-page {
 .success-message {
   font-size: 1.5rem;
   margin-bottom: 1rem;
-  color: white;
+  color: #333; 
+  font-weight: 600;
 }
 
 .success-redirect {
-  color: #94a3b8;
+  color: #94a3b8; 
   font-size: 0.875rem;
 }
 
