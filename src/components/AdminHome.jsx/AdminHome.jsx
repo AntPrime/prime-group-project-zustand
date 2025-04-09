@@ -8,13 +8,19 @@ import {
   Typography,
   Tabs,
   Tab,
-  Box
+  Box, 
+  TextField,
+  FormControl,
+  InputLabel,
+  Select,
 } from '@mui/material';
 import {
   List,
   ListItem,
   ListItemText,
-  Divider
+  Divider, 
+  MenuItem,
+  Checkbox,
 } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
 import Button from '@mui/material/Button';
@@ -26,6 +32,7 @@ function AdminHome() {
   const user = useStore((state) => state.user);
   const logOut = useStore((state) => state.logOut);
   const [eventList, setEventList] = useState([]);
+  const [searchQuery, setSearchQuery] = useState("");
   const [sortBy, setSortBy] = useState(null);
   const [sortOrder, setSortOrder] = useState({
     date: "asc", // Default: Soonest first
@@ -33,6 +40,10 @@ function AdminHome() {
   });
   const [events, setEvents] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
+  const [selectedSchools, setSelectedSchools] = useState([]);
+  const [selectedActivities, setSelectedActivities] = useState([]);
+  const [appliedFilters, setAppliedFilters] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
 
   const ROLE_MAPPING = {
     'play-by-play': 'play_by_play',
@@ -40,6 +51,20 @@ function AdminHome() {
     'camera': 'camera',
     'producer': 'producer'
   };
+    const [schools, setSchools] = useState([
+      { id: 1, name: 'Albert Lea' },
+      { id: 2, name: 'Fairbault' },
+      { id: 3, name: 'Northfield' },
+    ]);
+  
+    const [activities, setActivities] = useState([
+      { id: 1, name: 'Basketball' },
+      { id: 2, name: 'Tennis' },
+      { id: 3, name: 'Football' },
+      { id: 4, name: 'Lacrosse' },
+      { id: 5, name: 'Hockey' },
+    ]);
+    
   const handleParticipantmarked = (eventId, role) => {
     // Convert role to snake_case for the API
     const apiRole = ROLE_MAPPING[role.toLowerCase()];
@@ -74,6 +99,38 @@ function AdminHome() {
         console.log("GET /api/event is broken")
       })
   }
+    function searchEvents(searchQuery, selectedSchools, selectedActivities) {
+        axios.get(`/api/events?q=${searchQuery}`).then((searchResponse) => {
+          const searchResults = searchResponse.data || [];
+          console.log("Search response:", searchResults);
+          // No Search results
+          if (!searchResults.length) {
+            console.log("No results searched");
+            setSearchResults([]);
+            setEventList([]);
+            return;
+          }
+          filterEvents(searchResults, selectedSchools, selectedActivities);
+        })
+      }
+  function handleSearch() {
+    // Track applied filters
+    let appliedFilterText = '';
+    if (searchQuery) {
+      appliedFilterText += `SEARCH ${searchQuery} `;
+    }
+    if (selectedSchools.length > 0) {
+      appliedFilterText += `SCHOOL ${selectedSchools.join(', ')} `;
+    }
+    if (selectedActivities.length > 0) {
+      appliedFilterText += `ACTIVITY ${selectedActivities.join(', ')} `;
+    }
+    else {
+      appliedFilterText += 'No sorting applied';
+    }
+    setAppliedFilters(appliedFilterText); // Set the filter message
+    searchEvents(searchQuery, selectedSchools, selectedActivities);
+  }
   // Sorting function
   const sortEvents = (criteria, event) => {
     event.preventDefault();
@@ -99,7 +156,27 @@ function AdminHome() {
     setSortBy(criteria);
     setEventList(sortedEvents);
   };
-
+  function filterEvents(searchResults, selectedSchools, selectedActivities) {
+    axios.get('/api/events/all').then((fullResponse) => {
+      const allEvents = fullResponse.data || [];
+      console.log("All Events:", allEvents);
+      
+      // Filter events based on search, schools, and activities
+      const filteredEvents = allEvents.filter(event => {
+        const eventMatchesSearch = searchResults.some(result => result.title === event.title);
+        const eventMatchesSchool = selectedSchools.length === 0 || selectedSchools.includes(event.school_name);
+        const eventMatchesActivity = selectedActivities.length === 0 || selectedActivities.includes(event.activity);
+        return eventMatchesSearch && eventMatchesSchool && eventMatchesActivity;
+      });
+  
+      console.log("Filtered events:", filteredEvents);
+      setSearchResults(filteredEvents);
+      setEventList(filteredEvents);
+    })
+    .catch((error) => {
+      console.error("Error fetching all events:", error);
+    });
+  }
 
   useEffect(() => {
     fetchEvent();
@@ -162,7 +239,72 @@ function AdminHome() {
   return (
     <>
     <h2>LMR ADMIN HOME PAGE</h2>
-    
+     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, width: '100%' }}>
+            {/* First Row: Search Input, Schools, Activities, Sorting, and Action Buttons */}
+            <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap', justifyContent: 'flex-start', width: '100%' }}>
+              <TextField
+                label="Search"
+                variant="outlined"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                sx={{ width: 200, minWidth: 120 }}
+              />
+              <FormControl sx={{ width: 200, minWidth: 120 }}>
+                <InputLabel sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Schools</InputLabel>
+                <Select
+                  multiple
+                  value={selectedSchools}
+                  onChange={(e) => handleMultiSelectChange(e, "schools")}
+                  renderValue={(selected) => selected.join(', ')}
+                  sx={{ overflow: 'hidden' }}
+                >
+                  {schools.map((school) => (
+                    <MenuItem key={school.id} value={school.name}>
+                      <Checkbox checked={selectedSchools.indexOf(school.name) > -1} />
+                      <ListItemText primary={school.name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <FormControl sx={{ width: 200, minWidth: 120 }}>
+                <InputLabel sx={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Activities</InputLabel>
+                <Select
+                  multiple
+                  value={selectedActivities}
+                  onChange={(e) => handleMultiSelectChange(e, "activities")}
+                  renderValue={(selected) => selected.join(', ')}
+                  sx={{ overflow: 'hidden' }}
+                >
+                  {activities.map((activity) => (
+                    <MenuItem key={activity.id} value={activity.name}>
+                      <Checkbox checked={selectedActivities.indexOf(activity.name) > -1} />
+                      <ListItemText primary={activity.name} />
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              <Button variant="contained" onClick={(e) => sortEvents("date", e)}>
+                Date {sortOrder.date === "asc" ? "↑" : "↓"}
+              </Button>
+              <Button variant="contained" onClick={(e) => sortEvents("location", e)}>
+                Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
+              </Button>
+              <Button variant="contained" onClick={handleSearch}>Search</Button>
+              <Button
+                variant="outlined"
+                onClick={() => {
+                  setSelectedSchools([]);
+                  setSelectedActivities([]);
+                  setSearchQuery("");
+                  setSearchResults([]);
+                  setAppliedFilters('');  // Clear the applied filter text
+                  fetchEventList();
+                }}
+              >
+                Clear All
+              </Button>
+            </Box>
+          </Box>
     {/* Tabs Section */}
     <Box sx={{ width: '100%', mb: 3 }}>
       <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
@@ -174,23 +316,7 @@ function AdminHome() {
 
       {/* Events Tab */}
       <TabPanel value={activeTab} index={0}>
-        <input placeholder='Search Event' />
-        <div>
-          <button onClick={(e) => sortEvents("date", e)}>
-            Date {sortOrder.date === "asc" ? "↑" : "↓"}
-          </button>
-          <button onClick={(e) => sortEvents("location", e)}>
-            Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
-          </button>
-          <select>
-            <option value="">Category</option>
-          </select>
-          <select>
-            <option value="">School</option>
-          </select>
-          <button>Search</button>
-          <button>Clear All</button>
-        </div>
+       
 
         <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
         
