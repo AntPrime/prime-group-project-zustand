@@ -177,7 +177,7 @@ function UpdateEvent() {
        {/* Location */}
        <TextField
          fullWidth
-         label="Location"
+         label="Add location"
          variant="outlined"
          value={updatedEvent.location}
          onChange={(e) => setUpdatedEvent({ ...updatedEvent, location: e.target.value })}
@@ -215,7 +215,7 @@ function UpdateEvent() {
        {/* Notes */}
        <TextField
          fullWidth
-         label="Notes"
+         label="Enter description"
          variant="outlined"
          multiline
          rows={4}

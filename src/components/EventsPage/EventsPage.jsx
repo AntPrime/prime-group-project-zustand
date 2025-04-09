@@ -156,7 +156,7 @@ function EventsPage() {
 
        {/* Location */}
        <Typography variant="h6" sx={{ mb: 1 }}>Location</Typography>
-       <TextField fullWidth variant="outlined" placeholder="Enter location"
+       <TextField fullWidth variant="outlined" placeholder="Add location"
          value={newEvent.location}
          onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
          sx={textFieldStyle}
@@ -219,7 +219,7 @@ function EventsPage() {
 
 
        {/* Notes */}
-       <Typography variant="h6" sx={{ mb: 1 }}>Add description</Typography>
+       <Typography variant="h6" sx={{ mb: 1 }}>Enter description</Typography>
        <TextField
          fullWidth
          multiline

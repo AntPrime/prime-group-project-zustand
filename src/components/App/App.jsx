@@ -22,6 +22,7 @@ import SuperAdminHome from '../SuperAdminHome.jsx/SuperAdminHome';
 import UserAttended from '../UserAttended.jsx/UserAttended';
 import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
 import SearchEvent from '../SearchEvent/SearchEvent';
+import BasicSearch from '../BasicSearch/BasicSearch';
 import '../App/App.css';
 
 function App() {
@@ -197,6 +198,7 @@ function App() {
              )
            }
          />
+          <Route path="/BasicSearch" element={<BasicSearch />} />
          <Route path="/studentHomePage" element={<StudentHomePage />} />
          <Route exact path="/updateEvent/:eventId" element={<UpdateEvent />} />
          <Route
