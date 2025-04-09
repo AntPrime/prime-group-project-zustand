@@ -1,41 +1,23 @@
+import axios from 'axios';
 import useStore from '../../zustand/store';
 import { useState, useEffect } from 'react';
 import * as React from 'react';
 import {
-  Accordion,
-  AccordionSummary,
-  AccordionDetails,
-  Typography,
-  Tabs,
-  Tab,
-  Box
-} from '@mui/material';
-import {
-  List,
-  ListItem,
-  ListItemText,
-  Divider
+  Accordion, AccordionSummary, AccordionDetails, Typography, Tabs, Tab, Box,
+  Button, Divider, List, ListItem, ListItemText
 } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
-import Button from '@mui/material/Button';
-import axios from 'axios';
-import DeleteEvent from '../DeleteEvent/DeleteEvent';
 import { NavLink } from 'react-router-dom';
 import StudentsTab from '../StudentsTab/StudentsTab';
+import DeleteEvent from '../DeleteEvent/DeleteEvent';
 
 function SuperAdminHome() {
   const user = useStore((state) => state.user);
   const logOut = useStore((state) => state.logOut);
   const [eventList, setEventList] = useState([]);
-  const [sortBy, setSortBy] = useState(null);
-  const [sortOrder, setSortOrder] = useState({
-    date: "asc",
-    location: "asc",
-  });
   const [events, setEvents] = useState([]);
   const [activeTab, setActiveTab] = useState(0);
 
-  // Payment handlers
   const handleMarkmarked = (index) => {
     setEvents(prev => prev.map((event, idx) => {
       if (idx !== index) return event;
@@ -49,26 +31,19 @@ function SuperAdminHome() {
     'camera': 'camera',
     'producer': 'producer'
   };
+
   const handleParticipantmarked = (eventId, role) => {
-    // Convert role to snake_case for the API
     const apiRole = ROLE_MAPPING[role.toLowerCase()];
-    
-    // No need to calculate current status - server handles the toggle
-    axios({
-      method: 'PUT',
-      url: `/api/events/attended/${eventId}`,
-      data: { role: apiRole }
-    })
-    .then(() => {
-      console.log('Successfully toggled attendance');
-      fetchEvent(); // Refresh the event list after update
-    })
-    .catch((error) => {
-      console.log('Error updating attendance', error);
-    });
+    axios.put(`/api/events/attended/${eventId}`, { role: apiRole })
+      .then(() => {
+        console.log('Successfully toggled attendance');
+        fetchEvent();
+      })
+      .catch((error) => {
+        console.log('Error updating attendance', error);
+      });
   };
 
-  // Data fetching
   const fetchEvent = () => {
     axios.get("/api/events/all")
       .then((response) => {
@@ -79,129 +54,69 @@ function SuperAdminHome() {
       });
   };
 
-  // Initial data load
   useEffect(() => {
     fetchEvent();
   }, []);
 
-  // Update events when eventList changes
-   useEffect(() => {
-     console.log(eventList);
-     setEvents(eventList.map(event => ({
-       ...event,
-       participants: [
-         {
-           role: 'Play-by-Play',
-           userId: event.play_by_play,
-           username: event.play_by_play_username,
-           marked: event.play_by_play_attended || false
-         },
-         {
-           role: 'Color Commentator',
-           userId: event.color_commentator,
-           username: event.color_commentator_username,
-           marked: event.color_commentator_attended || false
-         },
-         {
-           role: 'Camera',
-           userId: event.camera,
-           username: event.camera_username,
-           marked: event.camera_attended || false
-         },
-         {
-           role: 'Producer',
-           userId: event.producer,
-           username: event.producer_username,
-           marked: event.producer_attended || false
-         }
-       ].filter(p => p.userId)
-     })));
-   }, [eventList]);
+  useEffect(() => {
+    setEvents(eventList.map(event => ({
+      ...event,
+      participants: [
+        {
+          role: 'Play-by-Play',
+          userId: event.play_by_play,
+          username: event.play_by_play_username,
+          marked: event.play_by_play_attended || false
+        },
+        {
+          role: 'Color Commentator',
+          userId: event.color_commentator,
+          username: event.color_commentator_username,
+          marked: event.color_commentator_attended || false
+        },
+        {
+          role: 'Camera',
+          userId: event.camera,
+          username: event.camera_username,
+          marked: event.camera_attended || false
+        },
+        {
+          role: 'Producer',
+          userId: event.producer,
+          username: event.producer_username,
+          marked: event.producer_attended || false
+        }
+      ].filter(p => p.userId)
+    })));
+  }, [eventList]);
 
-  // Sorting function
-  const sortEvents = (criteria, event) => {
-    event.preventDefault();
-    let sortedEvents = [...eventList];
-    const newOrder = sortOrder[criteria] === "asc" ? "desc" : "asc";
-
-    if (criteria === "date") {
-      sortedEvents.sort((a, b) => newOrder === "asc"
-        ? new Date(a.date) - new Date(b.date)
-        : new Date(b.date) - new Date(a.date));
-    } else if (criteria === "location") {
-      sortedEvents.sort((a, b) => newOrder === "asc"
-        ? a.location.localeCompare(b.location)
-        : b.location.localeCompare(a.location));
-    }
-
-    setSortOrder(prev => ({ ...prev, [criteria]: newOrder }));
-    setSortBy(criteria);
-    setEventList(sortedEvents);
-  };
-
-  // Handle tab change
   const handleTabChange = (event, newValue) => {
     setActiveTab(newValue);
   };
 
-  // Tab panel component
-  const TabPanel = (props) => {
-    const { children, value, index, ...other } = props;
-  
-    return (
-      <div
-        role="tabpanel"
-        hidden={value !== index}
-        id={`simple-tabpanel-${index}`}
-        aria-labelledby={`simple-tab-${index}`}
-        {...other}
-      >
-        {value === index && (
-          <Box sx={{ p: 3 }}>
-            {children}
-          </Box>
-        )}
-      </div>
-    );
-  };
-
   return (
-    <>
-      <h2>LMR SUPER ADMIN HOME PAGE</h2>
-      
-      {/* Tabs for different sections */}
-      <Box sx={{ width: '100%', mb: 3 }}>
-        <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={activeTab} onChange={handleTabChange} aria-label="super admin tabs">
-            <Tab label="Events" />
-            <Tab label="Students" />
-          </Tabs>
-        </Box>
-        
-        {/* Events Tab Panel */}
-        <TabPanel value={activeTab} index={0}>
-          <input placeholder='Search Event' />
-          <div>
-            <button onClick={(e) => sortEvents("date", e)}>
-              Date {sortOrder.date === "asc" ? "↑" : "↓"}
-            </button>
-            <button onClick={(e) => sortEvents("location", e)}>
-              Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
-            </button>
-            <select>
-              <option value="">Category</option>
-            </select>
-            <select>
-              <option value="">School</option>
-            </select>
-            <button>Search</button>
-            <button>Clear All</button>
-          </div>
+    <Box sx={{ display: 'flex', height: '100vh', padding: 2 }}>
+      {/* Sidebar */}
+      <Box sx={{ width: '220px', pr: 3, borderRight: '1px solid #ccc' }}>
+        <Typography variant="h6" sx={{ mb: 2 }}>SUPER ADMIN</Typography>
+        <Tabs
+          orientation="vertical"
+          value={activeTab}
+          onChange={handleTabChange}
+          aria-label="Vertical tabs"
+        >
+          <Tab label="Events" onClick={() => setActiveTab(0)} />
+          <Tab label="Students" onClick={() => setActiveTab(1)} />
+        </Tabs>
+      </Box>
 
-          <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
+      {/* Main Content */}
+      <Box sx={{ flexGrow: 1, pl: 3 }}>
+        <Typography variant="h4" gutterBottom>LMR SUPER ADMIN HOME PAGE</Typography>
 
-
-          <div className='eventCard'>
+        {/* Conditionally Render Events Tab */}
+        {activeTab === 0 && (
+          <Box className='eventCard'>
             {events.length > 0 ? (
               events.map((event, index) => (
                 <Accordion
@@ -213,7 +128,7 @@ function SuperAdminHome() {
                   }}
                 >
                   <AccordionSummary expandIcon={<IoIosArrowDropdown />}>
-                    <div style={{ width: '100%' }}>
+                    <Box sx={{ width: '100%' }}>
                       <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
                         {event.title} {event.isMarked && ' ✓'}
                       </Typography>
@@ -223,30 +138,30 @@ function SuperAdminHome() {
                       <Typography variant="body2">
                         Schools: {event.school_name} vs [Opponent Name] | Location: {event.location}
                       </Typography>
-                    </div>
+                    </Box>
                   </AccordionSummary>
-                  <NavLink to={`/updateEvent/${event.id}`} style={{ textDecoration: 'none' }}>
-                    <Button variant="contained">
-                      Update Event
-                    </Button>
+
+                  <NavLink to={`/updateEvent/${event.id}`} state={{ event }} style={{ textDecoration: 'none' }}>
+                    <Button variant="contained">Update Event</Button>
                   </NavLink>
-                  
-                  <Button variant="contained" className='float-button' style={{backgroundColor: 'red'}} >
+
+                  <Box className="float-Button" sx={{ backgroundColor: 'red', display: 'inline-block' }}>
                     <DeleteEvent eventId={event.id} />
-                  </Button>
+                  </Box>
+
                   <AccordionDetails>
                     <Divider sx={{ my: 2 }} />
                     <Typography variant="h6" sx={{ mb: 1 }}>
                       Assigned Roles ({event.participants.length})
                     </Typography>
-                   
+
                     <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
                       {event.participants.map((participant, pIndex) => (
                         <ListItem
                           key={pIndex}
                           sx={{
-                            backgroundColor: participant.isMarked ? 'lightgreen' : 'inherit',
-                            transition: 'background-color 0.3s ease',
+                            
+                          
                             mb: 1,
                             borderRadius: 1
                           }}
@@ -265,10 +180,10 @@ function SuperAdminHome() {
                             <Button
                               size="small"
                               variant="outlined"
-                              color={participant.isMarked ? 'success' : 'primary'}
-                              onClick={() => handleParticipantmarked(index, participant.userId)}
+                              color={participant.marked ? 'success' : 'primary'}
+                              onClick={() => handleParticipantmarked(event.id, participant.role)}
                             >
-                              {participant.isMarked ? 'Attended ✓' : 'Signed Up'}
+                              {participant.marked ? 'Attended ✓' : 'Signed Up'}
                             </Button>
                           </Box>
                         </ListItem>
@@ -289,19 +204,14 @@ function SuperAdminHome() {
             ) : (
               <p>No events available</p>
             )}
-          </div>
-        </TabPanel>
-        
-        {/* Students Tab Panel */}
-        <TabPanel value={activeTab} index={1}>
-          <StudentsTab />
-        </TabPanel>
+          </Box>
+        )}
+
+        {/* Conditionally Render Students Tab */}
+        {activeTab === 1 && <StudentsTab />}
       </Box>
-      
-      <h5></h5>
-      <p>Your ID is: {user.id}</p>
-      <Button onClick={logOut}>Log Out</Button>
-    </>
+    </Box>
   );
 }
+
 export default SuperAdminHome;
