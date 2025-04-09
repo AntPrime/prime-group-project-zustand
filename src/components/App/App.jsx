@@ -21,6 +21,7 @@ import AdminHome from '../AdminHome.jsx/AdminHome';
 import SuperAdminHome from '../SuperAdminHome.jsx/SuperAdminHome';
 import UserAttended from '../UserAttended.jsx/UserAttended';
 import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
+import SearchEvent from '../SearchEvent/SearchEvent';
 import '../App/App.css';
 
 function App() {
