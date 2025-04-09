@@ -25,13 +25,17 @@ function Nav() {
           // User is logged in, render these links based on admin levels:
           user.id && (
             <>
+            {user.admin_level === 0 && (
+              <>
               <li>
                 <NavLink to="/">Event Home</NavLink>
               </li>
               <li>
                 <NavLink to="/userAttended">User Homepage</NavLink>
               </li>
-              {user.admin_level >= 1 && (
+            </>)}
+
+              {user.admin_level === 1 && (
                 <>
                   <li>
                     <NavLink to="/adminHome">Admin Home</NavLink>
@@ -41,8 +45,11 @@ function Nav() {
                   </li>
                 </>
               )}
-              {user.admin_level >= 2 && (
+              {user.admin_level === 2 && (
                 <>
+                <li>
+                <NavLink to="/events">Events</NavLink>
+              </li>
                 <li>
                   <NavLink to="/superAdminHome"> Super Admin Home</NavLink>
                 </li>
