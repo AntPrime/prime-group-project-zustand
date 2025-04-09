@@ -1,7 +1,7 @@
 import axios from 'axios';
 import Button from '@mui/material/Button';
 
-function DeleteEvent({eventId}) {
+function DeleteEvent({eventId , sx}) {
 
   const eventDelete = () => {
     const isConfirmed = window.confirm("Delete Event?");
@@ -21,7 +21,15 @@ function DeleteEvent({eventId}) {
   
   return (
      <div className='DeleteEvent'>
-      <Button style={{color: 'white'}} onClick={eventDelete} >Delete</Button>
+        <Button
+      variant="contained"
+      className='float-button' 
+      style={{backgroundColor: 'red'}}
+      sx={sx}
+      onClick={eventDelete}
+    >
+      Delete Event
+    </Button>
     </div>
   );
   }

@@ -231,15 +231,14 @@ function SuperAdminHome() {
                       </Typography>
                     </div>
                   </AccordionSummary>
+                  <div>
                   <NavLink to={`/updateEvent/${event.id}`} style={{ textDecoration: 'none' }}>
                     <Button variant="contained">
                       Update Event
                     </Button>
                   </NavLink>
-                  
-                  <Button variant="contained" className='float-button' style={{backgroundColor: 'red'}} >
                     <DeleteEvent eventId={event.id} />
-                  </Button>
+                    </div>
                   <AccordionDetails>
                     <Divider sx={{ my: 2 }} />
                     <Typography variant="h6" sx={{ mb: 1 }}>
