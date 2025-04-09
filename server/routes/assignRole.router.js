@@ -32,4 +32,5 @@ router.put('/assignRole', async (req, res) => {
       res.status(500).send("Error updating event role");
       }
   });
+
 module.exports = router;

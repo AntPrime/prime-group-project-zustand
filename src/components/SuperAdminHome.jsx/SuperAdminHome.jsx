@@ -22,6 +22,7 @@ import axios from 'axios';
 import DeleteEvent from '../DeleteEvent/DeleteEvent';
 import { NavLink } from 'react-router-dom';
 import StudentsTab from '../StudentsTab/StudentsTab';
+import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
 
 function SuperAdminHome() {
   const user = useStore((state) => state.user);
@@ -296,6 +297,9 @@ function SuperAdminHome() {
         <TabPanel value={activeTab} index={1}>
           <StudentsTab />
         </TabPanel>
+      {/* <TabPanel value={activeTab}>
+        <AlterAdminRoles/>
+      </TabPanel> */}
       </Box>
       
       <h5></h5>
