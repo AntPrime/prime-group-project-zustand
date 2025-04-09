@@ -298,10 +298,10 @@ function SuperAdminHome() {
         </TabPanel>
         
         {/* Students Tab Panel */}
-        <TabPanel value={activeTab} index={0}>
+        <TabPanel value={activeTab} index={1}>
           <StudentsTab />
         </TabPanel>
-      <TabPanel value={activeTab} index={1}>
+      <TabPanel value={activeTab} index={2}>
         <AlterAdminRoles/>
       </TabPanel>
       </Box>
