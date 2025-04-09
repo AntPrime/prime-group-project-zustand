@@ -173,9 +173,14 @@ function SuperAdminHome() {
       {/* Tabs for different sections */}
       <Box sx={{ width: '100%', mb: 3 }}>
         <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-          <Tabs value={activeTab} onChange={handleTabChange} aria-label="super admin tabs">
+          <Tabs 
+            value={activeTab} 
+            onChange={handleTabChange} 
+            aria-label="super admin tabs"
+          >
             <Tab label="Events" />
             <Tab label="Students" />
+            <Tab label="Admin Management" />
           </Tabs>
         </Box>
         
@@ -294,12 +299,12 @@ function SuperAdminHome() {
         </TabPanel>
         
         {/* Students Tab Panel */}
-        <TabPanel value={activeTab} index={1}>
+        <TabPanel value={activeTab} index={0}>
           <StudentsTab />
         </TabPanel>
-      {/* <TabPanel value={activeTab}>
+      <TabPanel value={activeTab} index={1}>
         <AlterAdminRoles/>
-      </TabPanel> */}
+      </TabPanel>
       </Box>
       
       <h5></h5>

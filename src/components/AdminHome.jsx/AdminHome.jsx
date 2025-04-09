@@ -1,24 +1,26 @@
-import useStore from '../../zustand/store'
+import useStore from '../../zustand/store';
 import { useState, useEffect } from 'react';
 import * as React from 'react';
 import {
   Accordion,
   AccordionSummary,
   AccordionDetails,
-  AccordionActions,
-  Typography
+  Typography,
+  Tabs,
+  Tab,
+  Box
 } from '@mui/material';
 import {
   List,
   ListItem,
   ListItemText,
-  Box,
   Divider
 } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
 import Button from '@mui/material/Button';
 import { NavLink } from 'react-router-dom';
-import axios from 'axios'
+import axios from 'axios';
+import StudentsTab from '../StudentsTab/StudentsTab';
 
 function AdminHome() {
   const user = useStore((state) => state.user);
@@ -30,6 +32,8 @@ function AdminHome() {
     location: "asc", // Default: A-Z
   });
   const [events, setEvents] = useState([]);
+  const [activeTab, setActiveTab] = useState(0);
+
   const ROLE_MAPPING = {
     'play-by-play': 'play_by_play',
     'color commentator': 'color_commentator',
@@ -132,112 +136,156 @@ function AdminHome() {
       ].filter(p => p.userId)
     })));
   }, [eventList]);
+
+  const TabPanel = (props) => {
+    const { children, value, index, ...other } = props;
   
-  return (
-    <>
-      <h2>LMR SUPER ADMIN HOME PAGE</h2>
-      <input placeholder='Search Event' />
-      <div>
-        <button onClick={(e) => sortEvents("date", e)}>
-          Date {sortOrder.date === "asc" ? "↑" : "↓"}
-        </button>
-        <button onClick={(e) => sortEvents("location", e)}>
-          Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
-        </button>
-        <select>
-          <option value="">Category</option>
-        </select>
-        <select>
-          <option value="">School</option>
-        </select>
-        <button>Search</button>
-        <button>Clear All</button>
-      </div>
-
-      <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
-      <div className='eventCard'>
-        {events.length > 0 ? (
-          events.map((event, index) => ( // Changed from eventList to events
-            <Accordion
-              key={index}
-              sx={{
-                mb: 2,
-                backgroundColor: event.isMarked ? 'lightgreen' : 'inherit',
-                transition: 'background-color 0.3s ease'
-              }}
-            >
-              <AccordionSummary expandIcon={<IoIosArrowDropdown />}>
-                <div style={{ width: '100%' }}>
-                  <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                    {event.title} {event.isMarked && ' ✓'}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary">
-                    Date: {event.date} | Time: {event.time} | Channel: {event.channel}
-                  </Typography>
-                  <Typography variant="body2">
-                    Schools: {event.school_name} vs [Opponent Name] | Location: {event.location}
-                  </Typography>
-                </div>
-              </AccordionSummary>
-              <NavLink to={`/updateEvent/${event.id}`} state={{event}}  style={{ textDecoration: 'none' }}>
-                  <Button variant="contained">
-                    Update Event
-                  </Button>
-                </NavLink>
-              <AccordionDetails>
-                <Divider sx={{ my: 2 }} />
-                <Typography variant="h6" sx={{ mb: 1 }}>
-                  Assigned Roles ({event.participants.length})
-                </Typography>
-
-                <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                  {event.participants.map((participant, pIndex) => (
-                    <ListItem
-                      key={pIndex}
-                      sx={{
-                        backgroundColor: participant.isMarked ? 'lightgreen' : 'inherit',
-                        transition: 'background-color 0.3s ease',
-                        mb: 1,
-                        borderRadius: 1
-                      }}
-                    >
-                      <ListItemText
-                        primary={participant.username}
-                        secondary={`Role: ${participant.role}`}
-                        sx={{
-                          '& .MuiListItemText-secondary': {
-                            color: 'text.secondary',
-                            fontSize: '0.875rem'
-                          }
-                        }}
-                      />
-                      <Box sx={{ ml: 'auto' }}>
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          color={participant.marked ? 'success' : 'primary'}
-                          onClick={() => handleParticipantmarked(event.id, participant.role)}
-                        >
-                          {participant.marked ? 'Attended ✓' : 'Signed Up'}
-                        </Button>
-                      </Box>
-                    </ListItem>
-                  ))}
-                </List>
-              </AccordionDetails>
-            
-            </Accordion>
-          ))
-        ) : (
-          <p>No events available</p>
+    return (
+      <div
+        role="tabpanel"
+        hidden={value !== index}
+        id={`simple-tabpanel-${index}`}
+        aria-labelledby={`simple-tab-${index}`}
+        {...other}
+      >
+        {value === index && (
+          <Box sx={{ p: 3 }}>
+            {children}
+          </Box>
         )}
       </div>
+    );
+  };
+  const handleTabChange = (event, newValue) => {
+    setActiveTab(newValue);
+  };
+  return (
+    <>
+    <h2>LMR ADMIN HOME PAGE</h2>
+    
+    {/* Tabs Section */}
+    <Box sx={{ width: '100%', mb: 3 }}>
+      <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
+        <Tabs value={activeTab} onChange={handleTabChange} aria-label="admin tabs">
+          <Tab label="Events" />
+          <Tab label="Students" />
+        </Tabs>
+      </Box>
 
-      <h5></h5>
-      <p>Your ID is: {user.id}</p>
-      <button onClick={logOut}>Log Out</button>
-    </>
-  );
-}
+      {/* Events Tab */}
+      <TabPanel value={activeTab} index={0}>
+        <input placeholder='Search Event' />
+        <div>
+          <button onClick={(e) => sortEvents("date", e)}>
+            Date {sortOrder.date === "asc" ? "↑" : "↓"}
+          </button>
+          <button onClick={(e) => sortEvents("location", e)}>
+            Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
+          </button>
+          <select>
+            <option value="">Category</option>
+          </select>
+          <select>
+            <option value="">School</option>
+          </select>
+          <button>Search</button>
+          <button>Clear All</button>
+        </div>
+
+        <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
+        
+        <div className='eventCard'>
+          {events.length > 0 ? (
+            events.map((event, index) => (
+              <Accordion
+                key={index}
+                sx={{
+                  mb: 2,
+                  backgroundColor: event.isMarked ? 'lightgreen' : 'inherit',
+                  transition: 'background-color 0.3s ease'
+                }}
+              >
+                <AccordionSummary expandIcon={<IoIosArrowDropdown />}>
+                  <div style={{ width: '100%' }}>
+                    <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
+                      {event.title} {event.isMarked && ' ✓'}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Date: {event.date} | Time: {event.time} | Channel: {event.channel}
+                    </Typography>
+                    <Typography variant="body2">
+                      Schools: {event.school_name} vs [Opponent Name] | Location: {event.location}
+                    </Typography>
+                  </div>
+                </AccordionSummary>
+
+                <AccordionDetails>
+                  <NavLink to={`/updateEvent/${event.id}`} state={{ event }} style={{ textDecoration: 'none' }}>
+                    <Button variant="contained" sx={{ mb: 2 }}>
+                      Update Event
+                    </Button>
+                  </NavLink>
+
+                  <Divider sx={{ my: 2 }} />
+                  
+                  <Typography variant="h6" sx={{ mb: 1 }}>
+                    Assigned Roles ({event.participants.length})
+                  </Typography>
+
+                  {/* Participant List */}
+                  <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
+                    {event.participants.map((participant, pIndex) => (
+                      <ListItem
+                        key={pIndex}
+                        sx={{
+                          backgroundColor: participant.marked ? 'lightgreen' : 'inherit',
+                          transition: 'background-color 0.3s ease',
+                          mb: 1,
+                          borderRadius: 1
+                        }}
+                      >
+                        <ListItemText
+                          primary={participant.username}
+                          secondary={`Role: ${participant.role}`}
+                          sx={{
+                            '& .MuiListItemText-secondary': {
+                              color: 'text.secondary',
+                              fontSize: '0.875rem'
+                            }
+                          }}
+                        />
+                        <Box sx={{ ml: 'auto' }}>
+                          <Button
+                            size="small"
+                            variant="outlined"
+                            color={participant.marked ? 'success' : 'primary'}
+                            onClick={() => handleParticipantmarked(event.id, participant.role)}
+                          >
+                            {participant.marked ? 'Attended ✓' : 'Signed Up'}
+                          </Button>
+                        </Box>
+                      </ListItem>
+                    ))}
+                  </List>
+                </AccordionDetails>
+              </Accordion>
+            ))
+          ) : (
+            <p>No events available</p>
+          )}
+        </div>
+      </TabPanel>
+
+      {/* Students Tab */}
+      <TabPanel value={activeTab} index={1}>
+        <StudentsTab />
+      </TabPanel>
+    </Box>
+
+    <h5></h5>
+    <p>Your ID is: {user.id}</p>
+    <button onClick={logOut}>Log Out</button>
+  </>
+)};
 
 export default AdminHome;
