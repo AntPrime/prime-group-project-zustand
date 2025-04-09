@@ -10,7 +10,6 @@ function Nav() {
       <div className="nav-image-container">
         <img src="images/LMRHorizontal-1.png" alt="Logo" className="nav-image" />
       </div>
-
       <div className="nav-right">
         <ul className="nav-links">
           {!user.id && (

@@ -170,9 +170,12 @@ function App() {
              <div className="about-container">
                <p className="about-quote">
                 <img src="images/students.jpg"></img>
-                 Made with Prime North Cascades Cohort 
+                Welcome to LMR Local Marketing Results collaborative platform empowering students to engage in athletic events and offering
+                local school management and platform oversight to ensure seamless integration for all users.
+                <br></br>
+                 Created by the North Cascades Cohort, Prime Digital Acadamy
                  <br></br>
-                 The technologies We used were React, Node.js, Express, Tailwind CSS, Material UI, Moment.js and PostgreSQL to build this app.
+                 The technologies we used are React, Node.js, Express, CSS, Material UI, Moment.js and PostgreSQL to build this app.
                </p>
                {user?.id && (
                  <Link to="/events" className="back-to-Events-button">
