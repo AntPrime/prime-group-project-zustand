@@ -1,357 +1,109 @@
-/* Sports-themed styling for RegisterPage */
-
-/* RegisterPage.css */
-
-/* RegisterPage.css */
+/* Main layout for register page */
 .register-page {
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  height: 100vh;
-  background: linear-gradient(135deg, #4facfe, #00f2fe);
-}
-
-.register-page h2 {
-  text-align: center;
-  color: #333;
-}
-
-.register-page form {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-}
-
-.register-page label {
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-.register-page input {
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-}
-
-.register-page input:focus {
-  border-color: #4facfe;
-  outline: none;
-}
-
-.register-page button {
-  background: #4facfe;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  padding: 10px;
-  margin-top: 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-.register-page button:hover {
-  background: #00c2fe;
-}
-
-.register-page button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.register-page .error-message {
-  text-align: center;
-  color: red;
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-
-/* body {
-  font-family: Arial, sans-serif;
-  background: linear-gradient(135deg, #81a2be, #4ee4ec);
-  display: flex;
+  height: 70vh;
   justify-content: center;
   align-items: center;
-  height: 100vh;
-  margin: 0;
-}
+ }
 
-h2 {
-  text-align: center;
-  color: #333;
-}
-
-form {
-  background: #fff;
-  padding: 2rem;
-  border-radius: 10px;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-  width: 100%;
-  max-width: 400px;
-  display: flex;
-  flex-direction: column;
-}
-
-label {
-  font-weight: bold;
-  margin-top: 10px;
-}
-
-input {
-  padding: 10px;
-  margin-top: 5px;
-  border: 1px solid #ccc;
-  border-radius: 5px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-}
-
-input:focus {
-  border-color: #4facfe;
-  outline: none;
-}
-
-button {
-  background: #4facfe;
-  color: white;
-  font-size: 16px;
-  font-weight: bold;
-  padding: 10px;
-  margin-top: 20px;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  transition: background 0.3s;
-}
-
-button:hover {
-  background: #00c2fe;
-}
-
-button:disabled {
-  background: #ccc;
-  cursor: not-allowed;
-}
-
-.error-message {
-  text-align: center;
-  color: red;
-  font-weight: bold;
-  margin-top: 10px;
-} */
-
-/* .register-container {
-  max-width: 500px;
-  margin: 40px auto;
-  padding: 30px;
-  background-color: #f8f9fa;
-  border-radius: 8px;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.15);
-  border: 1px solid #e0e0e0;
-  position: relative;
+ /* Left Section */
+ .left-section {
+  flex: 2;
+  padding-left: 0;
   overflow: hidden;
-}
-
-.sports-border {
-  position: absolute;
+ }
+ 
+ 
+ /* Make the image fixed on the left side */
+ .left-image {
+  position: fixed;
   top: 0;
   left: 0;
-  right: 0;
-  height: 6px;
-  background: linear-gradient(to right, #0c2340 33%, #d12630 33%, #d12630 66%, #0c2340 66%);
-} */
-/* 
-.register-header {
-  text-align: center;
-  margin-bottom: 30px;
-  position: relative;
-}
-
-.page-title {
-  color: #0c2340;
-  font-size: 32px;
-  font-weight: bold;
-  margin-bottom: 5px;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-}
-
-.page-subtitle {
-  color: #555;
-  font-size: 18px;
-  margin-top: 0;
-  position: relative;
-  display: inline-block;
-  padding: 0 15px;
-}
-
-.page-subtitle::before,
-.page-subtitle::after {
-  content: "";
-  display: inline-block;
-  width: 30px;
-  height: 2px;
-  background-color: #d12630;
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-}
-
-.page-subtitle::before {
-  left: -40px;
-}
-
-.page-subtitle::after {
-  right: -40px;
-}
-
-.register-form {
+  width: 60%;
+  height: 100vh;
+  object-fit: cover;
+  z-index: -1;
+ }
+ 
+ 
+ /* Right Section */
+ .right-section {
+  flex: 1;
   display: flex;
   flex-direction: column;
-  background-color: white;
-  padding: 25px;
-  border-radius: 6px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-}
-
-.form-title {
-  text-align: center;
-  color: #0c2340;
-  font-size: 20px;
-  margin-top: 0;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+ }
+ 
+ 
+ /* Style for logo image */
+ .right-image {
+  max-width: 80%;
   margin-bottom: 20px;
-  font-weight: 600;
-}
-
-.form-group {
-  margin-bottom: 20px;
-}
-
-.form-label {
-  display: block;
-  margin-bottom: 8px;
-  font-weight: 500;
-  color: #333;
-}
-
-.form-input {
+ }
+ 
+ 
+ /* Form styles */
+ .register-form {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align all items to the left */
   width: 100%;
-  padding: 12px;
+  max-width: 400px;
+  padding: 20px;
   border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+ }
+ 
+ 
+ .register-form h2 {
+  margin-bottom: 20px;
+  font-size: 1.8rem;
+  align-self: flex-start; /* Make the title align left */
+ }
+ 
+ 
+ .register-form label {
+  font-size: 1rem;
+  margin-bottom: 5px;
+  align-self: flex-start; /* Align labels to the left */
+ }
+ 
+ 
+ .register-form input {
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 15px;
+  border: 1px solid #ccc;
   border-radius: 4px;
-  font-size: 16px;
-  transition: border-color 0.3s;
-  outline: none;
-  box-sizing: border-box;
-}
-
-.form-input:focus {
-  border-color: #0c2340;
-}
-
-.form-input::placeholder {
-  color: #aaa;
-}
-
-.register-button {
-  background-color: #0c2340;
+  font-size: 1rem;
+  align-self: flex-start; /* Align input fields to the left */
+ }
+ 
+ 
+ .register-form button {
+  padding: 10px 20px;
+  font-size: 1rem;
+  background-color: #007bff;
   color: white;
-  padding: 14px;
   border: none;
   border-radius: 4px;
-  font-size: 16px;
-  font-weight: bold;
   cursor: pointer;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  transition: background-color 0.3s;
+  align-self: flex-start; /* Align the button to the left */
+ }
+ 
+ 
+ .register-form button:hover {
+  background-color: #0056b3;
+ }
+ 
+ 
+ .error-message {
+  color: red;
+  font-size: 1rem;
   margin-top: 10px;
-}
-
-.register-button:hover {
-  background-color: #1a3a5f;
-}
-
-.login-link {
-  text-align: center;
-  margin-top: 20px;
-}
-
-.login-link a {
-  color: #0c2340;
-  text-decoration: none;
-  font-size: 14px;
-  transition: color 0.3s;
-}
-
-.login-link a:hover {
-  color: #d12630;
-  text-decoration: underline;
-}
-
-.error-message {
-  color: #d12630;
-  text-align: center;
-  margin-top: 20px;
-  font-weight: bold;
-  padding: 10px;
-  background-color: rgba(209, 38, 48, 0.1);
-  border-radius: 4px;
-  border: 1px solid rgba(209, 38, 48, 0.3);
-}
-
-.register-footer {
-  text-align: center;
-  margin-top: 30px;
-  color: #666;
-  font-size: 14px;
-  padding: 15px 0;
-  border-top: 1px solid #eee;
-}
-
-.footer-text {
-  margin: 5px 0;
-}
-
-.copyright {
-  font-weight: 500;
-  margin-top: 10px;
-}
-
-/* Sports-themed decorative elements */
-/* .ball-decoration {
-  position: absolute;
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  background: repeating-linear-gradient(
-    45deg,
-    #0c2340,
-    #0c2340 5px,
-    #d12630 5px,
-    #d12630 10px
-  );
-  opacity: 0.1;
-  z-index: -1;
-}
-
-.ball-1 {
-  top: 20px;
-  left: 20px;
-}
-
-.ball-2 {
-  bottom: 20px;
-  right: 20px;
-}  */ */
+  align-self: flex-start; /* Align error message to the left */
+ }
