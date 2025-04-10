@@ -241,56 +241,41 @@ function StudentsTab() {
 
   // Handle saving the edited user event
   const handleSaveEdit = () => {
-    // Find the event ID from the event title
-    const event = events.find(e => e.title === editForm.event);
-    if (!event) {
+    // Get original assignment details
+    const originalEvent = currentEditItem.events[0];
+    const originalEventId = originalEvent.eventId;
+    const originalRole = originalEvent.role;
+  
+    // Get new assignment details
+    const newEvent = events.find(e => e.title === editForm.event);
+    const newRole = editForm.role;
+  
+    if (!newEvent) {
       showSnackbar('Event not found', 'error');
       return;
     }
-    
-    // Make API call to update the role
-    axios.put('/api/events/update-role', {
-      eventId: event.id,
-      userId: currentEditItem.userId,
-      role: editForm.role
+  
+    // Make API call to reassign
+    axios.put('/api/assignRole/reassign-role', {
+      originalEventId,
+      originalRole,
+      newEventId: newEvent.id,
+      newRole,
+      userId: currentEditItem.userId
     })
-      .then(() => {
-        // Refresh data
-        fetchEvents();
-        showSnackbar('Role updated successfully');
-        handleEditClose();
-      })
-      .catch(err => {
-        console.error('Error updating role:', err);
-        showSnackbar('Failed to update role: ' + (err.response?.data?.error || err.message), 'error');
-      });
-  };
-
-  // Handle deleting a user event
-  const handleDeleteClick = (userEvent) => {
-    // Find the event ID from the event title
-    const event = events.find(e => e.title === userEvent.events[0]?.eventTitle);
-    if (!event) {
-      showSnackbar('Event not found', 'error');
-      return;
-    }
-    
-    // Make API call to delete the role
-    axios.put('/api/events/delete-role', {
-      eventId: event.id,
-      role: userEvent.events[0]?.role
+    .then(() => {
+      // Refresh both events and users
+      Promise.all([fetchEvents(), fetchUsers()])
+        .then(() => {
+          showSnackbar('Role reassigned successfully');
+          handleEditClose();
+        });
     })
-      .then(() => {
-        // Refresh data
-        fetchEvents();
-        showSnackbar('Role deleted successfully');
-      })
-      .catch(err => {
-        console.error('Error deleting role:', err);
-        showSnackbar('Failed to delete role: ' + (err.response?.data?.error || err.message), 'error');
-      });
+    .catch(err => {
+      console.error('Error reassigning role:', err);
+      showSnackbar('Failed to reassign role: ' + (err.response?.data?.error || err.message), 'error');
+    });
   };
-
   // Clear all filters
   const handleClearFilters = () => {
     setFilters({
@@ -393,10 +378,10 @@ function StudentsTab() {
       
       {/* Edit Dialog */}
       <Dialog open={editOpen} onClose={handleEditClose}>
-        <DialogTitle>Edit User Event</DialogTitle>
+      <DialogTitle>Reassign User</DialogTitle>
         <DialogContent>
           <DialogContentText>
-            Edit event and role for user: {currentEditItem?.username}
+            Reassign {currentEditItem?.username} to a new event/role
           </DialogContentText>
           <TextField
             select
@@ -429,9 +414,10 @@ function StudentsTab() {
             }}
           >
             <option value="">Select a role</option>
-            <option value="student">Student</option>
-            <option value="mentor">Mentor</option>
-            <option value="instructor">Instructor</option>
+            <option value="Play-by-Play">Play-by-Play</option>
+            <option value="Color Commentator">Color Commentator</option>
+            <option value="Camera">Camera</option>
+            <option value="Producer">Producer</option>
           </TextField>
         </DialogContent>
         <DialogActions>
