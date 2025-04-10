@@ -10,7 +10,7 @@ import { IoIosArrowDropdown } from "react-icons/io";
 import { NavLink } from 'react-router-dom';
 import StudentsTab from '../StudentsTab/StudentsTab';
 import DeleteEvent from '../DeleteEvent/DeleteEvent';
-
+import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
 
 function SuperAdminHome() {
   const user = useStore((state) => state.user);
@@ -100,9 +100,6 @@ function SuperAdminHome() {
       <h2>LMR SUPER ADMIN HOME PAGE</h2>
       
       {/* Tabs for different sections */}
- 
-
-          {/* <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4> */}
 
     <Box sx={{ display: 'flex', height: '100vh', padding: 2 }}>
       {/* Sidebar */}
@@ -116,6 +113,7 @@ function SuperAdminHome() {
         >
           <Tab label="Events" onClick={() => setActiveTab(0)} />
           <Tab label="Students" onClick={() => setActiveTab(1)} />
+          <Tab label="Assign Admin" onClick={() => setActiveTab(2)} />
         </Tabs>
       </Box>
 
@@ -155,8 +153,8 @@ function SuperAdminHome() {
                     <Button variant="contained">Update Event</Button>
                   </NavLink>
 
-                  <Box className="float-Button" sx={{ backgroundColor: 'red', display: 'inline-block' }}>
-                    <DeleteEvent eventId={event.id} />
+                  <Box  sx={{ backgroundColor: 'red', display: 'inline-block', float: 'right', mt: 2  }}>
+                    <DeleteEvent eventId={event.id} variant="contained" />
                   </Box>
 
 
@@ -221,7 +219,7 @@ function SuperAdminHome() {
 
         {/* Conditionally Render Students Tab */}
         {activeTab === 1 && <StudentsTab />}
-
+        {activeTab === 2 && <AlterAdminRoles />}
       </Box>
     </Box>
     </>
