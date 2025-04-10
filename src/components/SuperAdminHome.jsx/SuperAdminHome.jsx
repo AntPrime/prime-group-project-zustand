@@ -96,7 +96,6 @@ function SuperAdminHome() {
   };
 
   return (
-
     <>
       <h2>LMR SUPER ADMIN HOME PAGE</h2>
       
@@ -225,7 +224,9 @@ function SuperAdminHome() {
 
       </Box>
     </Box>
+    </>
   );
+  
 }
 
 export default SuperAdminHome;
