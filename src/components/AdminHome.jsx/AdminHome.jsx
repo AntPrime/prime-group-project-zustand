@@ -1,4 +1,4 @@
-import useStore from '../../zustand/store'
+import useStore from '../../zustand/store';
 import { useState, useEffect } from 'react';
 import * as React from 'react';
 import {
@@ -19,7 +19,8 @@ import { IoIosArrowDropdown } from "react-icons/io";
 import Button from '@mui/material/Button';
 import SearchEvent from '../SearchEvent/SearchEvent.jsx';
 import { NavLink } from 'react-router-dom';
-import axios from 'axios'
+import axios from 'axios';
+import StudentsTab from '../StudentsTab/StudentsTab';
 
 
 function AdminHome() {
@@ -192,6 +193,7 @@ function AdminHome() {
    </>
  );
 }
+
 
 
 export default AdminHome;

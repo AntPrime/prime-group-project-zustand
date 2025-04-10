@@ -376,9 +376,6 @@ function StudentsTab() {
                       <IconButton onClick={() => handleEditClick({...user, events: [event]})}>
                         <EditIcon />
                       </IconButton>
-                      <IconButton onClick={() => handleDeleteClick({...user, events: [event]})}>
-                        <DeleteIcon />
-                      </IconButton>
                     </TableCell>
                   </TableRow>
                 ))

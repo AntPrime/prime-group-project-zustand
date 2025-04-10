@@ -11,6 +11,7 @@ import { NavLink } from 'react-router-dom';
 import StudentsTab from '../StudentsTab/StudentsTab';
 import DeleteEvent from '../DeleteEvent/DeleteEvent';
 
+
 function SuperAdminHome() {
   const user = useStore((state) => state.user);
   const logOut = useStore((state) => state.logOut);
@@ -95,6 +96,15 @@ function SuperAdminHome() {
   };
 
   return (
+
+    <>
+      <h2>LMR SUPER ADMIN HOME PAGE</h2>
+      
+      {/* Tabs for different sections */}
+ 
+
+          <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
+
     <Box sx={{ display: 'flex', height: '100vh', padding: 2 }}>
       {/* Sidebar */}
       <Box sx={{ width: '220px', pr: 3, borderRight: '1px solid #ccc' }}>
@@ -141,6 +151,7 @@ function SuperAdminHome() {
                     </Box>
                   </AccordionSummary>
 
+
                   <NavLink to={`/updateEvent/${event.id}`} state={{ event }} style={{ textDecoration: 'none' }}>
                     <Button variant="contained">Update Event</Button>
                   </NavLink>
@@ -148,6 +159,7 @@ function SuperAdminHome() {
                   <Box className="float-Button" sx={{ backgroundColor: 'red', display: 'inline-block' }}>
                     <DeleteEvent eventId={event.id} />
                   </Box>
+
 
                   <AccordionDetails>
                     <Divider sx={{ my: 2 }} />
@@ -204,11 +216,13 @@ function SuperAdminHome() {
             ) : (
               <p>No events available</p>
             )}
+
           </Box>
         )}
 
         {/* Conditionally Render Students Tab */}
         {activeTab === 1 && <StudentsTab />}
+
       </Box>
     </Box>
   );
