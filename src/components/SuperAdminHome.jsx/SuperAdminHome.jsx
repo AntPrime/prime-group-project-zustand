@@ -102,7 +102,7 @@ function SuperAdminHome() {
       {/* Tabs for different sections */}
  
 
-          <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4>
+          {/* <h4>Filter Applied: {sortBy ? `Sorted by ${sortBy}` : "No sorting applied"}</h4> */}
 
     <Box sx={{ display: 'flex', height: '100vh', padding: 2 }}>
       {/* Sidebar */}
