@@ -4,13 +4,14 @@ import { useState, useEffect } from 'react';
 import * as React from 'react';
 import {
   Accordion, AccordionSummary, AccordionDetails, Typography, Tabs, Tab, Box,
-  Button, Divider, List, ListItem, ListItemText
+  Button, Divider, List, ListItem, ListItemText, Paper
 } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
 import { NavLink } from 'react-router-dom';
 import StudentsTab from '../StudentsTab/StudentsTab';
 import DeleteEvent from '../DeleteEvent/DeleteEvent';
 import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
+import SearchEvent from '../SearchEvent/SearchEvent';
 
 function SuperAdminHome() {
   const user = useStore((state) => state.user);
@@ -119,10 +120,19 @@ function SuperAdminHome() {
 
       {/* Main Content */}
       <Box sx={{ flexGrow: 1, pl: 3 }}>
-        <Typography variant="h4" gutterBottom>LMR SUPER ADMIN HOME PAGE</Typography>
-
+        <Typography variant="h4" gutterBottom sx={{
+          color: '#2c3e50',
+          fontWeight: '600',
+          mb: 4
+        }}>LMR SUPER ADMIN HOME PAGE</Typography>
+  
         {/* Conditionally Render Events Tab */}
         {activeTab === 0 && (
+          <Paper sx={{ 
+            p: 3, 
+            borderRadius: '12px',
+            boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)'
+          }}>
           <Box className='eventCard'>
             {events.length > 0 ? (
               events.map((event, index) => (
@@ -209,18 +219,20 @@ function SuperAdminHome() {
                     </Button>
                   </AccordionDetails>
                 </Accordion>
+                
               ))
             ) : (
               <p>No events available</p>
             )}
-
           </Box>
+          </Paper>
         )}
 
         {/* Conditionally Render Students Tab */}
         {activeTab === 1 && <StudentsTab />}
         {activeTab === 2 && <AlterAdminRoles />}
       </Box>
+      
     </Box>
     </>
   );
