@@ -157,7 +157,6 @@ function AdminHome() {
        >
          <Tab label="Events" onClick={() => setActiveTab(0)} />
          <Tab label="Students" onClick={() => setActiveTab(1)} />
-         <Tab label="Alter admin" onClick={() => setActiveTab(2)} />
        </Tabs>
      </Box>
      

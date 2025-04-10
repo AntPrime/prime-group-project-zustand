@@ -10,6 +10,7 @@ import { IoIosArrowDropdown } from "react-icons/io";
 import { NavLink } from 'react-router-dom';
 import StudentsTab from '../StudentsTab/StudentsTab';
 import DeleteEvent from '../DeleteEvent/DeleteEvent';
+import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
 
 
 function SuperAdminHome() {
@@ -116,6 +117,7 @@ function SuperAdminHome() {
         >
           <Tab label="Events" onClick={() => setActiveTab(0)} />
           <Tab label="Students" onClick={() => setActiveTab(1)} />
+          <Tab label="Alter admin" onClick={() => setActiveTab(2)} />
         </Tabs>
       </Box>
 
@@ -221,7 +223,7 @@ function SuperAdminHome() {
 
         {/* Conditionally Render Students Tab */}
         {activeTab === 1 && <StudentsTab />}
-
+        {activeTab === 2 && <AlterAdminRoles />}
       </Box>
     </Box>
     </>
