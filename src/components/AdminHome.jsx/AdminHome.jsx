@@ -10,7 +10,7 @@ import SearchEvent from '../SearchEvent/SearchEvent.jsx';
 import axios from 'axios';
 import StudentsTab from '../StudentsTab/StudentsTab';
 import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
-
+import { NavLink } from 'react-router-dom';
 
 function AdminHome() {
  const user = useStore((state) => state.user);
@@ -172,7 +172,9 @@ const handleTabChange = (event, newValue) => {
                         </Typography>
                       </Box>
                     </AccordionSummary>
-
+ <NavLink to={`/updateEvent/${event.id}`} state={{ event }} style={{ textDecoration: 'none' }}>
+                    <Button variant="contained">Update Event</Button>
+                  </NavLink>
                     <AccordionDetails>
                       <Divider sx={{ my: 2 }} />
                       <Typography variant="h6" sx={{ mb: 1 }}>
