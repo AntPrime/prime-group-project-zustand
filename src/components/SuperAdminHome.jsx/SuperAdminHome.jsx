@@ -13,6 +13,7 @@ import DeleteEvent from '../DeleteEvent/DeleteEvent';
 import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
 import SearchEvent from '../SearchEvent/SearchEvent';
 
+
 function SuperAdminHome() {
   const user = useStore((state) => state.user);
   const logOut = useStore((state) => state.logOut);
@@ -115,6 +116,7 @@ function SuperAdminHome() {
           <Tab label="Events" onClick={() => setActiveTab(0)} />
           <Tab label="Students" onClick={() => setActiveTab(1)} />
           <Tab label="Assign Admin" onClick={() => setActiveTab(2)} />
+
         </Tabs>
       </Box>
 

@@ -9,24 +9,31 @@ import { IoIosArrowDropdown } from "react-icons/io";
 import SearchEvent from '../SearchEvent/SearchEvent.jsx';
 import axios from 'axios';
 import StudentsTab from '../StudentsTab/StudentsTab';
+import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
 
 
 function AdminHome() {
  const user = useStore((state) => state.user);
  const logOut = useStore((state) => state.logOut);
  const [eventList, setEventList] = useState([]);
- const [activeTab, setActiveTab] = useState(0);
  const [events, setEvents] = useState([]);
+ const [activeTab, setActiveTab] = useState(0);
+ const [selectedSchools, setSelectedSchools] = useState([]);
+ const [selectedActivities, setSelectedActivities] = useState([]);
+
+
  const ROLE_MAPPING = {
    'play-by-play': 'play_by_play',
    'color commentator': 'color_commentator',
    'camera': 'camera',
    'producer': 'producer'
  };
+  
  const handleParticipantmarked = (eventId, role) => {
+   // Convert role to snake_case for the API
    const apiRole = ROLE_MAPPING[role.toLowerCase()];
   
- 
+   // No need to calculate current status - server handles the toggle
    axios({
      method: 'PUT',
      url: `/api/events/attended/${eventId}`,
@@ -34,7 +41,7 @@ function AdminHome() {
    })
    .then(() => {
      console.log('Successfully toggled attendance');
-     fetchEvent();
+     fetchEvent(); // Refresh the event list after update
    })
    .catch((error) => {
      console.log('Error updating attendance', error);
@@ -42,6 +49,8 @@ function AdminHome() {
  };
  const fetchEvent = () => {
    console.log("fetching..")
+
+
    axios({
      method: "GET",
      url: "/api/events/all"
@@ -223,6 +232,7 @@ const handleTabChange = (event, newValue) => {
     </Box>
   );
 }
+
 
 
 
