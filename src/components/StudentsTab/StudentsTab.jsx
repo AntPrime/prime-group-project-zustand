@@ -25,7 +25,7 @@ import {
   Grid,
   Snackbar,
   Alert,
-  DialogContentText
+  Chip,
 } from '@mui/material';
 import { Edit as EditIcon, Delete as DeleteIcon } from '@mui/icons-material';
 import axios from 'axios';
@@ -241,56 +241,41 @@ function StudentsTab() {
 
   // Handle saving the edited user event
   const handleSaveEdit = () => {
-    // Find the event ID from the event title
-    const event = events.find(e => e.title === editForm.event);
-    if (!event) {
+    // Get original assignment details
+    const originalEvent = currentEditItem.events[0];
+    const originalEventId = originalEvent.eventId;
+    const originalRole = originalEvent.role;
+  
+    // Get new assignment details
+    const newEvent = events.find(e => e.title === editForm.event);
+    const newRole = editForm.role;
+  
+    if (!newEvent) {
       showSnackbar('Event not found', 'error');
       return;
     }
-    
-    // Make API call to update the role
-    axios.put('/api/events/update-role', {
-      eventId: event.id,
-      userId: currentEditItem.userId,
-      role: editForm.role
+  
+    // Make API call to reassign
+    axios.put('/api/assignRole/reassign-role', {
+      originalEventId,
+      originalRole,
+      newEventId: newEvent.id,
+      newRole,
+      userId: currentEditItem.userId
     })
-      .then(() => {
-        // Refresh data
-        fetchEvents();
-        showSnackbar('Role updated successfully');
-        handleEditClose();
-      })
-      .catch(err => {
-        console.error('Error updating role:', err);
-        showSnackbar('Failed to update role: ' + (err.response?.data?.error || err.message), 'error');
-      });
-  };
-
-  // Handle deleting a user event
-  const handleDeleteClick = (userEvent) => {
-    // Find the event ID from the event title
-    const event = events.find(e => e.title === userEvent.events[0]?.eventTitle);
-    if (!event) {
-      showSnackbar('Event not found', 'error');
-      return;
-    }
-    
-    // Make API call to delete the role
-    axios.put('/api/events/delete-role', {
-      eventId: event.id,
-      role: userEvent.events[0]?.role
+    .then(() => {
+      // Refresh both events and users
+      Promise.all([fetchEvents(), fetchUsers()])
+        .then(() => {
+          showSnackbar('Role reassigned successfully');
+          handleEditClose();
+        });
     })
-      .then(() => {
-        // Refresh data
-        fetchEvents();
-        showSnackbar('Role deleted successfully');
-      })
-      .catch(err => {
-        console.error('Error deleting role:', err);
-        showSnackbar('Failed to delete role: ' + (err.response?.data?.error || err.message), 'error');
-      });
+    .catch(err => {
+      console.error('Error reassigning role:', err);
+      showSnackbar('Failed to reassign role: ' + (err.response?.data?.error || err.message), 'error');
+    });
   };
-
   // Clear all filters
   const handleClearFilters = () => {
     setFilters({
@@ -302,159 +287,244 @@ function StudentsTab() {
   };
 
   return (
-    <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        Students and Event Roles
-      </Typography>
-      
-      {/* Filter Controls */}
-      <Paper sx={{ p: 2, mb: 3 }}>
-        <Grid container spacing={2} alignItems="center">
-          <Grid item xs={12} sm={6} md={3}>
+    <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+    <Typography variant="h4" gutterBottom sx={{ 
+      color: '#2c3e50',
+      fontWeight: '600',
+      mb: 4,
+      borderBottom: '2px solid #3498db',
+      pb: 1
+    }}>
+      Event Role Management
+    </Typography>
+
+    {/* Filter Controls */}
+    <Paper sx={{ 
+      p: 3, 
+      mb: 3,
+      borderRadius: '12px',
+      boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)'
+    }}>
+      <Grid container spacing={2} alignItems="center">
+        {['username', 'event', 'date', 'role'].map((field) => (
+          <Grid item xs={12} sm={6} md={3} key={field}>
             <TextField
               fullWidth
-              label="Filter by Username"
-              value={filters.username}
-              onChange={(e) => handleFilterChange('username', e.target.value)}
+              variant="outlined"
+              label={`Filter by ${field.charAt(0).toUpperCase() + field.slice(1)}`}
+              value={filters[field]}
+              onChange={(e) => handleFilterChange(field, e.target.value)}
+              InputProps={{
+                sx: {
+                  borderRadius: '8px',
+                  backgroundColor: 'white'
+                }
+              }}
             />
           </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <TextField
-              fullWidth
-              label="Filter by Event"
-              value={filters.event}
-              onChange={(e) => handleFilterChange('event', e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <TextField
-              fullWidth
-              label="Filter by Date"
-              value={filters.date}
-              onChange={(e) => handleFilterChange('date', e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6} md={3}>
-            <TextField
-              fullWidth
-              label="Filter by Role"
-              value={filters.role}
-              onChange={(e) => handleFilterChange('role', e.target.value)}
-            />
-          </Grid>
-          <Grid item xs={12} sm={6}>
-            <Button variant="contained" color="primary" onClick={handleClearFilters}>
-              Clear Filters
-            </Button>
-          </Grid>
+        ))}
+        <Grid item xs={12} sx={{ textAlign: 'right' }}>
+          <Button 
+            variant="contained" 
+            onClick={handleClearFilters}
+            sx={{
+              bgcolor: '#3498db',
+              '&:hover': { bgcolor: '#2980b9' },
+              textTransform: 'none',
+              borderRadius: '8px',
+              px: 4,
+              py: 1
+            }}
+          >
+            Clear Filters
+          </Button>
         </Grid>
-      </Paper>
-      
-      {/* Users and Events Table */}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
+      </Grid>
+    </Paper>
+
+    {/* Users and Events List */}
+    <Paper sx={{ 
+      borderRadius: '12px',
+      overflow: 'hidden',
+      boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)'
+    }}>
+      <TableContainer>
+        <Table sx={{ minWidth: 650 }}>
+          <TableHead sx={{ bgcolor: '#3498db' }}>
             <TableRow>
-              <TableCell>Username</TableCell>
-              <TableCell>Event</TableCell>
-              <TableCell>Role</TableCell>
-              <TableCell>Date</TableCell>
-              <TableCell>Actions</TableCell>
+              {['Username', 'Event', 'Role', 'Date', 'Actions'].map((header) => (
+                <TableCell 
+                  key={header}
+                  sx={{ 
+                    color: 'white', 
+                    fontWeight: '600',
+                    fontSize: '1rem'
+                  }}
+                >
+                  {header}
+                </TableCell>
+              ))}
             </TableRow>
           </TableHead>
           <TableBody>
             {getFilteredUserEvents().map((user) => (
               user.events.length > 0 ? (
-                // User has events
                 user.events.map((event, index) => (
-                  <TableRow key={`${user.userId}-${event.eventId}-${index}`}>
-                    <TableCell>{user.username}</TableCell>
+                  <TableRow 
+                    key={`${user.userId}-${event.eventId}-${index}`}
+                    hover
+                    sx={{ 
+                      '&:nth-of-type(odd)': { bgcolor: '#f8f9fa' },
+                      '&:last-child td': { borderBottom: 0 }
+                    }}
+                  >
+                    <TableCell sx={{ fontWeight: '500' }}> <strong>{user.username}</strong></TableCell>
                     <TableCell>{event.eventTitle}</TableCell>
-                    <TableCell>{event.role}</TableCell>
-                    <TableCell>{event.date}</TableCell>
                     <TableCell>
-                      <IconButton onClick={() => handleEditClick({...user, events: [event]})}>
+                      <Chip 
+                        label={event.role}
+                        color="primary"
+                        variant="outlined"
+                        sx={{ 
+                          borderRadius: '4px',
+                          borderWidth: '2px',
+                          fontWeight: '500'
+                        }}
+                      />
+                    </TableCell>
+                    <TableCell>
+                      {new Date(event.date).toLocaleDateString('en-US', {
+                        year: 'numeric',
+                        month: 'short',
+                        day: 'numeric'
+                      })}
+                    </TableCell>
+                    <TableCell>
+                      <IconButton 
+                        onClick={() => handleEditClick({...user, events: [event]})}
+                        sx={{ color: '#3498db' }}
+                      >
                         <EditIcon />
                       </IconButton>
                     </TableCell>
                   </TableRow>
                 ))
               ) : (
-                // User has no events
                 <TableRow key={user.userId}>
-                  <TableCell>{user.username}</TableCell>
-                  <TableCell colSpan={4}>No events assigned</TableCell>
+                  <TableCell colSpan={5} sx={{ 
+                    bgcolor: '#fff3cd',
+                    color: '#856404',
+                    textAlign: 'center',
+                    fontWeight: '500'
+                  }}>
+                    <strong>{user.username}</strong> - No assigned events
+                  </TableCell>
                 </TableRow>
               )
             ))}
           </TableBody>
         </Table>
       </TableContainer>
+    </Paper>
+
+    {/* Edit Dialog */}
+    <Dialog 
+      open={editOpen} 
+      onClose={handleEditClose}
+      PaperProps={{ sx: { borderRadius: '12px', p: 2 } }}
+    >
+      <DialogTitle sx={{ 
+        fontSize: '1.5rem',
+        fontWeight: '600',
+        color: '#2c3e50',
+        pb: 1
+      }}>
+        Reassign User Role
+      </DialogTitle>
       
-      {/* Edit Dialog */}
-      <Dialog open={editOpen} onClose={handleEditClose}>
-        <DialogTitle>Edit User Event</DialogTitle>
-        <DialogContent>
-          <DialogContentText>
-            Edit event and role for user: {currentEditItem?.username}
-          </DialogContentText>
-          <TextField
-            select
-            autoFocus
-            margin="dense"
-            label="Event"
-            fullWidth
+      <DialogContent>
+        <Box sx={{ mb: 2 }}>
+          <Typography variant="subtitle1" sx={{ color: '#7f8c8d' }}>
+            User: <span style={{ color: '#2c3e50' }}>{currentEditItem?.username}</span>
+          </Typography>
+        </Box>
+
+        <FormControl fullWidth sx={{ mb: 3 }}>
+          <InputLabel>Select Event</InputLabel>
+          <Select
             value={editForm.event}
             onChange={(e) => setEditForm({ ...editForm, event: e.target.value })}
-            SelectProps={{
-              native: true,
-            }}
+            MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
           >
-            <option value="">Select an event</option>
             {events.map((event) => (
-              <option key={event.id} value={event.title}>
+              <MenuItem key={event.id} value={event.title}>
                 {event.title}
-              </option>
+              </MenuItem>
             ))}
-          </TextField>
-          <TextField
-            select
-            margin="dense"
-            label="Role"
-            fullWidth
+          </Select>
+        </FormControl>
+
+        <FormControl fullWidth>
+          <InputLabel>Select Role</InputLabel>
+          <Select
             value={editForm.role}
             onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
-            SelectProps={{
-              native: true,
-            }}
           >
-            <option value="">Select a role</option>
-            <option value="student">Student</option>
-            <option value="mentor">Mentor</option>
-            <option value="instructor">Instructor</option>
-          </TextField>
-        </DialogContent>
-        <DialogActions>
-          <Button onClick={handleEditClose}>Cancel</Button>
-          <Button onClick={handleSaveEdit} variant="contained" color="primary">
-            Save
-          </Button>
-        </DialogActions>
-      </Dialog>
-      
-      {/* Snackbar for notifications */}
-      <Snackbar 
-        open={snackbar.open} 
-        autoHideDuration={6000} 
-        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+            {['Play-by-Play', 'Color Commentator', 'Camera', 'Producer'].map((role) => (
+              <MenuItem key={role} value={role}>
+                {role}
+              </MenuItem>
+            ))}
+          </Select>
+        </FormControl>
+      </DialogContent>
+
+      <DialogActions sx={{ pt: 2 }}>
+        <Button 
+          onClick={handleEditClose}
+          sx={{ 
+            color: '#7f8c8d',
+            '&:hover': { backgroundColor: 'transparent' }
+          }}
+        >
+          Cancel
+        </Button>
+        <Button 
+          onClick={handleSaveEdit}
+          variant="contained"
+          sx={{
+            bgcolor: '#3498db',
+            '&:hover': { bgcolor: '#2980b9' },
+            borderRadius: '8px',
+            px: 4,
+            textTransform: 'none'
+          }}
+        >
+          Save Changes
+        </Button>
+      </DialogActions>
+    </Dialog>
+
+    {/* Snackbar */}
+    <Snackbar 
+      open={snackbar.open} 
+      autoHideDuration={6000} 
+      onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
+      anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+    >
+      <Alert 
+        severity={snackbar.severity}
+        sx={{ 
+          width: '100%',
+          borderRadius: '8px',
+          boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)'
+        }}
       >
-        <Alert onClose={() => setSnackbar(prev => ({ ...prev, open: false }))} severity={snackbar.severity}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Box>
-  );
+        {snackbar.message}
+      </Alert>
+    </Snackbar>
+  </Box>
+);
 }
 
 export default StudentsTab; 

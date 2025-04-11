@@ -1,97 +1,80 @@
 import axios from "axios";
 import { useState, useEffect } from "react";
-import SearchFetchEvents from "../SearchFetchEvents/SearchFetchEvents";
-import { Box, Accordion, AccordionSummary, AccordionDetails, AccordionActions, Button, Typography, TextField, Select, MenuItem, InputLabel, FormControl, Chip, ListItemText, Checkbox } from '@mui/material';
+import { Box, Accordion, AccordionSummary, AccordionDetails, Typography } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
 import moment from 'moment';
+import useStore from '../../zustand/store'; // Add this import
 
-function UserAttended( ) {
+function UserAttended() {
   const [eventList, setEventList] = useState([]);
+  const user = useStore((state) => state.user); // Get current user from store
 
-   function fetchEventList() {
-        console.log( 'in fetchEventList' );
-        axios.get( '/api/events/all' ).then(function( response ){
-          console.log( response.data )
-          setEventList( response.data ) 
-        }).catch( function( err ){
-              console.log( err );
-              alert( 'error getting test list' );
-            })
-      }
-          function formatDate(dateString) {
-            return moment(dateString).format("MM/DD/YYYY"); // Example: 03/30/2025
-          }
-      
-          function formatTime(timeString) {
-            return moment(timeString, "HH:mm:ss").format("h:mm A"); // Example: 3:30 PM
-          }
-        useEffect(()=> {
-          // fetchEvents()
-          fetchEventList()
-        }, [] );
+  const fetchUserEvents = async () => {
+    try {
+      const response = await axios.get(`/api/events/attended/registered/${user.id}`);
+      setEventList(response.data);
+    } catch (err) {
+      console.error('Error fetching user events:', err);
+      alert('Error loading events');
+    }
+  };
+
+  const formatDate = (dateString) => {
+    return moment(dateString).format("MM/DD/YYYY");
+  };
+
+  const formatTime = (timeString) => {
+    return moment(timeString, "HH:mm:ss").format("h:mm A");
+  };
+
+  useEffect(() => {
+    fetchUserEvents();
+  }, []);
+
   return (
-     <div className='UserAttended'>
-  <h1>
-    EVENTS USERS Attended
-  </h1>
-   <div className='eventCard'>
-          {eventList.length > 0 ? (
-            eventList.map((event, index) => (
-              <Accordion key={index} sx={{ mb: 2 }}>
-                <AccordionSummary
-                  expandIcon={<IoIosArrowDropdown />}
-                  aria-controls={`panel${index}-content`}
-                  id={`panel${index}-header`}
-                >
-                  <Typography component="span" sx={{ fontWeight: 'bold' }}>
-                    {event.title} - {event.date} | {event.time}
-                  </Typography>
-                </AccordionSummary>
-                <AccordionDetails>
-                  <Typography variant="body1" sx={{ mb: 1 }}>
-                    <strong>Created by:</strong> {event.created_by_id}
-                  </Typography>
-                  <Typography variant="body1" sx={{ mb: 1 }}>
-                    <strong>Date:</strong> {formatDate(event.date)}
-                  </Typography>
-                  <Typography variant="body1" sx={{ mb: 1 }}>
-                    <strong>Time:</strong> {formatTime(event.time)} 
-                  </Typography>
-                  <Typography variant="body1" sx={{ mb: 1 }}>
-                    <strong>Streaming Channel:</strong> {event.channel}
-                  </Typography>
-                  <Typography variant="body1" sx={{ mb: 1 }}>
-                    <strong>Schools:</strong> {event.school_name} vs {event.opponent_name}
-                  </Typography>
-                  <Typography variant="body1" sx={{ mb: 1 }}>
-                    <strong>Location:</strong> {event.location}
-                  </Typography>
-                  <Typography variant="body2">
-                    <strong>Notes:</strong> {event.notes}
-                  </Typography>
-                </AccordionDetails>
-                {/* <AccordionActions>
-                  <Button size="small" onClick={() => assignRoles(event, "producer")} disabled={!!event.producer}>
-                    Producer: {event.producer_username || "(Unassigned)"}
-                  </Button>
-                  <Button size="small" onClick={() => assignRoles(event, "camera")} disabled={!!event.camera}>
-                    Camera: {event.camera_username || "(Unassigned)"}
-                  </Button>
-                  <Button size="small" onClick={() => assignRoles(event, "play_by_play")} disabled={!!event.play_by_play}>
-                    Play-by-play: {event.play_by_play_username || "(Unassigned)"}
-                  </Button>
-                  <Button size="small" onClick={() => assignRoles(event, "color_commentator")} disabled={!!event.color_commentator}>
-                    Color Commentator: {event.color_commentator_username || "(Unassigned)"}
-                  </Button>
-                </AccordionActions> */}
-              </Accordion>
-            ))
-          ) : (
-            <h4>No events found</h4>
-          )}
-        </div>
+    <div className='UserAttended'>
+      <h1>Your Scheduled Events</h1>
+      <div className='eventCard'>
+        {eventList.length > 0 ? (
+          eventList.map((event, index) => (
+            <Accordion key={index} sx={{ mb: 2 }}>
+              <AccordionSummary
+                expandIcon={<IoIosArrowDropdown />}
+                aria-controls={`panel${index}-content`}
+                id={`panel${index}-header`}
+              >
+                <Typography component="span" sx={{ fontWeight: 'bold' }}>
+                  {event.title} - {formatDate(event.date)} | {formatTime(event.time)}
+                </Typography>
+              </AccordionSummary>
+              <AccordionDetails>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Your Role:</strong> {event.role}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Activity:</strong> {event.activity}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Location:</strong> {event.location}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>School:</strong> {event.school_name}
+                </Typography>
+                <Typography variant="body1" sx={{ mb: 1 }}>
+                  <strong>Channel:</strong> {event.channel}
+                </Typography>
+                <Typography variant="body2">
+                  <strong>Notes:</strong> {event.notes}
+                </Typography>
+              </AccordionDetails>
+            </Accordion>
+          ))
+        ) : (
+          <h4>No upcoming events found</h4>
+        )}
+      </div>
     </div>
   );
-  }
+}
 
 export default UserAttended;

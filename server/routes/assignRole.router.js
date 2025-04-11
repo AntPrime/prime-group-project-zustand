@@ -32,5 +32,54 @@ router.put('/assignRole', async (req, res) => {
       res.status(500).send("Error updating event role");
       }
   });
+// PUT route to reassign user between events/roles
+router.put('/reassign-role', async (req, res) => {
+  try {
+    const { originalEventId, originalRole, newEventId, newRole, userId } = req.body;
+    
+    // Validate required parameters
+    if (!originalEventId || !originalRole || !newEventId || !newRole || !userId) {
+      return res.status(400).send({ error: 'Missing required parameters' });
+    }
 
+    // Start transaction
+    await pool.query('BEGIN');
+
+    // Remove from old role/event
+    const deleteQuery = `
+      UPDATE events
+      SET ${getRoleColumn(originalRole)} = NULL
+      WHERE id = $1
+    `;
+    await pool.query(deleteQuery, [originalEventId]);
+
+    // Add to new role/event
+    const insertQuery = `
+      UPDATE events
+      SET ${getRoleColumn(newRole)} = $1
+      WHERE id = $2
+    `;
+    await pool.query(insertQuery, [userId, newEventId]);
+
+    // Commit transaction
+    await pool.query('COMMIT');
+    
+    res.send({ message: 'Role reassigned successfully' });
+  } catch (err) {
+    await pool.query('ROLLBACK');
+    console.error('Error reassigning role:', err);
+    res.status(500).send({ error: 'Server error' });
+  }
+});
+
+// Helper function to map role names to DB columns
+const getRoleColumn = (role) => {
+  switch(role) {
+    case 'Play-by-Play': return 'play_by_play';
+    case 'Color Commentator': return 'color_commentator';
+    case 'Camera': return 'camera';
+    case 'Producer': return 'producer';
+    default: throw new Error('Invalid role');
+  }
+};
 module.exports = router;
