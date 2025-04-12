@@ -153,7 +153,7 @@ function SuperAdminHome() {
         </Typography>
        <SearchEvent eventList={eventList} setEventList={setEventList} />  
           {/* Header */}
-<Paper
+          <Paper
   elevation={1}
   sx={{
     display: 'flex',
@@ -161,26 +161,33 @@ function SuperAdminHome() {
     alignItems: 'center',
     px: 3,
     py: 2,
-    backgroundColor: '#f5f5f5',
-    borderRadius: 1,
+    backgroundColor: '#3498db', // Same blue as your table head
+    borderTopLeftRadius: 8,
+    borderTopRightRadius: 8,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 0,
     maxWidth: '1400px',
-    margin: '0 auto 1rem',
-    fontWeight: 'bold',
+    margin: '0 auto',
   }}
 >
-  <Box sx={{ flex: 2 }}>Title</Box>
-  <Box sx={{ flex: 1.1 }}>Date</Box>
-  <Box sx={{ flex: 1 }}>Time</Box>
-  <Box sx={{ flex: 1 }}>School</Box>
-  <Box sx={{ flex: 1 }}>Channel</Box>
-  <Box sx={{ flex: 1 }}>Num Registered</Box>
-  <Box sx={{ flex: 1 }}>Num Attended</Box>
+  {['Title', 'Date', 'Time', 'School', 'Channel', 'Num Registered', 'Num Attended'].map((text, index) => (
+    <Box
+      key={index}
+      sx={{
+        flex: index === 0 ? 2 : 1, // wider space for Title
+        color: 'white',
+        fontWeight: 600,
+        fontSize: '1rem',
+      }}
+    >
+      {text}
+    </Box>
+  ))}
 </Paper>
-
 
           {/* Events List */}
           {events.length > 0 ? (
-            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 3 }}>
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0, mt: 0 }}>
               {events.map((event, index) => (
                 <Paper
                   key={index}
@@ -188,7 +195,7 @@ function SuperAdminHome() {
                   sx={{
                     p: 2,
                     backgroundColor: '#fff',
-                    borderRadius: 2,
+                    borderRadius: 0,
                     width: '100%',
                     maxWidth: '1400px',
                     margin: '0 auto',
