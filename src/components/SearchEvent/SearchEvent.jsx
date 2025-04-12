@@ -207,7 +207,7 @@ return (
           </Grid>
 
           {/* School Dropdown */}
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={3.5}>
             <FormControl fullWidth>
               <InputLabel id="school-label">Filter by School</InputLabel>
               <Select
@@ -234,7 +234,7 @@ return (
           </Grid>
 
           {/* Activity Dropdown */}
-          <Grid item xs={12} sm={6} md={3}>
+          <Grid item xs={12} sm={6} md={3.5}>
             <FormControl fullWidth>
               <InputLabel id="activity-label">Filter by Activity</InputLabel>
               <Select

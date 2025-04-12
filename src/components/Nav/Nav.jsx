@@ -47,11 +47,14 @@ function Nav() {
            <>
              {user.admin_level === 0 && (
                <>
-                 <li>
-                   <NavLink to="/">Event Home</NavLink>
+                <li>
+                   <NavLink to="/Homepage">Homepage</NavLink>
                  </li>
                  <li>
-                   <NavLink to="/userAttended">User Homepage</NavLink>
+                   <NavLink to="/">Events</NavLink>
+                 </li>
+                 <li>
+                   <NavLink to="/userAttended">Account</NavLink>
                  </li>
                </>
              )}
@@ -59,9 +62,6 @@ function Nav() {
                <>
                  <li>
                    <NavLink to="/adminHome">Admin Home</NavLink>
-                 </li>
-                 <li>
-                   <NavLink to="/events">Events</NavLink>
                  </li>
                </>
              )}

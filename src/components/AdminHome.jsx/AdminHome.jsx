@@ -2,7 +2,7 @@ import useStore from '../../zustand/store';
 import { useState, useEffect } from 'react';
 import * as React from 'react';
 import {
-  Accordion, AccordionSummary, AccordionDetails, Typography, Tabs, Tab, Box,
+  Accordion, AccordionSummary, AccordionDetails, AccordionActions, Typography, Tabs, Tab, Box,
   Button, Divider, List, ListItem, ListItemText, Paper
 } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
@@ -10,6 +10,7 @@ import axios from 'axios';
 import SearchEvent from '../SearchEvent/SearchEvent.jsx';
 import StudentsTab from '../StudentsTab/StudentsTab';
 import { NavLink } from 'react-router-dom';
+import moment from 'moment'; 
 
 function AdminHome() {
  const user = useStore((state) => state.user);
@@ -109,6 +110,14 @@ const handleTabChange = (event, newValue) => {
  }, [eventList]);
 
  
+   function formatDate(dateString) {
+     return moment(dateString).format("MMMM D, YYYY"); // e.g., "November 12, 2025"
+   }
+ 
+   function formatTime(timeString) {
+     return moment(timeString, "HH:mm:ss").format("h:mma"); // e.g., "4:30pm"
+   }
+
  return (
   <Box sx={{ display: 'flex', height: '100vh', padding: 2, gap: 2 }}>
     {/* Sidebar */}
@@ -131,89 +140,141 @@ const handleTabChange = (event, newValue) => {
       <Box sx={{ width: '100%', maxWidth: '70%', px: 10 }}>
         {/* Events Tab */}
         {activeTab === 0 && (
-          <Box className="eventCard" sx={{ width: '100%', mx: 'auto' }}>
-            <Typography variant="h4" sx={{ mb: 5, mt: 5, pb: 1, borderBottom: '2px solid #3498db', fontWeight: 'bold' }}>
-              Admin Event Management
-            </Typography>
+  <Box className="eventCard" sx={{ width: '100%', mx: 'auto' }}>
+    <Typography variant="h4" sx={{ mb: 5, mt: 5, pb: 1, borderBottom: '2px solid #3498db', fontWeight: 'bold' }}>
+      Admin Event Management
+    </Typography>
+    <SearchEvent eventList={eventList} setEventList={setEventList} />
 
-            <SearchEvent eventList={eventList} setEventList={setEventList} />  
+    {/* Table Head */}
+    <Paper
+      elevation={1}
+      sx={{
+        display: 'flex',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        px: 4,
+        py: 2,
+        backgroundColor: '#3498db',
+        borderTopLeftRadius: 8,
+        borderTopRightRadius: 8,
+        borderBottomLeftRadius: 0,
+        borderBottomRightRadius: 0,
+        width: '100%',
+      }}
+    >
+      {['Title', 'Date', 'Time', 'School', 'Channel', 'Num Registered', 'Num Attended'].map((text, index) => (
+        <Box
+          key={index}
+          sx={{
+            flex: index === 0 ? 2 : 1,
+            color: 'white',
+            fontWeight: 600,
+            fontSize: '1rem',
+          }}
+        >
+          {text}
+        </Box>
+      ))}
+    </Paper>
 
-            {events.length > 0 ? (
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                {events.map((event, index) => (
-                  <Paper
-                    key={index}
-                    elevation={2}
-                    sx={{
-                      backgroundColor: '#fff',
-                      borderRadius: '8px',
-                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
-                    }}
+    {/* Events */}
+    {events.length > 0 ? (
+      <Box sx={{ display: 'flex', flexDirection: 'column', gap: 0 }}>
+        {events.map((event, index) => (
+          <Paper
+            key={index}
+            elevation={2}
+            sx={{
+              p: 2,
+              backgroundColor: '#fff',
+              borderRadius: 0,
+              width: '100%',
+              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
+            }}
+          >
+            <Accordion elevation={0} sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+              <AccordionSummary expandIcon={<IoIosArrowDropdown />}>
+                <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+                  <Box sx={{ flex: 2 }}>
+                    <Typography sx={{ fontWeight: 'bold' }}>
+                      {event.title} {event.activity || "N/A"}
+                    </Typography>
+                    <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+                      <Typography variant="body2" sx={{ color: 'gray' }}>
+                        {event.location || "N/A"}
+                      </Typography>
+                    </Box>
+                  </Box>
+                  <Box sx={{ flex: 1.2 }}>{formatDate(event.date)}</Box>
+                  <Box sx={{ flex: 1.1 }}>{formatTime(event.time)}</Box>
+                  <Box sx={{ flex: 1.1 }}>{event.school_name || "N/A"}</Box>
+                  <Box sx={{ flex: 1.4 }}>{event.channel || "N/A"}</Box>
+                  <Box sx={{ flex: 1 }}>{event.participants?.length || 0}</Box>
+                  <Box sx={{ flex: .6 }}>
+                    {event.participants?.filter(p => p.marked).length || 0}
+                  </Box>
+                </Box>
+              </AccordionSummary>
+
+              <AccordionDetails>
+                <Divider sx={{ my: 2 }} />
+                <AccordionActions sx={{ justifyContent: 'flex-end', px: 2 }}>
+                  <NavLink
+                    to={`/updateEvent/${event.id}`}
+                    state={{ event }}
                   >
-                    <Accordion elevation={0} sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
-                      <AccordionSummary expandIcon={<IoIosArrowDropdown />}>
-                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
-                          <Typography sx={{ fontWeight: 'bold' }}>
-                            {event.title}
-                          </Typography>
-                          <Typography variant="body2" color="text.secondary">
-                            Date: {event.date} | Time: {event.time}
-                          </Typography>
-                          <Typography variant="body2">
-                            Location: {event.location}
-                          </Typography>
-                        </Box>
-                      </AccordionSummary>
+                    Update Event
+                  </NavLink>
+                </AccordionActions>
 
-                      <AccordionDetails>
-                        <Divider sx={{ my: 2 }} />
-                        <NavLink to={`/updateEvent/${event.id}`} state={{ event }} style={{ textDecoration: 'none' }}>
-                          <Button variant="contained" sx={{ mb: 2 }}>Update Event</Button>
-                        </NavLink>
+                <Typography variant="h6" sx={{ mb: 1, pl: 11 }}>
+                  Participants
+                </Typography>
+                <List dense sx={{
+                  width: '100%',
+                  bgcolor: 'background.paper',
+                  pl: 11,
+                  borderRadius: 1,
+                }}>
+                  {event.participants.map((participant, pIndex) => (
+                    <ListItem key={pIndex} sx={{ mb: 2 }}>
+                      <ListItemText
+                        primary={participant.username}
+                        secondary={`Role: ${participant.role}`}
+                        sx={{
+                          '& .MuiListItemText-secondary': {
+                            color: 'text.secondary',
+                            fontSize: '0.875rem'
+                          }
+                        }}
+                      />
+                      <Box sx={{ ml: 'auto' }}>
+                        <Button
+                          size="small"
+                          variant="outlined"
+                          color={participant.marked ? 'success' : 'primary'}
+                          onClick={() => handleParticipantmarked(event.id, participant.role)}
+                        >
+                          {participant.marked ? 'Attended ✓' : 'Signed Up'}
+                        </Button>
+                      </Box>
+                    </ListItem>
+                  ))}
+                </List>
+              </AccordionDetails>
+            </Accordion>
+          </Paper>
+        ))}
+      </Box>
+    ) : (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100px' }}>
+        <Typography>No events available</Typography>
+      </Box>
+    )}
+  </Box>
+)}
 
-                        <Typography variant="h6" sx={{ mb: 1 }}>
-                          Assigned Roles ({event.participants?.length || 0})
-                        </Typography>
-
-                        <List dense sx={{ width: '100%', bgcolor: 'background.paper', borderRadius: 1 }}>
-                          {event.participants?.map((participant, pIndex) => (
-                            <ListItem
-                              key={pIndex}
-                              sx={{
-                                mb: 1,
-                                borderRadius: 1,
-                                backgroundColor: '#f8f9fa',
-                              }}
-                            >
-                              <ListItemText
-                                primary={participant.username}
-                                secondary={`Role: ${participant.role}`}
-                              />
-                              <Box sx={{ ml: 'auto' }}>
-                                <Button
-                                  size="small"
-                                  variant="outlined"
-                                  color={participant.marked ? 'success' : 'primary'}
-                                  onClick={() => handleParticipantmarked(event.id, participant.role)}
-                                >
-                                  {participant.marked ? 'Attended ✓' : 'Mark Attendance'}
-                                </Button>
-                              </Box>
-                            </ListItem>
-                          ))}
-                        </List>
-                      </AccordionDetails>
-                    </Accordion>
-                  </Paper>
-                ))}
-              </Box>
-            ) : (
-              <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center', mt: 4 }}>
-                No upcoming events
-              </Typography>
-            )}
-          </Box>
-        )}
 
         {/* Students Tab */}
         {activeTab === 1 && (

@@ -26,6 +26,7 @@ import SuperAdminHome from '../SuperAdminHome.jsx/SuperAdminHome';
 import UserAttended from '../UserAttended.jsx/UserAttended';
 import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
 import BasicSearch from '../BasicSearch/BasicSearch';
+import HomePage from '../HomePage/HomePage';
 import '../App/App.css';
 
 
@@ -198,6 +199,7 @@ return (
         <Route path="/createEvent" element={<EventsPage />} />
         <Route path="/adminHome" element={<AdminHome />} />
         <Route path="/superAdminHome" element={<SuperAdminHome />} />
+        <Route path="/HomePage" element={<HomePage />} />
         <Route
           path="*"
           element={

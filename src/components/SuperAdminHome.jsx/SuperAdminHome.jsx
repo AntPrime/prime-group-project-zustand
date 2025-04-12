@@ -235,7 +235,6 @@ function SuperAdminHome() {
                           <NavLink
                             to={`/updateEvent/${event.id}`}
                             state={{ event }}
-                            className="update-event-link"
                           >
                             Update Event
                           </NavLink>
