@@ -129,7 +129,7 @@ function SuperAdminHome() {
 <>
   <Box sx={{ display: 'flex', height: '100vh', padding: 2 }}>
     {/* Sidebar */}
-    <Box sx={{ width: '220px', pr: 3, borderRight: '1px solid #ccc' }}>
+    <Box sx={{ width: '220px', borderRight: '1px solid #ccc' }}>
       <Tabs
         orientation="vertical"
         value={activeTab}
@@ -288,7 +288,16 @@ function SuperAdminHome() {
               ))}
             </Box>
           ) : (
-            <Typography>No events available</Typography>
+            <Box
+    sx={{
+      display: 'flex',
+      justifyContent: 'center',
+      alignItems: 'center',
+      height: '100px', // or adjust to fit your layout
+    }}
+  >
+    <Typography>No events available</Typography>
+  </Box>
           )}
         </Box>
       )}

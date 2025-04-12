@@ -14,7 +14,7 @@ function StudentHomePage() {
  const logOut = useStore((state) => state.logOut);
  const [eventList, setEventList] = useState([]);
  const [snackbarOpen, setSnackbarOpen] = useState(false);
- const [snackbarMessage, setSnackbarMessage] = useState('');
+ const [snackbarMessage, setSnackbarMessage] = useState(''); 
 
 
 
@@ -81,12 +81,23 @@ function StudentHomePage() {
   
   return (
     <>
-      <div>
-        <SearchEvent eventList={eventList} setEventList={setEventList} />
-      </div>
+<Paper
+  elevation={1}
+  sx={{
+    backgroundColor: 'transparent',
+    boxShadow: 'none',
+    p: 2,
+    width: '100%',
+    maxWidth: '1400px',
+    margin: '0 auto',
+  }}
+>
+<h2>LMR STUDENT HOME PAGE</h2>
+  <SearchEvent eventList={eventList} setEventList={setEventList} />
+</Paper>
+
       {/* Event List Container */}
       <Box sx={{ width: '100%', maxWidth: '1400px', margin: '0 auto', padding: '1rem' }}>
-      <h2>LMR STUDENT HOME PAGE</h2>
       {eventList.length > 0 ? (
   eventList.map((event, index) => (
     <Paper
@@ -94,7 +105,7 @@ function StudentHomePage() {
       elevation={2}
       sx={{
         mb: 3,
-        p: 2,
+        p: 1,
         backgroundColor: '#fff',
         borderRadius: 2,
         width: '100%',

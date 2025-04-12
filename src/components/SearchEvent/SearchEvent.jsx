@@ -45,7 +45,6 @@ useEffect(() => {
 
 
 
-
 // Handle search when parameters change
 useEffect(() => {
   if (sortBy) {
@@ -173,177 +172,190 @@ useEffect(() => {
 
 
 return (
- <div>
-   {/* Search Event Container */}
-   <Box sx={{ width: '100%', maxWidth: '1400px', margin: '0 auto', padding: '1rem' }}>
-     <Paper
-       elevation={0} // removes box-shadow if you want it completely flat
-       sx={{
-         p: 0,
-         mb: 3,
-         backgroundColor: 'transparent',
-         boxShadow: 'none',
-       }}
-     >
-       <Box
- sx={{
-   display: 'flex',
-   alignItems: 'flex-start',
-   justifyContent: 'space-between',
-   flexWrap: 'wrap', // ✅ allow wrapping
-   gap: 2,
-   paddingTop: 2,
- }}
+  <div>
+    <Box sx={{ width: '100%', maxWidth: '1600px'  }}>
+      <Paper
+        sx={{
+          p: 4,
+          backgroundColor: 'white',
+          borderRadius: '4px',
+          boxShadow: '0 2px 10px rgba(0,0,0,0.1)',
+          mb: 2,
+        }}
+      >
+        <Grid container spacing={2}>
+          {/* Search Input */}
+          <Grid item xs={12} md={12}>
+            <TextField
+              fullWidth
+              variant="outlined"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              placeholder="Search"
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon sx={{ color: 'action.active' }} />
+                  </InputAdornment>
+                ),
+                sx: {
+                  borderRadius: '30px',
+                  backgroundColor: '#ffffff',
+                },
+              }}
+            />
+          </Grid>
+
+          {/* School Dropdown */}
+          <Grid item xs={12} sm={6} md={3}>
+            <FormControl fullWidth>
+              <InputLabel id="school-label">Filter by School</InputLabel>
+              <Select
+                labelId="school-label"
+                multiple
+                value={selectedSchools}
+                onChange={(e) => handleMultiSelectChange(e, "schools")}
+                label="Filter by School"
+                input={<OutlinedInput label="Filter by School" />}
+                renderValue={(selected) => selected.join(', ')}
+                sx={{
+                  backgroundColor: '#ffffff',
+                  borderRadius: 1,
+                }}
+              >
+                {schools.map((school) => (
+                  <MenuItem key={school.id} value={school.name}>
+                    <Checkbox checked={selectedSchools.indexOf(school.name) > -1} />
+                    <ListItemText primary={school.name} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {/* Activity Dropdown */}
+          <Grid item xs={12} sm={6} md={3}>
+            <FormControl fullWidth>
+              <InputLabel id="activity-label">Filter by Activity</InputLabel>
+              <Select
+                labelId="activity-label"
+                multiple
+                value={selectedActivities}
+                onChange={(e) => handleMultiSelectChange(e, "activities")}
+                label="Filter by Activity"
+                input={<OutlinedInput label="Filter by Activity" />}
+                renderValue={(selected) => selected.join(', ')}
+                sx={{
+                  backgroundColor: '#ffffff',
+                  borderRadius: 1,
+                }}
+              >
+                {activities.map((activity) => (
+                  <MenuItem key={activity.id} value={activity.activity}>
+                    <Checkbox checked={selectedActivities.indexOf(activity.activity) > -1} />
+                    <ListItemText primary={activity.activity} />
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </Grid>
+
+          {/* Sort and Action Buttons */}
+          <Grid item xs={6} sm={4} md={1.3}>
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={() => handleSort("date")}
+              sx={{
+                borderRadius: '2px',
+                bgcolor: '#3498db',
+                '&:hover': { bgcolor: '#2980b9' },
+                textTransform: 'none',
+                minHeight: '50px',
+              }}
+            >
+              Date {sortOrder.date === "asc" ? "↑" : "↓"}
+            </Button>
+          </Grid>
+
+          <Grid item xs={6} sm={4} md={1.3}>
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={() => handleSort("location")}
+              sx={{
+                borderRadius: '2px',
+                bgcolor: '#3498db',
+                '&:hover': { bgcolor: '#2980b9' },
+                textTransform: 'none',
+                minHeight: '50px',
+              }}
+            >
+              Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
+            </Button>
+          </Grid>
+
+          <Grid item xs={6} sm={4} md={1.2}>
+            <Button
+              fullWidth
+              variant="contained"
+              onClick={handleSearch}
+              sx={{
+                borderRadius: '2px',
+                bgcolor: '#3498db',
+                '&:hover': { bgcolor: '#2980b9' },
+                textTransform: 'none',
+                minHeight: '50px',
+              }}
+            >
+              Search
+            </Button>
+          </Grid>
+
+          <Grid item xs={6} sm={4} md={1.2}>
+            <Button
+              fullWidth
+              variant="outlined"
+              onClick={handleClearAll}
+              sx={{
+                borderRadius: '2px',
+                color: '#3498db',
+                borderColor: '#3498db',
+                '&:hover': {
+                  bgcolor: '#ecf6fc',
+                  borderColor: '#2980b9',
+                },
+                textTransform: 'none',
+                minHeight: '50px',
+              }}
+            >
+              Clear
+            </Button>
+          </Grid>
+        </Grid>
+      </Paper>
+
+   {/* Filters Applied Display */}
+{/* Filters Applied Display */}
+<Box
+  sx={{
+    mt: 2,
+    mb: 8,
+    p: 2,
+    backgroundColor: 'rgba(128, 128, 128, 0.1)', // light grey
+    border: '1px solid rgba(128, 128, 128, 0.3)', // subtle grey border
+    borderRadius: 1,
+    color: '#333333', // dark grey text
+    fontWeight: 'bold',
+    textAlign: 'left',
+  }}
 >
-         {/* Search Input - Longest */}
-         <TextField
-           fullWidth
-           variant="outlined"
-           value={searchQuery}
-           onChange={(e) => setSearchQuery(e.target.value)}
-           placeholder="Search"
-           InputProps={{
-             startAdornment: (
-               <InputAdornment position="start">
-                 <SearchIcon sx={{ color: 'action.active' }} />
-               </InputAdornment>
-             ),
-           }}
-           sx={{
-             flexGrow: 2,
-             backgroundColor: '#ffffff',
-             borderRadius: 10,
-             minWidth: '600px',
-             '& .MuiOutlinedInput-root': {
-               borderRadius: 10,
-             },
-           }}
-         />
-         {/* School Dropdown */}
-         <FormControl
-           sx={{
-             flexGrow: 1.5,
-             minWidth: '280px',
-             '& .MuiInputLabel-root': {
-               whiteSpace: 'nowrap', // Prevents label wrap inside select
-             }
-           }}
-         >
-           <InputLabel id="school-label">Filter by School</InputLabel>
-           <Select
-             labelId="school-label"
-             multiple
-             value={selectedSchools}
-             onChange={(e) => handleMultiSelectChange(e, "schools")}
-             label="Filter by School"
-             input={<OutlinedInput label="Filter by School" />}
-             renderValue={(selected) => selected.join(', ')}
-             sx={{
-               backgroundColor: '#ffffff',
-               borderRadius: 1,
-             }}
-           >
-             {schools.map((school) => (
-               <MenuItem key={school.id} value={school.name}>
-                 <Checkbox checked={selectedSchools.indexOf(school.name) > -1} />
-                 <ListItemText primary={school.name} />
-               </MenuItem>
-             ))}
-           </Select>
-         </FormControl>
-
-
-         {/* Activity Dropdown */}
-         <FormControl sx={{ flexGrow: 1.5, minWidth: '280px' }} variant="outlined">
-           <InputLabel id="activity-label">Filter by Activity</InputLabel>
-           <Select
-             labelId="activity-label"
-             multiple
-             value={selectedActivities}
-             onChange={(e) => handleMultiSelectChange(e, "activities")}
-             label="Filter by Activity"
-             input={<OutlinedInput label="Filter by Activity" />}
-             renderValue={(selected) => selected.join(', ')}
-             sx={{
-               backgroundColor: '#ffffff',
-               borderRadius: 1,
-             }}
-           >
-             {activities.map((activity) => (
-               <MenuItem key={activity.id} value={activity.activity}>
-                 <Checkbox checked={selectedActivities.indexOf(activity.activity) > -1} />
-                 <ListItemText primary={activity.activity} />
-               </MenuItem>
-             ))}
-           </Select>
-         </FormControl>
-
-
-         {/* Date Sort Button */}
-         <Button
-           size="small"
-           variant="contained"
-           onClick={() => handleSort("date")}
-           sx={{ minWidth: '100px', minHeight: '50px' }}
-         >
-           Date {sortOrder.date === "asc" ? "↑" : "↓"}
-         </Button>
-
-
-         {/* Location Sort Button */}
-         <Button
-           size="small"
-           variant="contained"
-           onClick={() => handleSort("location")}
-           sx={{ minWidth: '150px', minHeight: '50px' }}
-         >
-           Location {sortOrder.location === "asc" ? "A-Z" : "Z-A"}
-         </Button>
-
-
-         {/* Search Button */}
-         <Button
-           size="small"
-           variant="contained"
-           onClick={handleSearch}
-           sx={{ minWidth: '100px', minHeight: '50px' }}
-         >
-           Search
-         </Button>
-
-
-         {/* Clear All Button */}
-         <Button
-           size="small"
-           variant="outlined"
-           onClick={handleClearAll}
-           sx={{ minWidth: '100px', minHeight: '50px' }}
-         >
-           Clear
-         </Button>
-       </Box>
-     </Paper>
-
-
-     {/* Filters Applied */}
-     <Box
-       sx={{
-         mt: 2,
-         mb: 1,
-         p: 2,
-         backgroundColor: 'rgba(0, 128, 0, 0.1)',
-         border: '1px solid rgba(0, 128, 0, 0.3)',
-         borderRadius: 1,
-         color: '#004d00',
-         fontWeight: 'bold',
-         textAlign: 'left',
-       }}
-     >
-       Filters Applied: {appliedFilters}
-     </Box>
-   </Box>
- </div>
+  Filters Applied: {appliedFilters}
+</Box>
+    </Box>
+  </div>
 );
+
 }
 
 
