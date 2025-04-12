@@ -6,10 +6,9 @@ import {
   Button, Divider, List, ListItem, ListItemText, Paper
 } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
-import SearchEvent from '../SearchEvent/SearchEvent.jsx';
 import axios from 'axios';
+import SearchEvent from '../SearchEvent/SearchEvent.jsx';
 import StudentsTab from '../StudentsTab/StudentsTab';
-import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
 import { NavLink } from 'react-router-dom';
 
 function AdminHome() {
@@ -108,134 +107,124 @@ const handleTabChange = (event, newValue) => {
      ].filter(p => p.userId)
    })));
  }, [eventList]);
-  return (
-    <Box sx={{ display: 'flex', height: '100vh', padding: 2 }}>
-      {/* Sidebar */}
-      <Box sx={{ width: '220px', pr: 3, borderRight: '1px solid #ccc' }}>
-  <Typography variant="h6" sx={{ 
-    mb: 2, 
-    fontWeight: '600',
-    color: '#2c3e50', // Added color to match SuperAdmin
-    pl: 1 // Adjusted padding to match
-  }}>
-    ADMIN DASHBOARD
-  </Typography>
-  <Tabs
-    orientation="vertical"
-    value={activeTab}
-    onChange={handleTabChange}
-    sx={{ width: '220px', pr: 3, borderRight: '1px solid #ccc' }}
-  >
-    <Tab label="Events" />
-    <Tab label="Students" />
-  </Tabs>
-</Box>
 
-      {/* Main Content */}
-      <Box sx={{ flexGrow: 1, pl: 3 }}>
-        <Typography variant="h4" gutterBottom sx={{
-          color: '#2c3e50',
-          fontWeight: '600',
-          mb: 4
-        }}>
-          Event Management Console
-        </Typography>
-        <SearchEvent/>
+ 
+ return (
+  <Box sx={{ display: 'flex', height: '100vh', padding: 2, gap: 2 }}>
+    {/* Sidebar */}
+    <Box sx={{ width: '220px', borderRight: '1px solid #ccc' }}>
+      <Tabs
+        orientation="vertical"
+        value={activeTab}
+        onChange={handleTabChange}
+        aria-label="Vertical tabs"
+        sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}
+      >
+        <Tab label="Events" onClick={() => setActiveTab(0)} />
+        <Tab label="Students" onClick={() => setActiveTab(1)} />
+        <Tab label="Create Event" component={NavLink} to="/createEvent" />
+      </Tabs>
+    </Box>
+
+    {/* Main Content */}
+    <Box sx={{ flexGrow: 1, p: 1 }}>
+      <Box sx={{ width: '100%', maxWidth: '70%', px: 10 }}>
         {/* Events Tab */}
         {activeTab === 0 && (
-          <Paper sx={{ 
-            p: 3, 
-            borderRadius: '12px',
-            boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)'
-          }}>
-            <div className='eventCard'>
-              {events.length > 0 ? (
-                events.map((event, index) => (
-                  <Accordion
+          <Box className="eventCard" sx={{ width: '100%', mx: 'auto' }}>
+            <Typography variant="h4" sx={{ mb: 5, mt: 5, pb: 1, borderBottom: '2px solid #3498db', fontWeight: 'bold' }}>
+              Admin Event Management
+            </Typography>
+
+            <SearchEvent eventList={eventList} setEventList={setEventList} />  
+
+            {events.length > 0 ? (
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+                {events.map((event, index) => (
+                  <Paper
                     key={index}
+                    elevation={2}
                     sx={{
-                      mb: 2,
+                      backgroundColor: '#fff',
                       borderRadius: '8px',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.1)'
+                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
                     }}
                   >
-                    <AccordionSummary expandIcon={<IoIosArrowDropdown />}>
-                      <Box sx={{ width: '100%' }}>
-                        <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                          {event.title}
-                        </Typography>
-                        <Typography variant="body2" color="text.secondary">
-                          Date: {event.date} | Time: {event.time}
-                        </Typography>
-                        <Typography variant="body2">
-                          Location: {event.location}
-                        </Typography>
-                      </Box>
-                    </AccordionSummary>
- <NavLink to={`/updateEvent/${event.id}`} state={{ event }} style={{ textDecoration: 'none' }}>
-                    <Button variant="contained">Update Event</Button>
-                  </NavLink>
-                    <AccordionDetails>
-                      <Divider sx={{ my: 2 }} />
-                      <Typography variant="h6" sx={{ mb: 1 }}>
-                        Assigned Roles ({event.participants?.length || 0})
-                      </Typography>
+                    <Accordion elevation={0} sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
+                      <AccordionSummary expandIcon={<IoIosArrowDropdown />}>
+                        <Box sx={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                          <Typography sx={{ fontWeight: 'bold' }}>
+                            {event.title}
+                          </Typography>
+                          <Typography variant="body2" color="text.secondary">
+                            Date: {event.date} | Time: {event.time}
+                          </Typography>
+                          <Typography variant="body2">
+                            Location: {event.location}
+                          </Typography>
+                        </Box>
+                      </AccordionSummary>
 
-                      <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                        {event.participants?.map((participant, pIndex) => (
-                          <ListItem
-                            key={pIndex}
-                            sx={{
-                              mb: 1,
-                              borderRadius: 1,
-                              backgroundColor: '#f8f9fa'
-                            }}
-                          >
-                            <ListItemText
-                              primary={participant.username}
-                              secondary={`Role: ${participant.role}`}
-                            />
-                            <Box sx={{ ml: 'auto' }}>
-                              <Button
-                                size="small"
-                                variant="outlined"
-                                color={participant.marked ? 'success' : 'primary'}
-                                onClick={() => handleParticipantmarked(event.id, participant.role)}
-                              >
-                                {participant.marked ? 'Attended ✓' : 'Mark Attendance'}
-                              </Button>
-                            </Box>
-                          </ListItem>
-                        ))}
-                      </List>
-                    </AccordionDetails>
-                  </Accordion>
-                ))
-              ) : (
-                <Typography variant="body1" color="text.secondary">
-                  No upcoming events
-                </Typography>
-              )}
-            </div>
-          </Paper>
+                      <AccordionDetails>
+                        <Divider sx={{ my: 2 }} />
+                        <NavLink to={`/updateEvent/${event.id}`} state={{ event }} style={{ textDecoration: 'none' }}>
+                          <Button variant="contained" sx={{ mb: 2 }}>Update Event</Button>
+                        </NavLink>
+
+                        <Typography variant="h6" sx={{ mb: 1 }}>
+                          Assigned Roles ({event.participants?.length || 0})
+                        </Typography>
+
+                        <List dense sx={{ width: '100%', bgcolor: 'background.paper', borderRadius: 1 }}>
+                          {event.participants?.map((participant, pIndex) => (
+                            <ListItem
+                              key={pIndex}
+                              sx={{
+                                mb: 1,
+                                borderRadius: 1,
+                                backgroundColor: '#f8f9fa',
+                              }}
+                            >
+                              <ListItemText
+                                primary={participant.username}
+                                secondary={`Role: ${participant.role}`}
+                              />
+                              <Box sx={{ ml: 'auto' }}>
+                                <Button
+                                  size="small"
+                                  variant="outlined"
+                                  color={participant.marked ? 'success' : 'primary'}
+                                  onClick={() => handleParticipantmarked(event.id, participant.role)}
+                                >
+                                  {participant.marked ? 'Attended ✓' : 'Mark Attendance'}
+                                </Button>
+                              </Box>
+                            </ListItem>
+                          ))}
+                        </List>
+                      </AccordionDetails>
+                    </Accordion>
+                  </Paper>
+                ))}
+              </Box>
+            ) : (
+              <Typography variant="body1" color="text.secondary" sx={{ textAlign: 'center', mt: 4 }}>
+                No upcoming events
+              </Typography>
+            )}
+          </Box>
         )}
 
         {/* Students Tab */}
         {activeTab === 1 && (
-          <Paper sx={{ 
-            p: 3, 
-            borderRadius: '12px',
-            boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)'
-          }}>
+          <Paper sx={{ p: 3, borderRadius: '12px', boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)', mt: 4 }}>
             <StudentsTab />
           </Paper>
         )}
       </Box>
     </Box>
-  );
-}
-
-
-
+  </Box>
+);
+};
 
 export default AdminHome;

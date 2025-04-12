@@ -127,7 +127,7 @@ function SuperAdminHome() {
 
   return (
 <>
-<Box sx={{ display: 'flex', height: '100vh', padding: 2 }}>
+<Box sx={{ display: 'flex', height: '100vh', padding: 2, gap: 2 }}>
       {/* Sidebar */}
       <Box sx={{ width: '220px', borderRight: '1px solid #ccc' }}>
         <Tabs
@@ -145,12 +145,14 @@ function SuperAdminHome() {
       </Box>
 
     {/* Main Content */}
-    <Box sx={{ flexGrow: 1, pl: 3 }}>
+    <Box sx={{ flexGrow: 1, p: 1 }}>
+    <Box sx={{ width: '100%', maxWidth: '70%', px: 10 }}>
+
 
       {/* Events Tab */}
       {activeTab === 0 && (
-       <Box className="eventCard" sx={{ maxWidth: '1400px', mx: 'auto' }}>
-        <Typography variant="h4" sx={{ mb: 2, mt: 5, fontWeight: 'bold' }}>
+       <Box className="eventCard" sx={{ width: '100%', mx: 'auto' }}>
+        <Typography variant="h4" sx={{ mb: 5, mt: 5,  pb: 1, borderBottom: '2px solid #3498db', fontWeight: 'bold' }}>
           Super admin Managment
         </Typography>
        <SearchEvent eventList={eventList} setEventList={setEventList} />  
@@ -168,8 +170,8 @@ function SuperAdminHome() {
     borderTopRightRadius: 8,
     borderBottomLeftRadius: 0,
     borderBottomRightRadius: 0,
-    maxWidth: '1400px',
-    margin: '0 auto',
+    width: '100%',
+    px: 4,    
   }}
 >
   {['Title', 'Date', 'Time', 'School', 'Channel', 'Num Registered', 'Num Attended'].map((text, index) => (
@@ -199,8 +201,6 @@ function SuperAdminHome() {
                     backgroundColor: '#fff',
                     borderRadius: 0,
                     width: '100%',
-                    maxWidth: '1400px',
-                    margin: '0 auto',
                     boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
                   }}
                 >
@@ -310,6 +310,7 @@ function SuperAdminHome() {
       {/* Alter Admin Tab */}
       {activeTab === 2 && <AlterAdminRoles />}
     </Box>
+  </Box>
   </Box>
 </>
   );

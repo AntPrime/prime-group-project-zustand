@@ -1,6 +1,6 @@
 import useStore from '../../zustand/store'
 import { useState, useEffect } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, AccordionActions, Alert, Snackbar, Button, Paper, Box, Typography } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Divider, AccordionActions, Alert, Snackbar, Button, Paper, Box, Typography } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
 import moment from 'moment';
 import SearchEvent from '../SearchEvent/SearchEvent.jsx';
@@ -104,10 +104,10 @@ function StudentHomePage() {
       key={index}
       elevation={2}
       sx={{
-        mb: 3,
+        mb: 0,
         p: 1,
         backgroundColor: '#fff',
-        borderRadius: 2,
+        borderRadius: 0,
         width: '100%',
         boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
       }}
@@ -153,6 +153,7 @@ function StudentHomePage() {
         </AccordionSummary>
 
         <AccordionDetails>
+          <Divider sx={{ mb: 2 }} />
           <Box sx={{ display: 'flex', flexDirection: 'column', pl: 11 }}>
             <Typography variant="body2">
               {event.notes || "N/A"}

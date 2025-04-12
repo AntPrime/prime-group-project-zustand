@@ -1,122 +1,86 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import {
- Box,
- Button,
- FormControl,
- InputLabel,
- Select,
- MenuItem,
- TextField,
- Snackbar
+  Box,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  TextField,
+  Snackbar
 } from "@mui/material";
 
-
 function CreateNewActivity({ setActivities, activities, selectedActivityId, setSelectedActivityId }) {
- const [isAddingActivity, setIsAddingActivity] = useState(false);
- const [activityName, setActivityName] = useState("");
- const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [activityName, setActivityName] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
 
+  // Fetch activities
+  const fetchActivities = () => {
+    axios.get('/api/createActivity/activities')
+      .then((response) => setActivities(response.data))
+      .catch((err) => {
+        console.log('Error fetching activities:', err);
+        alert('Error fetching activities');
+      });
+  };
 
+  useEffect(() => {
+    fetchActivities();
+  }, [ activities ]);
 
+  const createNewActivity = () => {
+    const newActivityData = { activity: activityName };
+    axios.post('/api/createActivity/activities', newActivityData)
+      .then((response) => {
+        fetchActivities();
+        setActivityName("");
+        setSnackbarOpen(true);
+        setSelectedActivityId(response.data.id);
+      })
+      .catch((err) => {
+        console.log('Error creating new activity:', err);
+      });
+  };
 
- // Fetch activities
- const fetchActivities = () => {
-   axios.get('/api/createActivity/activities')
-     .then((response) => setActivities(response.data))
-     .catch((err) => {
-       console.log('Error fetching activities:', err);
-       alert('Error fetching activities');
-     });
- };
+  return (
+    <Box sx={{ marginTop: 4 }}>
+      {/* Input field for the new activity name */}
+      <TextField
+        label="New Activity Name"
+        variant="outlined"
+        value={activityName}
+        onChange={(e) => setActivityName(e.target.value)}
+        fullWidth
+        sx={{ backgroundColor: "#fff", marginTop: -2 }}
+      />
+      {/* Add button aligned right */}
+      <Box sx={{ display: "flex", justifyContent: "flex-end", marginTop: 2 }}>
+        <Button
+          variant="contained"
+          sx={{
+            bgcolor: '#3498db',
+            '&:hover': { bgcolor: '#2980b9' },
+            textTransform: 'none',
+            borderRadius: '3px',
+            px: 3,
+            py: 1.5,
+            width: 'auto',
+          }}
+          onClick={createNewActivity}
+        >
+          Add New Activity
+        </Button>
+      </Box>
 
-
- useEffect(() => {
-   fetchActivities();
- }, []);
-
-
- const createNewActivity = () => {
-   const newActivityData = { activity: activityName };
-   axios.post('/api/createActivity/activities', newActivityData)
-     .then((response) => {
-       console.log("Create activity response:", response.data); // <-- ADD THIS
-       fetchActivities();
-       setActivityName("");
-       setIsAddingActivity(false);
-       setSnackbarOpen(true);
-       // Optionally auto-select the new one
-       setSelectedActivityId(response.data.id);
-     })
-     .catch((err) => {
-       console.log('Error creating new activity:', err);
-     });
- };
-
-
- return (
-   <Box sx={{ marginTop: 4 }}>
-     <Button onClick={() => setIsAddingActivity(!isAddingActivity)}>
-       {isAddingActivity ? "Cancel Adding" : "Add New Activity"}
-     </Button>
-
-
-     <Snackbar
-       open={snackbarOpen}
-       autoHideDuration={3000}
-       onClose={() => setSnackbarOpen(false)}
-       message="New activity added!"
-     />
-
-
-     <FormControl fullWidth sx={{ marginTop: 2 }}>
-       <InputLabel>Activity</InputLabel>
-       <Select
-         value={selectedActivityId || ""}
-         onChange={(e) => setSelectedActivityId(e.target.value)}
-         sx={{
-           backgroundColor: '#F2F4F5',
-           borderRadius: '8px',
-           '& .MuiOutlinedInput-root': {
-             '& fieldset': { border: 'none' },
-             '&:hover fieldset': { border: 'none' },
-             '&.Mui-focused fieldset': { border: '2px solid #b0b0b0' },
-           },
-         }}
-       >
-         {isAddingActivity ? (
-           <MenuItem disableRipple sx={{ paddingY: 2, paddingX: 2 }}>
-             <Box sx={{ width: '100%', display: 'flex', flexDirection: 'column', gap: 4 }}>
-               <TextField
-                 label="New Activity Name"
-                 variant="outlined"
-                 value={activityName}
-                 onChange={(e) => setActivityName(e.target.value)}
-                 fullWidth
-               />
-               <Button
-                 variant="contained"
-                 color="primary"
-                 onClick={createNewActivity}
-                 disabled={!activityName.trim()}
-                 fullWidth
-               >
-                 Add Activity
-               </Button>
-             </Box>
-           </MenuItem>
-         ) : (
-           activities.map((activity) => (
-             <MenuItem key={activity.id} value={activity.id}>
-               {activity.activity}
-             </MenuItem>
-           ))
-         )}
-       </Select>
-     </FormControl>
-   </Box>
- );
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        message="New activity added!"
+      />
+    </Box>
+  );
 }
-
 
 export default CreateNewActivity;
