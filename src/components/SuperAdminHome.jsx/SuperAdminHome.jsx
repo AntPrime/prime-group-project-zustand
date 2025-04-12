@@ -4,15 +4,19 @@ import { useState, useEffect } from 'react';
 import * as React from 'react';
 import {
   Accordion, AccordionSummary, AccordionDetails, Typography, Tabs, Tab, Box,
-  Button, Divider, List, ListItem, ListItemText, Paper
+  Button, Divider, List, ListItem, ListItemText, Paper, AccordionActions,
 } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
 import { NavLink } from 'react-router-dom';
 import StudentsTab from '../StudentsTab/StudentsTab';
 import DeleteEvent from '../DeleteEvent/DeleteEvent';
 import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
-import SearchEvent from '../SearchEvent/SearchEvent';
-
+import LocationOnIcon from '@mui/icons-material/LocationOn';
+import SearchEvent from '../SearchEvent/SearchEvent.jsx';
+import moment from 'moment'; 
+import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
+import IconButton from '@mui/material/IconButton';
 
 function SuperAdminHome() {
   const user = useStore((state) => state.user);
@@ -97,148 +101,200 @@ function SuperAdminHome() {
     setActiveTab(newValue);
   };
 
+  function formatDate(dateString) {
+    return moment(dateString).format("MMMM D, YYYY"); // e.g., "November 12, 2025"
+  }
+
+  function formatTime(timeString) {
+    return moment(timeString, "HH:mm:ss").format("h:mma"); // e.g., "4:30pm"
+  }
+
+  // Handle Delete Event
+  const handleDeleteEvent = (eventId) => {
+    const confirmDelete = window.confirm("Are you sure you want to delete this event?");
+    
+    if (confirmDelete) {
+      axios.delete(`/api/events/${eventId}`)
+        .then(() => {
+          setEvents(events.filter(event => event.id !== eventId)); // Remove event from state
+          console.log('Event deleted successfully');
+        })
+        .catch((error) => {
+          console.error('Error deleting event', error);
+        });
+    }
+  };
+
   return (
-    <>
-      <h2>LMR SUPER ADMIN HOME PAGE</h2>
-      
-      {/* Tabs for different sections */}
+<>
+  <Box sx={{ display: 'flex', height: '100vh', padding: 2 }}>
+    {/* Sidebar */}
+    <Box sx={{ width: '220px', pr: 3, borderRight: '1px solid #ccc' }}>
+      <Tabs
+        orientation="vertical"
+        value={activeTab}
+        onChange={handleTabChange}
+        aria-label="Vertical tabs"
+      >
+        <Tab label="Events" onClick={() => setActiveTab(0)} />
+        <Tab label="Students" onClick={() => setActiveTab(1)} />
+        <Tab label="Alter admin" onClick={() => setActiveTab(2)} />
+      </Tabs>
+    </Box>
 
-    <Box sx={{ display: 'flex', height: '100vh', padding: 2 }}>
-      {/* Sidebar */}
-      <Box sx={{ width: '220px', pr: 3, borderRight: '1px solid #ccc' }}>
-        <Typography variant="h6" sx={{ mb: 2 }}>SUPER ADMIN</Typography>
-        <Tabs
-          orientation="vertical"
-          value={activeTab}
-          onChange={handleTabChange}
-          aria-label="Vertical tabs"
-        >
-          <Tab label="Events" onClick={() => setActiveTab(0)} />
-          <Tab label="Students" onClick={() => setActiveTab(1)} />
-          <Tab label="Assign Admin" onClick={() => setActiveTab(2)} />
+    {/* Main Content */}
+    <Box sx={{ flexGrow: 1, pl: 3 }}>
 
-        </Tabs>
-      </Box>
+      {/* Events Tab */}
+      {activeTab === 0 && (
+       <Box className="eventCard" sx={{ maxWidth: '1400px', mx: 'auto' }}>
+        <Typography variant="h4" sx={{ mb: 2, mt: 5, fontWeight: 'bold' }}>
+          Admin Managment
+        </Typography>
+       <SearchEvent eventList={eventList} setEventList={setEventList} />  
+          {/* Header */}
+<Paper
+  elevation={1}
+  sx={{
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    px: 3,
+    py: 2,
+    backgroundColor: '#f5f5f5',
+    borderRadius: 1,
+    maxWidth: '1400px',
+    margin: '0 auto 1rem',
+    fontWeight: 'bold',
+  }}
+>
+  <Box sx={{ flex: 2 }}>Title</Box>
+  <Box sx={{ flex: 1.1 }}>Date</Box>
+  <Box sx={{ flex: 1 }}>Time</Box>
+  <Box sx={{ flex: 1 }}>School</Box>
+  <Box sx={{ flex: 1 }}>Channel</Box>
+  <Box sx={{ flex: 1 }}>Num Registered</Box>
+  <Box sx={{ flex: 1 }}>Num Attended</Box>
+</Paper>
 
-      {/* Main Content */}
-      <Box sx={{ flexGrow: 1, pl: 3 }}>
-        <Typography variant="h4" gutterBottom sx={{
-          color: '#2c3e50',
-          fontWeight: '600',
-          mb: 4
-        }}>LMR SUPER ADMIN HOME PAGE</Typography>
-  
-        {/* Conditionally Render Events Tab */}
-        {activeTab === 0 && (
-          <Paper sx={{ 
-            p: 3, 
-            borderRadius: '12px',
-            boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)'
-          }}>
-          <Box className='eventCard'>
-            {events.length > 0 ? (
-              events.map((event, index) => (
-                <Accordion
+
+          {/* Events List */}
+          {events.length > 0 ? (
+            <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 3 }}>
+              {events.map((event, index) => (
+                <Paper
                   key={index}
+                  elevation={2}
                   sx={{
-                    mb: 2,
-                    backgroundColor: event.isMarked ? 'lightgreen' : 'inherit',
-                    transition: 'background-color 0.3s ease'
+                    p: 2,
+                    backgroundColor: '#fff',
+                    borderRadius: 2,
+                    width: '100%',
+                    maxWidth: '1400px',
+                    margin: '0 auto',
+                    boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)',
                   }}
                 >
+                  <Accordion elevation={0} sx={{ backgroundColor: 'transparent', boxShadow: 'none' }}>
                   <AccordionSummary expandIcon={<IoIosArrowDropdown />}>
-                    <Box sx={{ width: '100%' }}>
-                      <Typography variant="h6" sx={{ fontWeight: 'bold' }}>
-                        {event.title} {event.isMarked && ' ✓'}
-                      </Typography>
-                      <Typography variant="body2" color="text.secondary">
-                        Date: {event.date} | Time: {event.time} | Channel: {event.channel}
-                      </Typography>
-                      <Typography variant="body2">
-                        Schools: {event.school_name} vs [Opponent Name] | Location: {event.location}
-                      </Typography>
-                    </Box>
-                  </AccordionSummary>
-
-
-                  <NavLink to={`/updateEvent/${event.id}`} state={{ event }} style={{ textDecoration: 'none' }}>
-                    <Button variant="contained">Update Event</Button>
-                  </NavLink>
-
-                  <Box  sx={{ backgroundColor: 'red', display: 'inline-block', float: 'right', mt: 2  }}>
-                    <DeleteEvent eventId={event.id} variant="contained" />
-                  </Box>
-
-
-                  <AccordionDetails>
-                    <Divider sx={{ my: 2 }} />
-                    <Typography variant="h6" sx={{ mb: 1 }}>
-                      Assigned Roles ({event.participants.length})
-                    </Typography>
-
-                    <List dense sx={{ width: '100%', bgcolor: 'background.paper' }}>
-                      {event.participants.map((participant, pIndex) => (
-                        <ListItem
-                          key={pIndex}
-                          sx={{
-                            
-                          
-                            mb: 1,
-                            borderRadius: 1
-                          }}
-                        >
-                          <ListItemText
-                            primary={participant.username}
-                            secondary={`Role: ${participant.role}`}
-                            sx={{
-                              '& .MuiListItemText-secondary': {
-                                color: 'text.secondary',
-                                fontSize: '0.875rem'
-                              }
-                            }}
-                          />
-                          <Box sx={{ ml: 'auto' }}>
-                            <Button
-                              size="small"
-                              variant="outlined"
-                              color={participant.marked ? 'success' : 'primary'}
-                              onClick={() => handleParticipantmarked(event.id, participant.role)}
-                            >
-                              {participant.marked ? 'Attended ✓' : 'Signed Up'}
-                            </Button>
-                          </Box>
-                        </ListItem>
-                      ))}
-                    </List>
-
-                    <Button
-                      variant="contained"
-                      color={event.isMarked ? 'success' : 'primary'}
-                      onClick={() => handleMarkmarked(index)}
-                      sx={{ mt: 2 }}
-                    >
-                      {event.isMarked ? 'Mark Event Unmarked' : 'Mark Entire Event Reviewed'}
-                    </Button>
-                  </AccordionDetails>
-                </Accordion>
-                
-              ))
-            ) : (
-              <p>No events available</p>
-            )}
-          </Box>
-          </Paper>
-        )}
-
-        {/* Conditionally Render Students Tab */}
-        {activeTab === 1 && <StudentsTab />}
-        {activeTab === 2 && <AlterAdminRoles />}
+  <Box sx={{ display: 'flex', alignItems: 'center', width: '100%' }}>
+    <Box sx={{ flex: 2 }}>
+      <Typography sx={{ fontWeight: 'bold' }}>
+        {event.title} {event.activity || "N/A"}
+      </Typography>
+      <Box sx={{ display: 'flex', alignItems: 'center', mt: 0.5 }}>
+        <LocationOnIcon sx={{ color: 'red', fontSize: '1rem', mr: 0.5 }} />
+        <Typography variant="body2">{event.location || "N/A"}</Typography>
       </Box>
-      
     </Box>
-    </>
+    <Box sx={{ flex: 1.2 }}>{formatDate(event.date)}</Box>
+    <Box sx={{ flex: 1.1 }}>{formatTime(event.time)}</Box>
+    <Box sx={{ flex: 1.1 }}>{event.school_name || "N/A"}</Box>
+    <Box sx={{ flex: 1.4 }}>{event.channel || "N/A"}</Box>
+    <Box sx={{ flex: 1 }}>{event.participants?.length || 0}</Box>
+    <Box sx={{ flex: .6 }}>
+      {event.participants?.filter(p => p.marked).length || 0}
+    </Box>
+  </Box>
+</AccordionSummary>
+
+
+                    <AccordionDetails>
+                      <Divider sx={{ my: 2 }} />
+                      <AccordionActions sx={{ justifyContent: 'flex-end', px: 2 }}>
+                        <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+                          <NavLink
+                            to={`/updateEvent/${event.id}`}
+                            state={{ event }}
+                            className="update-event-link"
+                          >
+                            Update Event
+                          </NavLink>
+                          <IconButton
+                            color="error"
+                            aria-label="delete event"
+                            onClick={() => handleDeleteEvent(event.id)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        </Box>
+                      </AccordionActions>
+
+                      <Typography variant="h6" sx={{ mb: 1, pl: 11 }}>
+                        Participants
+                      </Typography>
+
+                      <List dense sx={{
+                        width: '100%',
+                        bgcolor: 'background.paper',
+                        pl: 11,
+                        borderRadius: 1,
+                      }}>
+                        {event.participants.map((participant, pIndex) => (
+                          <ListItem key={pIndex} sx={{ mb: 2 }}>
+                            <ListItemText
+                              primary={participant.username}
+                              secondary={`Role: ${participant.role}`}
+                              sx={{
+                                '& .MuiListItemText-secondary': {
+                                  color: 'text.secondary',
+                                  fontSize: '0.875rem'
+                                }
+                              }}
+                            />
+                            <Box sx={{ ml: 'auto' }}>
+                              <Button
+                                size="small"
+                                variant="outlined"
+                                color={participant.marked ? 'success' : 'primary'}
+                                onClick={() => handleParticipantmarked(event.id, participant.role)}
+                              >
+                                {participant.marked ? 'Attended ✓' : 'Signed Up'}
+                              </Button>
+                            </Box>
+                          </ListItem>
+                        ))}
+                      </List>
+                    </AccordionDetails>
+                  </Accordion>
+                </Paper>
+              ))}
+            </Box>
+          ) : (
+            <Typography>No events available</Typography>
+          )}
+        </Box>
+      )}
+
+      {/* Students Tab */}
+      {activeTab === 1 && <StudentsTab />}
+
+      {/* Alter Admin Tab */}
+      {activeTab === 2 && <AlterAdminRoles />}
+    </Box>
+  </Box>
+</>
   );
-  
 }
 
 export default SuperAdminHome;
