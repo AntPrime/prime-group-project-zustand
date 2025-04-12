@@ -34,10 +34,23 @@ function EventsPage() {
  const [selectedActivityIds, setSelectedActivityIds] = useState([]);
  const [snackbarOpen, setSnackbarOpen] = useState(false);
  const [snackbarMessage, setSnackbarMessage] = useState("");
+ const [userRole, setUserRole] = useState('');
+ const user = useStore((state) => state.user);
+useEffect(() => {
+  setUserRole(user?.role || 'admin');
+}, [user]);
 
 
  useEffect(() => {
    fetchEvents();
+     // Optionally fetch user role (this depends on how your app stores user info)
+  axios.get('/api/user/all') // <-- Adjust to your actual user session endpoint
+  .then((res) => {
+    setUserRole(res.data.role); // Make sure res.data.role returns "admin" or "superadmin"
+  })
+  .catch((err) => {
+    console.error("Failed to fetch user role", err);
+  });
    // Fetch all schools
    axios.get('/api/createSchool/schools')
      .then((res) => {
@@ -60,7 +73,7 @@ function EventsPage() {
      });
  }, [fetchEvents]);
 
-
+ console.log("User Role:", userRole);  // Debugging lin
  // POST to create a new event
  const createEvent = () => {
    console.log('in createEvent');
@@ -76,13 +89,28 @@ function EventsPage() {
        fetchEvents();
        setSnackbarMessage(`✅ Event "${newEvent.title}" created!`);
        setSnackbarOpen(true);
-       setTimeout(() => navigate("/studentHomePage"), 1500);
+       setTimeout(() => {
+        if (user.admin_level === 2) {  // Check for super admin level
+          navigate("/superAdminHome");
+        } else {
+          navigate("/adminHome");
+        }
+      }, 1500);
      })
      .catch(function (err) {
        console.log(err);
        alert('Error creating new event');
      });
  };
+
+ const handleCancel = () => {
+  if (user.admin_level === 2) {  // Check for super admin level
+    navigate('/superAdminHome');
+  } else {
+    navigate('/adminHome'); // fallback to adminHome
+  }
+};
+
 
 
  return (
@@ -231,12 +259,11 @@ function EventsPage() {
          sx={textFieldStyle}
        />
 
-
-       {/* Buttons */}
-       <Box sx={{ display: 'flex', gap: 2 }}>
-         <Button fullWidth variant="contained" sx={cancelBtnStyle} onClick={() => navigate("/studentHomePage")}>
-           Cancel
-         </Button>
+ {/* Buttons */}
+ <Box sx={{ display: 'flex', gap: 2 }}>
+ <Button fullWidth variant="contained" sx={cancelBtnStyle} onClick={handleCancel}>
+  Cancel
+</Button>
          <Button fullWidth variant="contained" onClick={createEvent} sx={saveBtnStyle}>
            Create
          </Button>

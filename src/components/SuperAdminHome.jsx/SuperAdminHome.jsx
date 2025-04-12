@@ -127,20 +127,22 @@ function SuperAdminHome() {
 
   return (
 <>
-  <Box sx={{ display: 'flex', height: '100vh', padding: 2 }}>
-    {/* Sidebar */}
-    <Box sx={{ width: '220px', borderRight: '1px solid #ccc' }}>
-      <Tabs
-        orientation="vertical"
-        value={activeTab}
-        onChange={handleTabChange}
-        aria-label="Vertical tabs"
-      >
-        <Tab label="Events" onClick={() => setActiveTab(0)} />
-        <Tab label="Students" onClick={() => setActiveTab(1)} />
-        <Tab label="Alter admin" onClick={() => setActiveTab(2)} />
-      </Tabs>
-    </Box>
+<Box sx={{ display: 'flex', height: '100vh', padding: 2 }}>
+      {/* Sidebar */}
+      <Box sx={{ width: '220px', borderRight: '1px solid #ccc' }}>
+        <Tabs
+          orientation="vertical"
+          value={activeTab}
+          onChange={handleTabChange}
+          aria-label="Vertical tabs"
+          sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}
+        >
+          <Tab label="Events" onClick={() => setActiveTab(0)} />
+          <Tab label="Students" onClick={() => setActiveTab(1)} />
+          <Tab label="Alter admin" onClick={() => setActiveTab(2)} />
+          <Tab label="Create Event" component={NavLink} to="/createEvent" />
+        </Tabs>
+      </Box>
 
     {/* Main Content */}
     <Box sx={{ flexGrow: 1, pl: 3 }}>
@@ -149,7 +151,7 @@ function SuperAdminHome() {
       {activeTab === 0 && (
        <Box className="eventCard" sx={{ maxWidth: '1400px', mx: 'auto' }}>
         <Typography variant="h4" sx={{ mb: 2, mt: 5, fontWeight: 'bold' }}>
-          Admin Managment
+          Super admin Managment
         </Typography>
        <SearchEvent eventList={eventList} setEventList={setEventList} />  
           {/* Header */}

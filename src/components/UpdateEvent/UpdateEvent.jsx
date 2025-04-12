@@ -1,11 +1,13 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
+import useStore from '../../zustand/store';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { Container, TextField, Button, Typography, Box, Divider } from "@mui/material";
 import ActivitySelect from "../ActivitySelect/ActivitySelect";
 import SchoolSelect from "../SchoolSelect/SchoolSelect";
 import CreateNewSchool from "../CreateNewSchool/CreateNewSchool";
 import CreateNewActivity from "../CreateNewActivity/CreateNewActivity";
+
 
 
 function UpdateEvent() {
@@ -29,6 +31,24 @@ function UpdateEvent() {
  const [activeTab, setActiveTab] = useState('details');
  const [selectedSchoolIds, setSelectedSchoolIds] = useState([]);
  const [selectedActivityIds, setSelectedActivityIds] = useState([]);
+ const [userRole, setUserRole] = useState('');
+ const user = useStore((state) => state.user);
+ 
+
+
+ const redirectToHome = () => {
+  if (user.admin_level === 2) {  // Check for superadmin
+    navigate('/superAdminHome');
+  } else {
+    navigate('/adminHome'); // fallback to admin
+  }
+};
+
+
+const handleCancel = () => {
+  redirectToHome();
+};
+ 
 
 
  useEffect(() => {
@@ -66,7 +86,8 @@ function UpdateEvent() {
    axios.put('/api/events', updatedEventData)
      .then((response) => {
        console.log("Event updated:", response.data);
-       navigate("/studentHomePage");
+         // Navigate based on user admin level
+         redirectToHome();
      })
      .catch((err) => {
        if (err.response) {
@@ -92,7 +113,8 @@ function UpdateEvent() {
    axios.post('/api/events', newEvent)
      .then(function (response) {
        console.log(response.data);
-       navigate("/studentHomePage");
+   // Navigate based on user admin level after creating event
+   redirectToHome();
      })
      .catch(function (err) {
        console.log(err);
@@ -225,34 +247,21 @@ function UpdateEvent() {
        />
 
 
-       {/* Update Button */}
-       <Box sx={{ display: 'flex', gap: 2 }}>
-         <Button
-           fullWidth
-           variant="contained"
-           onClick={() => navigate("/studentHomePage")}
-           sx={{ backgroundColor: '#B0B0B0', color: '#fff' }}
-         >
-           Cancel
-         </Button>
-
-
-<Button
- fullWidth
- variant="contained"
- onClick={event ? updateEvent : createEvent} 
- sx={{ backgroundColor: '#1976d2', color: '#fff' }}
->
- {event ? 'Update Event' : 'Create Event'}
+          {/* Update Button */}
+          <Box sx={{ display: 'flex', gap: 2 }}>
+          <Button fullWidth variant="outlined" onClick={handleCancel}>
+  Cancel
 </Button>
 
+<Button fullWidth variant="contained" onClick={event ? updateEvent : createEvent}>
+  {event ? 'Update Event' : 'Create Event'}
+</Button>
 
-       </Box>
+        </Box>
      </Container>
    </Box>
  );
 }
-
 
 export default UpdateEvent;
 

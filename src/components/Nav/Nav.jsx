@@ -15,6 +15,16 @@ function Nav() {
    navigate('/logout-success'); // Navigate to logout success page
  };
 
+ // Navigate based on the user role
+ const handleRedirect = () => {
+  if (user.admin_level === 1) {
+    navigate('/adminHome'); // Redirect to Admin Home
+  } else if (user.admin_level === 2) {
+    navigate('/superAdminHome'); // Redirect to Super Admin Home
+  } else {
+    navigate('/userHome'); // Redirect to User Home
+  }
+};
 
  return (
    <nav className="nav-container">

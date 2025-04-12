@@ -195,6 +195,9 @@ return (
         <Route path="/studentHomePage" element={<StudentHomePage />} />
         <Route exact path="/updateEvent/:eventId" element={<UpdateEvent />} />
         <Route path="/logout-success" element={<LogoutSuccess />} />
+        <Route path="/createEvent" element={<EventsPage />} />
+        <Route path="/adminHome" element={<AdminHome />} />
+        <Route path="/superAdminHome" element={<SuperAdminHome />} />
         <Route
           path="*"
           element={
