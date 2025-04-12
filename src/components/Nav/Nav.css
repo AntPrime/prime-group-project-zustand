@@ -5,44 +5,154 @@ nav {
   align-items: center;
   width: 100%;
   padding: 15px 20px;
-}
-
-/* Left-aligned image */
-nav .nav-image-container {
+ }
+ 
+ 
+ /* Left-aligned image */
+ nav .nav-image-container {
   display: flex;
   align-items: center;
-}
-
-/* Image styling */
-nav .nav-image {
+ }
+ 
+ 
+ /* Image styling */
+ nav .nav-image {
   width: 200px; /* Adjust size as needed */
   height: auto;
-}
-
-/* Right-aligned navigation links */
-.nav-right {
+ }
+ 
+ 
+ /* Right-aligned navigation links */
+ .nav-right {
   display: flex;
   justify-content: flex-end;
   width: 80%; /* Adjust width to give more room for the image */
-}
-
-nav ul {
+ }
+ 
+ 
+ nav ul {
   display: flex;
   gap: 20px;
   margin: 0;
   padding: 0;
   list-style: none;
-}
-
-nav a {
+ }
+ 
+ 
+ nav a {
   color: rgba(0, 0, 0, 0.5);
   text-decoration: none;
-}
-
-nav a.active {
+ }
+ 
+ 
+ nav a.active {
   color: rgba(0, 0, 0, 0.75);
   text-decoration: underline;
   text-decoration-color: #20c997;
   text-decoration-thickness: 2px;
   transition: 0.7s;
-}
+ }
+ 
+ 
+ /* Box-Sizing Fix: */
+ *,
+ *::before,
+ *::after {
+  box-sizing: border-box;
+ }
+ 
+ 
+ /* Remove Margin/Padding: */
+ html, body {
+  margin: 0;
+  padding: 0;
+ }
+ 
+ 
+ /* Typography: */
+ body {
+  font-family: sans-serif;
+  background-color: #f0f0f0;
+  color: rgba(0, 0, 0, 0.75);
+ }
+ 
+ 
+ /* Basic Header/Main/Footer Flexbox Layout: */
+ #root {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+ }
+ 
+ 
+ #root > * {
+  padding: 0 20px;
+ }
+ 
+ 
+ main {
+  flex-grow: 1;
+ }
+ 
+ 
+ /* Form Styles: */
+ label {
+  display: block;
+  margin-bottom: 5px;
+ }
+ 
+ 
+ input {
+  display: block;
+  padding: 5px;
+  outline: none;
+  border: 1px solid rgba(0, 0, 0, 0.75);
+  margin-bottom: 10px;
+ }
+ 
+ 
+ input:focus {
+  outline: none;
+  transition: 0.7s;
+ }
+ 
+ 
+ button {
+  padding: 5px;
+  margin-top: 10px;
+ }
+ 
+ 
+ button:hover, button:focus {
+  outline-color: transparent;
+  outline-style: solid;
+  transition: 0.7s;
+ }
+ 
+ 
+ /* Fun Squiggle Underline Style: */
+ .squiggle {
+  text-decoration: wavy underline;
+  text-decoration-color: #20c997;
+  text-decoration-thickness: 2px;
+ }
+ 
+ 
+ /* Style for Logout Link */
+ nav .nav-link.logout-link {
+  color: rgba(0, 0, 0, 0.5);
+  text-decoration: none; /* Remove underline */
+  font-family: sans-serif; /* Ensures the same font family */
+  cursor: pointer; /* Pointer cursor to indicate it's clickable */
+  transition: color 0.3s ease, text-decoration 0.3s ease; /* Smooth transition */
+ }
+ 
+ 
+ /* Additional styling for the logout button */
+ nav .nav-link.logout-link:active {
+  color: rgba(0, 0, 0, 0.75); /* Default text color */
+  text-decoration: underline; /* Underline on hover */
+  text-decoration-color: #20c997; /* Green underline */
+  text-decoration-thickness: 2px; /* Thicker underline */
+ }
+ 

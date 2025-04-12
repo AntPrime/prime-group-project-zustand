@@ -60,9 +60,6 @@ function Nav() {
                  <li>
                    <NavLink to="/superAdminHome">Super Admin Home</NavLink>
                  </li>
-                 <li>
-                   <NavLink to="/alterAdmin">Alter Admin</NavLink>
-                 </li>
                </>
              )}
            </>
@@ -86,7 +83,6 @@ function Nav() {
 
 
 export default Nav;
-
 
 
 

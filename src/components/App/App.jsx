@@ -1,4 +1,5 @@
 
+
 import { useEffect } from 'react';
 import {
 Routes,
@@ -19,7 +20,7 @@ import RegisterPage from '../RegisterPage/RegisterPage';
 import EventsPage from '../EventsPage/EventsPage';
 import SuccessPage from '../../SuccessPage/SuccessPage';
 import UpdateEvent from '../UpdateEvent/UpdateEvent';
-import LogoutSuccess from '../LogoutSuccess/LogoutSuccss';
+import LogoutSuccess from '../LogoutSuccess/LogoutSuccess';
 import AdminHome from '../AdminHome.jsx/AdminHome';
 import SuperAdminHome from '../SuperAdminHome.jsx/SuperAdminHome';
 import UserAttended from '../UserAttended.jsx/UserAttended';
@@ -217,7 +218,6 @@ return (
 
 
 export default App;
-
 
 
 
