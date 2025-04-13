@@ -287,27 +287,27 @@ function StudentsTab() {
   };
 
   return (
-    <Box sx={{ p: 3, backgroundColor: '#f5f5f5', minHeight: '100vh' }}>
+    <Box sx={{ flexGrow: 1, p: 1 }}>
+        <Box sx={{ width: '100%', maxWidth: '100%', px: 2 }}>
     <Typography variant="h4" gutterBottom sx={{ 
-      color: '#2c3e50',
       fontWeight: '600',
-      mb: 4,
+      mb: 5,
       borderBottom: '2px solid #3498db',
       pb: 1
     }}>
-      Event Role Management
+      Role Management
     </Typography>
 
     {/* Filter Controls */}
     <Paper sx={{ 
-      p: 3, 
-      mb: 3,
-      borderRadius: '12px',
+      p: 4, 
+      mb: 10,
+      borderRadius: '3px',
       boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)'
     }}>
-      <Grid container spacing={2} alignItems="center">
+      <Grid container spacing={1} alignItems="center">
         {['username', 'event', 'date', 'role'].map((field) => (
-          <Grid item xs={12} sm={6} md={3} key={field}>
+          <Grid item xs={12} sm={6} md={2.7} key={field}>
             <TextField
               fullWidth
               variant="outlined"
@@ -316,14 +316,14 @@ function StudentsTab() {
               onChange={(e) => handleFilterChange(field, e.target.value)}
               InputProps={{
                 sx: {
-                  borderRadius: '8px',
+                  borderRadius: '3px',
                   backgroundColor: 'white'
                 }
               }}
             />
           </Grid>
         ))}
-        <Grid item xs={12} sx={{ textAlign: 'right' }}>
+        <Grid item xs={0}>
           <Button 
             variant="contained" 
             onClick={handleClearFilters}
@@ -331,9 +331,9 @@ function StudentsTab() {
               bgcolor: '#3498db',
               '&:hover': { bgcolor: '#2980b9' },
               textTransform: 'none',
-              borderRadius: '8px',
-              px: 4,
-              py: 1
+              borderRadius: '2px',
+              px: 3,
+              py: 1.9, 
             }}
           >
             Clear Filters
@@ -374,23 +374,28 @@ function StudentsTab() {
                     key={`${user.userId}-${event.eventId}-${index}`}
                     hover
                     sx={{ 
-                      '&:nth-of-type(odd)': { bgcolor: '#f8f9fa' },
+                      backgroundColor: 'white', // Always white background
+                      '&:hover': { backgroundColor: '#f2f2f2' }, // Grey on hover
                       '&:last-child td': { borderBottom: 0 }
                     }}
                   >
                     <TableCell sx={{ fontWeight: '500' }}> <strong>{user.username}</strong></TableCell>
                     <TableCell>{event.eventTitle}</TableCell>
                     <TableCell>
-                      <Chip 
-                        label={event.role}
-                        color="primary"
-                        variant="outlined"
-                        sx={{ 
-                          borderRadius: '4px',
-                          borderWidth: '2px',
-                          fontWeight: '500'
-                        }}
-                      />
+                      <Box sx={{ width: 150, display: 'flex', justifyContent: 'center' }}>
+                        <Chip 
+                          label={event.role}
+                          color="primary"
+                          
+                          sx={{ 
+                            borderRadius: '20px',
+                            borderWidth: '1.5px',
+                            fontWeight: '500',
+                            width: '100%',
+                            textAlign: 'center'
+                          }}
+                        />
+                      </Box>
                     </TableCell>
                     <TableCell>
                       {new Date(event.date).toLocaleDateString('en-US', {
@@ -412,10 +417,10 @@ function StudentsTab() {
               ) : (
                 <TableRow key={user.userId}>
                   <TableCell colSpan={5} sx={{ 
-                    bgcolor: '#fff3cd',
-                    color: '#856404',
-                    textAlign: 'center',
-                    fontWeight: '500'
+                  backgroundColor: '#f8d7da', // Red or try '#2c3e50' for dark grey
+                  color: '#721c24',
+                  textAlign: 'left',
+                  fontWeight: '500'
                   }}>
                     <strong>{user.username}</strong> - No assigned events
                   </TableCell>
@@ -443,32 +448,34 @@ function StudentsTab() {
       </DialogTitle>
       
       <DialogContent>
-        <Box sx={{ mb: 2 }}>
+        <Box sx={{ mb: 4 }}>
           <Typography variant="subtitle1" sx={{ color: '#7f8c8d' }}>
             User: <span style={{ color: '#2c3e50' }}>{currentEditItem?.username}</span>
           </Typography>
         </Box>
 
-        <FormControl fullWidth sx={{ mb: 3 }}>
-          <InputLabel>Select Event</InputLabel>
-          <Select
-            value={editForm.event}
-            onChange={(e) => setEditForm({ ...editForm, event: e.target.value })}
-            MenuProps={{ PaperProps: { sx: { maxHeight: 300 } } }}
-          >
-            {events.map((event) => (
-              <MenuItem key={event.id} value={event.title}>
-                {event.title}
-              </MenuItem>
-            ))}
-          </Select>
-        </FormControl>
+        <FormControl fullWidth sx={{ display: 'left', gap: 2, mb: 4 }}>
+  <InputLabel>Select Event</InputLabel>
+  <Select
+    value={editForm.event}
+    onChange={(e) => setEditForm({ ...editForm, event: e.target.value })}
+    sx={{ mt: 1 }}
+  >
+    {events.map((event) => (
+      <MenuItem key={event.id} value={event.title}>
+        {event.title}
+      </MenuItem>
+    ))}
+  </Select>
+</FormControl>
 
-        <FormControl fullWidth>
+
+        <FormControl fullWidth sx={{ display: 'left', gap: 2, mb: 4 }}>
           <InputLabel>Select Role</InputLabel>
           <Select
             value={editForm.role}
             onChange={(e) => setEditForm({ ...editForm, role: e.target.value })}
+            sx={{ mt: 1 }}
           >
             {['Play-by-Play', 'Color Commentator', 'Camera', 'Producer'].map((role) => (
               <MenuItem key={role} value={role}>
@@ -495,8 +502,8 @@ function StudentsTab() {
           sx={{
             bgcolor: '#3498db',
             '&:hover': { bgcolor: '#2980b9' },
-            borderRadius: '8px',
-            px: 4,
+            borderRadius: '3px',
+            px: 3,
             textTransform: 'none'
           }}
         >
@@ -523,6 +530,7 @@ function StudentsTab() {
         {snackbar.message}
       </Alert>
     </Snackbar>
+  </Box>
   </Box>
 );
 }

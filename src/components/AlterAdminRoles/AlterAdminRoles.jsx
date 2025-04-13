@@ -123,12 +123,12 @@ function AlterAdminRoles() {
 
   return (
     <Box sx={{ p: 3 }}>
-      <Typography variant="h4" gutterBottom>
-        User Admin Levels
+      <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, borderBottom: '2px solid #3498db', pb: 1, mb: 5 }}>
+        Alter Admin Levels
       </Typography>
-
+  
       {/* Filter Controls */}
-      <Paper sx={{ p: 2, mb: 3 }}>
+      <Paper sx={{ p: 4, mb: 10, boxShadow: '0 4px 20px 0 rgba(0,0,0,0.12)', borderRadius: '3px' }}>
         <Grid container spacing={2} alignItems="center">
           <Grid item xs={12} sm={6} md={4}>
             <TextField
@@ -136,6 +136,12 @@ function AlterAdminRoles() {
               label="Filter by Username"
               value={filters.username}
               onChange={(e) => handleFilterChange('username', e.target.value)}
+              InputProps={{
+                sx: {
+                  borderRadius: '3px',
+                  backgroundColor: 'white',
+                },
+              }}
             />
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
@@ -145,6 +151,7 @@ function AlterAdminRoles() {
                 value={filters.adminLevel}
                 onChange={(e) => handleFilterChange('adminLevel', e.target.value)}
                 label="Filter by Admin Level"
+                sx={{ borderRadius: '3px', backgroundColor: 'white' }}
               >
                 <MenuItem value="">All</MenuItem>
                 <MenuItem value="null">User</MenuItem>
@@ -154,30 +161,43 @@ function AlterAdminRoles() {
             </FormControl>
           </Grid>
           <Grid item xs={12} sm={6} md={4}>
-            <Button variant="contained" color="primary" onClick={handleClearFilters}>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleClearFilters}
+              sx={{
+                bgcolor: '#3498db',
+                '&:hover': { bgcolor: '#2980b9' },
+                textTransform: 'none',
+                borderRadius: '3px',
+                px: 3,
+                py: 1.9, 
+              }}
+            >
               Clear Filters
             </Button>
           </Grid>
         </Grid>
       </Paper>
-
+  
       {/* Users Table */}
-      <TableContainer component={Paper}>
-        <Table>
-          <TableHead>
+      <TableContainer component={Paper} sx={{ borderRadius: '12px', overflow: 'hidden' }}>
+        <Table sx={{ minWidth: 650 }}>
+          <TableHead sx={{ bgcolor: '#3498db' }}>
             <TableRow>
-              <TableCell>Username</TableCell>
-              <TableCell>Admin Level</TableCell>
-              <TableCell>Update Admin Level</TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: '600' }}>Username</TableCell>
+              <TableCell sx={{ color: 'white', fontWeight: '600' }}>Admin Level</TableCell>
+              <TableCell align="right" sx={{ color: 'white', fontWeight: '600' }}>Update Admin Level</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
             {getFilteredUsers().map((user) => (
-              <TableRow key={user.username}>
+              <TableRow key={user.username} hover sx={{ '&:last-child td': { borderBottom: 0 } }}>
                 <TableCell>{user.username}</TableCell>
                 <TableCell>{getRoleLabel(user.admin_level)}</TableCell>
-                <TableCell>
-                  <IconButton onClick={() => handleEditClick(user)}>
+                <TableCell align="right"
+                        sx={{ paddingRight: '100px', width: '180px',}}>
+                  <IconButton onClick={() => handleEditClick(user)} sx={{ color: '#3498db' }}>
                     <EditIcon />
                   </IconButton>
                 </TableCell>
@@ -186,10 +206,12 @@ function AlterAdminRoles() {
           </TableBody>
         </Table>
       </TableContainer>
-
+  
       {/* Edit Dialog */}
-      <Dialog open={editOpen} onClose={() => setEditOpen(false)}>
-        <DialogTitle>Edit Admin Level</DialogTitle>
+      <Dialog open={editOpen} onClose={() => setEditOpen(false)} PaperProps={{ sx: { borderRadius: '12px' } }}>
+        <DialogTitle sx={{ fontSize: '1.5rem', fontWeight: '600', color: '#2c3e50' }}>
+          Edit Admin Level
+        </DialogTitle>
         <DialogContent>
           <FormControl fullWidth sx={{ mt: 2 }}>
             <InputLabel>Admin Level</InputLabel>
@@ -197,6 +219,7 @@ function AlterAdminRoles() {
               value={editAdminLevel}
               onChange={(e) => setEditAdminLevel(e.target.value)}
               label="Admin Level"
+              sx={{ borderRadius: '5px' }}
             >
               <MenuItem value="null">User</MenuItem>
               <MenuItem value="1">Admin</MenuItem>
@@ -204,30 +227,46 @@ function AlterAdminRoles() {
             </Select>
           </FormControl>
         </DialogContent>
-        <DialogActions>
-          <Button onClick={() => setEditOpen(false)}>Cancel</Button>
-          <Button onClick={handleSaveRole} variant="contained" color="primary">
+        <DialogActions sx={{ pt: 2 }}>
+          <Button onClick={() => setEditOpen(false)} sx={{ color: '#7f8c8d' }}>
+            Cancel
+          </Button>
+          <Button
+            onClick={handleSaveRole}
+            variant="contained"
+            color="primary"
+            sx={{
+              bgcolor: '#3498db',
+              '&:hover': { bgcolor: '#2980b9' },
+              borderRadius: '5px',
+              px: 3,
+              textTransform: 'none',
+            }}
+          >
             Save
           </Button>
         </DialogActions>
       </Dialog>
+  
+   {/* Snackbar Notifications */}
+<Snackbar
+  open={snackbar.open}
+  autoHideDuration={6000}
+  onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}  // Change to top-center
+>
+  <Alert
+    severity={snackbar.severity}
+    onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+    sx={{ width: '100%' }}
+  >
+    {snackbar.message}
+  </Alert>
+</Snackbar>
 
-      {/* Snackbar Notifications */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert 
-          severity={snackbar.severity}
-          onClose={() => setSnackbar(prev => ({ ...prev, open: false }))}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
     </Box>
   );
+  
 }
 
 export default AlterAdminRoles;

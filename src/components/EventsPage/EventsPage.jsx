@@ -2,8 +2,7 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import useStore from '../../zustand/store';
 import { useNavigate } from 'react-router-dom';
-import './EventsPage.css';
-import { Box, Container, TextField, Select, MenuItem, Button, Typography, Divider, Snackbar, Alert} from "@mui/material";
+import { Box, Container, TextField, Select, MenuItem, Button, Typography, Tabs, Tab, Divider, Snackbar, Alert} from "@mui/material";
 import CreateNewSchool from "../CreateNewSchool/CreateNewSchool";
 import CreateNewActivity from "../CreateNewActivity/CreateNewActivity";
 import ActivitySelect from "../ActivitySelect/ActivitySelect";
@@ -34,10 +33,25 @@ function EventsPage() {
  const [selectedActivityIds, setSelectedActivityIds] = useState([]);
  const [snackbarOpen, setSnackbarOpen] = useState(false);
  const [snackbarMessage, setSnackbarMessage] = useState("");
+ const [userRole, setUserRole] = useState('');
+ const user = useStore((state) => state.user);
+ const [selectedSchoolId, setSelectedSchoolId] = useState('');
+ const [selectedActivityId, setSelectedActivityId] = useState('');
+useEffect(() => {
+  setUserRole(user?.role || 'admin');
+}, [user]);
 
 
  useEffect(() => {
    fetchEvents();
+     // Optionally fetch user role (this depends on how your app stores user info)
+  axios.get('/api/user/all') // <-- Adjust to your actual user session endpoint
+  .then((res) => {
+    setUserRole(res.data.role); // Make sure res.data.role returns "admin" or "superadmin"
+  })
+  .catch((err) => {
+    console.error("Failed to fetch user role", err);
+  });
    // Fetch all schools
    axios.get('/api/createSchool/schools')
      .then((res) => {
@@ -60,7 +74,7 @@ function EventsPage() {
      });
  }, [fetchEvents]);
 
-
+ console.log("User Role:", userRole);  // Debugging lin
  // POST to create a new event
  const createEvent = () => {
    console.log('in createEvent');
@@ -74,9 +88,15 @@ function EventsPage() {
      .then(function (response) {
        console.log(response.data);
        fetchEvents();
-       setSnackbarMessage(`✅ Event "${newEvent.title}" created!`);
+       setSnackbarMessage(`Event "${newEvent.title}" created`);
        setSnackbarOpen(true);
-       setTimeout(() => navigate("/studentHomePage"), 1500);
+       setTimeout(() => {
+        if (user.admin_level === 2) {  // Check for super admin level
+          navigate("/superAdminHome");
+        } else {
+          navigate("/adminHome");
+        }
+      }, 1500);
      })
      .catch(function (err) {
        console.log(err);
@@ -84,223 +104,225 @@ function EventsPage() {
      });
  };
 
-
- return (
-   <Box sx={{ display: 'flex', height: '100%', padding: 2 }}>
-     {/* Sidebar */}
-     <Box sx={{ width: '220px', paddingRight: 4, borderRight: '1px solid #ccc' }}>
-       <Typography variant="h6" sx={{ mb: 3, fontWeight: 'bold' }}>Settings</Typography>
-       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-         <Typography
-           variant="body1"
-           sx={{
-             cursor: 'pointer',
-             fontWeight: activeTab === 'details' ? 'bold' : 'normal',
-             textDecoration: activeTab === 'details' ? 'underline' : 'none',
-             '&:hover': { textDecoration: 'underline' }
-           }}
-           onClick={() => setActiveTab('details')}
-         >
-           Details
-         </Typography>
-         <Typography
-           variant="body1"
-           sx={{
-             cursor: 'pointer',
-             fontWeight: activeTab === 'advanced' ? 'bold' : 'normal',
-             textDecoration: activeTab === 'advanced' ? 'underline' : 'none',
-             '&:hover': { textDecoration: 'underline' }
-           }}
-           onClick={() => setActiveTab('advanced')}
-         >
-           Advanced Settings
-         </Typography>
-       </Box>
-     </Box>
-
-
-     {/* Main Content */}
-     <Container maxWidth="md" sx={{ flex: 1, marginLeft: 4 }}>
-       <Typography variant="h4" gutterBottom sx={{ fontWeight: 'bold', mb: 4 }}>
-         Create Event
-       </Typography>
-
-
-       {/* Title */}
-       <Typography variant="h6" sx={{ mb: 1 }}>Event Name</Typography>
-       <TextField fullWidth variant="outlined" placeholder="Enter event name"
-         value={newEvent.title}
-         onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
-         sx={textFieldStyle}
-       />
-
-
-       {/* Date/Time */}
-       <Box sx={{ display: 'flex', gap: 2 }}>
-         <TextField
-           type="date"
-           fullWidth
-           value={newEvent.date}
-           onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
-           sx={textFieldStyle}
-         />
-         <TextField
-           type="time"
-           fullWidth
-           value={newEvent.time}
-           onChange={(e) => setNewEvent({ ...newEvent, time: e.target.value })}
-           sx={textFieldStyle}
-         />
-       </Box>
-
-
-       {/* Location */}
-       <Typography variant="h6" sx={{ mb: 1 }}>Location</Typography>
-       <TextField fullWidth variant="outlined" placeholder="Add location"
-         value={newEvent.location}
-         onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
-         sx={textFieldStyle}
-       />
-
-
-       {/* Details Tab */}
-       {activeTab === 'details' && (
-         <>
-           <SchoolSelect
-             schools={schools}
-             selectedSchools={selectedSchoolIds}
-             onChange={setSelectedSchoolIds} // Ensure this is updating correctly
-           />
-           <ActivitySelect
-             activities={activities}
-             selectedActivities={selectedActivityIds}
-             onChange={setSelectedActivityIds}
-           />
-         </>
-       )}
-
-
-       {/* Advanced Settings Tab */}
-       {activeTab === 'advanced' && (
-         <Box sx={{ mb: 2 }}>
-           <CreateNewSchool setSchools={setSchools} schools={schools} />
-           <CreateNewActivity setActivities={setActivities} activities={activities} />
-           <Divider sx={{ my: 3 }} />
-         </Box>
-       )}
-
-
-       {/* Channel Title */}
-       <Typography variant="h6" sx={{ mb: 1 }}>
-         Channel
-       </Typography>
-
-
-       {/* Channel Select Dropdown */}
-       <Select
-         fullWidth
-         value={newEvent.channel}
-         onChange={(e) => setNewEvent({ ...newEvent, channel: e.target.value })}
-         displayEmpty
-         sx={{
-           ...textFieldStyle,
-         }}
-         renderValue={(selected) => {
-           if (!selected) {
-             return <span style={{ color: '#aaa' }}>Select channel</span>;
-           }
-           return selected;
-         }}
-       >
-         <MenuItem value="Albert Lea Live">Albert Lea Live</MenuItem>
-         <MenuItem value="Fairbault Live">Fairbault Live</MenuItem>
-         <MenuItem value="Northfield Live">Northfield Live</MenuItem>
-       </Select>
-
-
-       {/* Notes */}
-       <Typography variant="h6" sx={{ mb: 1 }}>Enter description</Typography>
-       <TextField
-         fullWidth
-         multiline
-         rows={4}
-         variant="outlined"
-         placeholder="Enter description"
-         value={newEvent.notes}
-         onChange={(e) => setNewEvent({ ...newEvent, notes: e.target.value })}
-         sx={textFieldStyle}
-       />
-
-
-       {/* Buttons */}
-       <Box sx={{ display: 'flex', gap: 2 }}>
-         <Button fullWidth variant="contained" sx={cancelBtnStyle} onClick={() => navigate("/studentHomePage")}>
-           Cancel
-         </Button>
-         <Button fullWidth variant="contained" onClick={createEvent} sx={saveBtnStyle}>
-           Create
-         </Button>
-       </Box>
-
-
-       <Snackbar
-         open={snackbarOpen}
-         autoHideDuration={2000}
-         onClose={() => setSnackbarOpen(false)}
-         anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-         sx={{
-           top: '40%',
-           transform: 'translateY(-50%)',
-           width: '100%',
-           display: 'flex',
-           justifyContent: 'center',
-           alignItems: 'center',
-         }}
-       >
-         <Alert
-           onClose={() => setSnackbarOpen(false)}
-           severity="success"
-           variant="filled"
-           sx={{
-             width: '50%',
-             fontSize: '1.2rem',
-             padding: 3,
-             borderRadius: 2,
-             boxShadow: 5,
-             textAlign: 'center',
-             backgroundColor: '#d0f0c0',
-             color: '#1a4d1a',
-           }}
-         >
-           {snackbarMessage}
-         </Alert>
-       </Snackbar>
-     </Container>
-   </Box>
- );
-}
-
+ const handleCancel = () => {
+  if (user.admin_level === 2) {  // Check for super admin level
+    navigate('/superAdminHome');
+  } else {
+    navigate('/adminHome'); // fallback to adminHome
+  }
+};
 
 const textFieldStyle = {
- backgroundColor: '#F2F4F5',
- mb: 2,
- '& .MuiOutlinedInput-root': {
-   '& fieldset': {
-     borderColor: 'rgba(0, 0, 0, 0.23)',
-   },
-   '&:hover fieldset': {
-     borderColor: '#1976d2',
-   },
-   '&.Mui-focused fieldset': {
-     borderColor: '#1976d2',
-     borderWidth: 2,
-   },
- },
+  mb: 2,
+  borderRadius: '5px',
+  '& .MuiOutlinedInput-root': {
+    borderRadius: '5px',
+  },
 };
 
 
-const cancelBtnStyle = { backgroundColor: '#B0B0B0', color: '#fff' };
-const saveBtnStyle = { backgroundColor: '#1976d2', color: '#fff' };
+return (
+    <Box sx={{ display: 'flex', height: '100%', padding: 2 }}>
+      {/* Sidebar */}
+      <Box sx={{ width: '220px', borderRight: '1px solid #ccc' }}>
+        <Tabs
+          orientation="vertical"
+          value={activeTab === 'details' ? 0 : 1}
+          onChange={(e, newValue) => setActiveTab(newValue === 0 ? 'details' : 'advanced')}
+          aria-label="Vertical tabs"
+          sx={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end' }}
+        >
+          <Tab
+            label="Details"
+            sx={{
+              alignSelf: 'stretch',
+              textAlign: 'right',
+            }}
+          />
+          <Tab
+            label="Advanced Settings"
+            sx={{
+              alignSelf: 'stretch',
+              textAlign: 'right',
+            }}
+          />
+        </Tabs>
+      </Box>
+  
+      {/* Main Content */}
+      <Container maxWidth="lg" sx={{ flex: 1, marginLeft: 10 }}>
+        {/* Create Event Wrapper */}
+        <Box sx={{ backgroundColor: 'white', borderRadius: '8px', boxShadow: 3, padding: 4 }}>
+          <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, borderBottom: '2px solid #3498db', pb: 1.5, mb: 9 }}>
+            Create Event
+          </Typography>
+        
+  
+          {/* Title */}
+          <Typography variant="h6" sx={{ mb: 1 }}>Event Name</Typography>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Enter event name"
+            value={newEvent.title}
+            onChange={(e) => setNewEvent({ ...newEvent, title: e.target.value })}
+            sx={{ ...textFieldStyle, backgroundColor: 'white' }}
+          />
+  
+          {/* Date & Time */}
+          <Box sx={{ display: 'flex', gap: 2 }}>
+            <TextField
+              type="date"
+              fullWidth
+              value={newEvent.date}
+              onChange={(e) => setNewEvent({ ...newEvent, date: e.target.value })}
+              sx={{ ...textFieldStyle, backgroundColor: 'white' }}
+            />
+            <TextField
+              type="time"
+              fullWidth
+              value={newEvent.time}
+              onChange={(e) => setNewEvent({ ...newEvent, time: e.target.value })}
+              sx={{ ...textFieldStyle, backgroundColor: 'white' }}
+            />
+          </Box>
+  
+          {/* Location */}
+          <Typography variant="h6" sx={{ mb: 1 }}>Location</Typography>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Add location"
+            value={newEvent.location}
+            onChange={(e) => setNewEvent({ ...newEvent, location: e.target.value })}
+            sx={{ ...textFieldStyle, backgroundColor: 'white' }}
+          />
+  
+          {/* Details Tab */}
+          {activeTab === 'details' && (
+            <>
+             <SchoolSelect
+  key={schools.length} // This will change every time schools array changes
+  schools={schools}
+  selectedSchools={selectedSchoolIds}
+  onChange={setSelectedSchoolIds}
+/>
+              <ActivitySelect
+                activities={activities}
+                selectedActivities={selectedActivityIds}
+                onChange={setSelectedActivityIds}
+              />
+            </>
+          )}
+  
+          {/* Advanced Tab */}
+          {activeTab === 'advanced' && (
+            <Box sx={{ mb: 2 }}>
+              <CreateNewSchool
+                  setSchools={setSchools}
+                  schools={schools}
+                />
+                <Divider sx={{ my: 3 }} />
+                 <SchoolSelect
+                schools={schools}
+                selectedSchools={selectedSchoolIds}
+                onChange={setSelectedSchoolIds}
+              />
+                <CreateNewActivity
+                  setActivities={setActivities}
+                  activities={activities}
+                />
+              <Divider sx={{ my: 3 }} />
+              <ActivitySelect
+                activities={activities}
+                selectedActivities={selectedActivityIds}
+                onChange={setSelectedActivityIds}
+              />
+            </Box>
+          )}
+          
+  
+          {/* Channel */}
+          <Typography variant="h6" sx={{ mb: 1 }}>Channel</Typography>
+          <Select
+            fullWidth
+            value={newEvent.channel}
+            onChange={(e) => setNewEvent({ ...newEvent, channel: e.target.value })}
+            displayEmpty
+            sx={{ ...textFieldStyle, backgroundColor: 'white' }}
+            renderValue={(selected) => {
+              if (!selected) return <span style={{ color: '#aaa' }}>Select channel</span>;
+              return selected;
+            }}
+          >
+            <MenuItem value="Albert Lea Live">Albert Lea Live</MenuItem>
+            <MenuItem value="Fairbault Live">Fairbault Live</MenuItem>
+            <MenuItem value="Northfield Live">Northfield Live</MenuItem>
+          </Select>
+  
+          {/* Notes */}
+          <Typography variant="h6" sx={{ mb: 1 }}>Enter description</Typography>
+          <TextField
+            fullWidth
+            multiline
+            rows={4}
+            variant="outlined"
+            placeholder="Enter description"
+            value={newEvent.notes}
+            onChange={(e) => setNewEvent({ ...newEvent, notes: e.target.value })}
+            sx={{ ...textFieldStyle, backgroundColor: 'white' }}
+          />
+  
+          {/* Buttons */}
+          <Box sx={{ display: 'flex', gap: 2, justifyContent: 'flex-end' }}>
+            <Button
+              variant="contained"
+              sx={{
+                bgcolor: '#B0B0B0', // Muted grey color for the cancel button
+                '&:hover': { bgcolor: '#8C8C8C' }, // Darker grey on hover
+                textTransform: 'none',
+                borderRadius: '3px',
+                px: 5, // Horizontal padding
+                py: 1, // Vertical padding
+                width: 'auto', // Adjust width to content size
+              }}
+              onClick={handleCancel}
+            >
+              Cancel
+              </Button>
+              <Button
+                variant="contained"
+                sx={{
+                  bgcolor: '#3498db',
+                  '&:hover': { bgcolor: '#2980b9' },
+                  textTransform: 'none',
+                  borderRadius: '3px',
+                  px: 5,
+                  py: 1.5, // Slightly smaller vertical padding
+                  width: 'auto', // Adjust width to content size
+                }}
+                onClick={createEvent}
+              >
+                Create
+              </Button>
+            </Box>
+
+          {/* Snackbar */}
+          <Snackbar
+  open={snackbarOpen}
+  autoHideDuration={2000}
+  onClose={() => setSnackbarOpen(false)}
+  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+>
+  <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
+    {snackbarMessage}
+  </Alert>
+</Snackbar>
+        </Box>
+      </Container>
+    </Box>
+  );
+}
 
 
 export default EventsPage;

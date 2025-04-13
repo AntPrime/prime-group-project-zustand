@@ -1,12 +1,15 @@
 
+
 import { useEffect } from 'react';
 import {
- Routes,
- Route,
- Navigate,
- Link,
- useNavigate
+Routes,
+Route,
+Navigate,
+Link,
+useNavigate
 } from "react-router-dom";
+
+
 
 
 import useStore from '../../zustand/store';
@@ -17,206 +20,209 @@ import RegisterPage from '../RegisterPage/RegisterPage';
 import EventsPage from '../EventsPage/EventsPage';
 import SuccessPage from '../../SuccessPage/SuccessPage';
 import UpdateEvent from '../UpdateEvent/UpdateEvent';
+import LogoutSuccess from '../LogoutSuccess/LogoutSuccess';
 import AdminHome from '../AdminHome.jsx/AdminHome';
 import SuperAdminHome from '../SuperAdminHome.jsx/SuperAdminHome';
 import UserAttended from '../UserAttended.jsx/UserAttended';
 import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
-import SearchEvent from '../SearchEvent/SearchEvent';
-import BasicSearch from '../BasicSearch/BasicSearch';
+import HomePage from '../HomePage/HomePage';
 import '../App/App.css';
 
+
 function App() {
- const user = useStore((state) => state.user);
- const fetchUser = useStore((state) => state.fetchUser);
- const logOut = useStore((state) => state.logOut);
- const navigate = useNavigate();
+const user = useStore((state) => state.user);
+const fetchUser = useStore((state) => state.fetchUser);
+const logOut = useStore((state) => state.logOut);
 
 
- useEffect(() => {
-   fetchUser();
- }, [fetchUser]);
 
 
- return (
-   <div className="app-container">
-     <header className="app-header">
-       <div className="header-content">
-         <Nav />
-         <nav className="main-nav">
-           {user?.id ? (
-             <button
-               className="nav-link logout-button"
-               onClick={async () => {
-                 await logOut();
-                 navigate('/logout-success');
-               }}
-             >
-               Logout
-             </button>
-           ) : (
-             <>
-               {/* <Link to="/login" className="nav-link">Login</Link>
-               <Link to="/registration" className="nav-link">Register</Link> */}
-             </>
-           )}
-         </nav>
-       </div>
-     </header>
+useEffect(() => {
+  fetchUser();
+}, [fetchUser]);
 
 
-     <main className="app-main">
-       <Routes>
-         <Route
-           exact path="/"
-           element={
-             user.id ? (
-               <StudentHomePage />
-             ) : (
-               <Navigate to="/login" replace />
-             )
-           }
-         />
-         <Route
-           exact path="/adminHome"
-           element={
-             user.id ? (
-               <AdminHome />
-             ) : (
-               <Navigate to="/login" replace />
-             )
-           }
-         />
-         <Route
-           exact path="/superAdminHome"
-           element={
-             user.id ? (
-               <SuperAdminHome />
-             ) : (
-               <Navigate to="/login" replace />
-             )
-           }
-         />
-         <Route
-           exact path="/alterAdmin"
-           element={
-             user.id ? (
-               <AlterAdminRoles />
-             ) : (
-               <Navigate to="/login" replace />
-             )
-           }
-         />
-         <Route
-           exact path="/updateEvent"
-           element={
-             user.id ? (
-               <SuperAdminHome />
-             ) : (
-               <Navigate to="/login" replace />
-             )
-           }
-         />
-         <Route
-           exact path="/userAttended"
-           element={
-             user.id ? (
-               <UserAttended />
-             ) : (
-               <Navigate to="/login" replace />
-             )
-           }
-         />
-         <Route
-           exact path="/login"
-           element={
-             user.id ? (
-               <Navigate to="/login-success" replace />
-             ) : (
-               <LoginPage />
-             )
-           }
-         />
-         <Route
-           exact path="/login-success"
-           element={
-             <SuccessPage
-               message="Successfully logged in!"
-               redirectTo="/"
-               delay={1500}
-             />
-           }
-         />
-         <Route
-           exact path="/logout-success"
-           element={
-             <SuccessPage
-               message="Successfully logged out!"
-               redirectTo="/login"
-               delay={1500}
-             />
-           }
-         />
-         <Route
-           exact path="/registration"
-           element={
-             user.id ? (
-               <Navigate to="/login-success" replace />
-             ) : (
-               <RegisterPage />
-             )
-           }
-         />
-         <Route
-           exact path="/about"
-           element={
-             <div className="about-container">
-               <p className="about-quote">
-                <img src="images/students.jpg"></img>
-                Welcome to LMR Local Marketing Results collaborative platform empowering students to engage in athletic events and offering
-                local school management and platform oversight to ensure seamless integration for all users.
+
+
+return (
+  <div className="app-container">
+    <header className="app-header">
+      <div className="header-content">
+        <Nav/>
+        <nav className="main-nav">
+        </nav>
+      </div>
+    </header>
+
+
+
+
+    <main className="app-main">
+      <Routes>
+      <Route
+  exact
+  path="/redirect"
+  element={
+    user.id ? (
+      user.admin_level === 0 ? (
+        <Navigate to="/HomePage" replace /> // students land on Events ("/")
+      ) : user.admin_level === 1 ? (
+        <Navigate to="/adminHome" replace />
+      ) : user.admin_level === 2 ? (
+        <Navigate to="/superAdminHome" replace />
+      ) : (
+        <Navigate to="/login" replace />
+      )
+    ) : (
+      <Navigate to="/login" replace />
+    )
+  }
+/>
+
+        <Route
+          exact path="/adminHome"
+          element={
+            user.id ? (
+              <AdminHome />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          exact path="/superAdminHome"
+          element={
+            user.id ? (
+              <SuperAdminHome />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          exact path="/alterAdmin"
+          element={
+            user.id ? (
+              <AlterAdminRoles />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          exact path="/updateEvent"
+          element={
+            user.id ? (
+              <SuperAdminHome />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          exact path="/userAttended"
+          element={
+            user.id ? (
+              <UserAttended />
+            ) : (
+              <Navigate to="/login" replace />
+            )
+          }
+        />
+        <Route
+          exact path="/login"
+          element={
+            user.id ? (
+              <Navigate to="/login-success" replace />
+            ) : (
+              <LoginPage />
+            )
+          }
+        />
+     <Route
+  exact path="/login-success"
+  element={
+    <SuccessPage
+      message="Successfully logged in!"
+      redirectTo="/redirect"
+      delay={1500}
+    />
+  }
+/>
+        <Route
+          exact path="/logout-success"
+          element={
+            <SuccessPage
+              message="Successfully logged out!"
+              redirectTo="/login"
+              delay={1500}
+            />
+          }
+        />
+        <Route
+          exact path="/registration"
+          element={
+            user.id ? (
+              <Navigate to="/login-success" replace />
+            ) : (
+              <RegisterPage />
+            )
+          }
+        />
+        <Route
+          exact path="/about"
+          element={
+            <div className="about-container">
+              <p className="about-quote">
+               <img src="images/students.jpg"></img>
+               Welcome to LMR Local Marketing Results collaborative platform empowering students to engage in athletic events and offering
+               local school management and platform oversight to ensure seamless integration for all users.
+               <br></br>
+                Created by the North Cascades Cohort, Prime Digital Acadamy
                 <br></br>
-                 Created by the North Cascades Cohort, Prime Digital Acadamy
-                 <br></br>
-                 The technologies we used are React, Node.js, Express, CSS, Material UI, Moment.js and PostgreSQL to build this app.
-               </p>
-               {user?.id && (
-                 <Link to="/events" className="back-to-Events-button">
-                   Back to Events Page
-                 </Link>
-               )}
-             </div>
-           }
-         />
-         <Route
-           exact
-           path="/events"
-           element={
-             user.id ? (
-               <EventsPage /> // Render HomePage for authenticated user.
-             ) : (
-               <Navigate to="/" replace /> // Redirect unauthenticated user.
-             )
-           }
-         />
-          <Route path="/BasicSearch" element={<BasicSearch />} />
-         <Route path="/studentHomePage" element={<StudentHomePage />} />
-         <Route exact path="/updateEvent/:eventId" element={<UpdateEvent />} />
-         <Route
-           path="*"
-           element={
-             <h2 className="error-page">404 Page</h2>
-           }
-         />
-       </Routes>
-     </main>
+                The technologies we used are React, Node.js, Express, CSS, Material UI, Moment.js and PostgreSQL to build this app.
+              </p>
+            </div>
+          }
+        />
+        <Route
+          exact
+          path="/"
+          element={
+            user.id ? (
+              <StudentHomePage/> // Render HomePage for authenticated user.
+            ) : (
+              <Navigate to="/" replace /> // Redirect unauthenticated user.
+            )
+          }
+        />
+        <Route path="/studentHomePage" element={<StudentHomePage />} />
+        <Route exact path="/updateEvent/:eventId" element={<UpdateEvent />} />
+        <Route path="/logout-success" element={<LogoutSuccess />} />
+        <Route path="/createEvent" element={<EventsPage />} />
+        <Route path="/adminHome" element={<AdminHome />} />
+        <Route path="/superAdminHome" element={<SuperAdminHome />} />
+        <Route path="/HomePage" element={<HomePage />} />
+        <Route
+          path="*"
+          element={
+            <h2 className="error-page">404 Page</h2>
+          }
+        />
+      </Routes>
+    </main>
 
 
-     <footer className="app-footer">
-       <p>Copyright © {new Date().getFullYear()}</p>
-     </footer>
-   </div>
- );
+
+
+    <footer className="app-footer">
+      <p>Copyright © {new Date().getFullYear()}</p>
+    </footer>
+  </div>
+);
 }
+
+
 
 
 export default App;
