@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import useStore from '../../zustand/store';
 import { useNavigate } from 'react-router-dom';
-import './EventsPage.css';
 import { Box, Container, TextField, Select, MenuItem, Button, Typography, Tabs, Tab, Divider, Snackbar, Alert} from "@mui/material";
 import CreateNewSchool from "../CreateNewSchool/CreateNewSchool";
 import CreateNewActivity from "../CreateNewActivity/CreateNewActivity";
