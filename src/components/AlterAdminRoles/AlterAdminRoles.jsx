@@ -124,7 +124,7 @@ function AlterAdminRoles() {
   return (
     <Box sx={{ p: 3 }}>
       <Typography variant="h4" gutterBottom sx={{ fontWeight: 600, borderBottom: '2px solid #3498db', pb: 1, mb: 5 }}>
-        User Admin Levels
+        Alter Admin Levels
       </Typography>
   
       {/* Filter Controls */}

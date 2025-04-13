@@ -60,16 +60,26 @@ return (
 
     <main className="app-main">
       <Routes>
-        <Route
-          exact path="/"
-          element={
-            user.id ? (
-              <StudentHomePage />
-            ) : (
-              <Navigate to="/login" replace />
-            )
-          }
-        />
+      <Route
+  exact
+  path="/redirect"
+  element={
+    user.id ? (
+      user.admin_level === 0 ? (
+        <Navigate to="/HomePage" replace /> // students land on Events ("/")
+      ) : user.admin_level === 1 ? (
+        <Navigate to="/adminHome" replace />
+      ) : user.admin_level === 2 ? (
+        <Navigate to="/superAdminHome" replace />
+      ) : (
+        <Navigate to="/login" replace />
+      )
+    ) : (
+      <Navigate to="/login" replace />
+    )
+  }
+/>
+
         <Route
           exact path="/adminHome"
           element={
@@ -130,16 +140,16 @@ return (
             )
           }
         />
-        <Route
-          exact path="/login-success"
-          element={
-            <SuccessPage
-              message="Successfully logged in!"
-              redirectTo="/"
-              delay={1500}
-            />
-          }
-        />
+     <Route
+  exact path="/login-success"
+  element={
+    <SuccessPage
+      message="Successfully logged in!"
+      redirectTo="/redirect"
+      delay={1500}
+    />
+  }
+/>
         <Route
           exact path="/logout-success"
           element={
@@ -173,20 +183,15 @@ return (
                 <br></br>
                 The technologies we used are React, Node.js, Express, CSS, Material UI, Moment.js and PostgreSQL to build this app.
               </p>
-              {user?.id && (
-                <Link to="/events" className="back-to-Events-button">
-                  Back to Events Page
-                </Link>
-              )}
             </div>
           }
         />
         <Route
           exact
-          path="/events"
+          path="/"
           element={
             user.id ? (
-              <EventsPage /> // Render HomePage for authenticated user.
+              <StudentHomePage/> // Render HomePage for authenticated user.
             ) : (
               <Navigate to="/" replace /> // Redirect unauthenticated user.
             )

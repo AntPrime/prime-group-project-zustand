@@ -1,6 +1,6 @@
 import useStore from '../../zustand/store'
 import { useState, useEffect } from 'react';
-import { Accordion, AccordionSummary, AccordionDetails, Divider, AccordionActions, Alert, Snackbar, Button, Paper, Box, Typography } from '@mui/material';
+import { Accordion, AccordionSummary, AccordionDetails, Divider, AccordionActions, Alert, Snackbar, Button, Paper, Box, Typography, Chip } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
 import moment from 'moment';
 import SearchEvent from '../SearchEvent/SearchEvent.jsx';
@@ -151,36 +151,62 @@ function StudentHomePage() {
             </Box>
           </Box>
         </AccordionSummary>
-
         <AccordionDetails>
-          <Divider sx={{ mb: 2 }} />
-          <Box sx={{ display: 'flex', flexDirection: 'column', pl: 11 }}>
-            <Typography variant="body2">
-              {event.notes || "N/A"}
-            </Typography>
-          </Box>
-        </AccordionDetails>
-        <AccordionActions sx={{ flexDirection: 'column', alignItems: 'flex-start', pl: 13 }}>
-          <Typography variant="h8" sx={{ mb: 1 }}>
-            <span style={{ fontWeight: 'bold' }}>Sign up below to attend </span>
-            <span style={{ fontWeight: 'bold' }}>{event.school_name || "N/A"}</span>
-          </Typography>
-          <Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
-            {/* Buttons as-is */}
-            <Button size="small" onClick={() => assignRoles(event, "producer")} disabled={!!event.producer}>
-              Producer: {event.producer_username || "(Unassigned)"}
-            </Button>
-            <Button size="small" onClick={() => assignRoles(event, "camera")} disabled={!!event.camera}>
-              Camera: {event.camera_username || "(Unassigned)"}
-            </Button>
-            <Button size="small" onClick={() => assignRoles(event, "play_by_play")} disabled={!!event.play_by_play}>
-              Play-by-play: {event.play_by_play_username || "(Unassigned)"}
-            </Button>
-            <Button size="small" onClick={() => assignRoles(event, "color_commentator")} disabled={!!event.color_commentator}>
-              Color Commentator: {event.color_commentator_username || "(Unassigned)"}
-            </Button>
-          </Box>
-        </AccordionActions>
+  <Divider sx={{ mb: 2 }} />
+  <Box
+    sx={{
+      borderRadius: 2,
+      px: 4,
+      py: 3,
+      ml: 8,
+      mr: 8,
+      mb: 4,
+    }}
+  >
+    <Typography variant="body2">
+      {event.notes || "N/A"}
+    </Typography>
+  </Box>
+</AccordionDetails>
+
+<AccordionActions sx={{ flexDirection: 'column', alignItems: 'flex-start', pl: 13, mb: 3 }}>
+  <Typography variant="h8" sx={{ mb: 4 }}>
+    <span style={{ fontWeight: 'bold' }}>Sign up below to attend </span>
+    <span style={{ fontWeight: 'bold' }}>{event.school_name || "N/A"}</span>
+  </Typography>
+
+  <Box sx={{ display: 'flex', gap: 1.5, flexWrap: 'wrap', mb: 1 }}>
+    {[
+      { label: 'Producer', key: 'producer' },
+      { label: 'Camera', key: 'camera' },
+      { label: 'Play-by-Play', key: 'play_by_play' },
+      { label: 'Color Commentator', key: 'color_commentator' }
+    ].map((role) => (
+      <Chip
+        key={role.key}
+        label={role.label}
+        color={event[role.key] ? "primary" : "default"}
+        onClick={() => assignRoles(event, role.key)}
+        disabled={!!event[role.key]}
+        sx={{
+          borderRadius: '20px',
+          borderWidth: '1.5px',
+          fontWeight: '500',
+          cursor: event[role.key] ? 'default' : 'pointer',
+          '&:hover': !event[role.key] && {
+            backgroundColor: '#2980b9',
+            color: 'white',
+          }
+        }}
+      />
+    ))}
+  </Box>
+</AccordionActions>
+
+
+
+
+
       </Accordion>
     </Paper>
   ))
@@ -208,5 +234,104 @@ function StudentHomePage() {
 
 
 export default StudentHomePage;
+
+{/* <AccordionActions sx={{ flexDirection: 'column', alignItems: 'flex-start', pl: 13 }}>
+<Typography variant="h8" sx={{ mb: 1 }}>
+  <span style={{ fontWeight: 'bold' }}>Sign up below to attend </span>
+  <span style={{ fontWeight: 'bold' }}>{event.school_name || "N/A"}</span>
+</Typography>
+
+<Box sx={{ display: 'flex', gap: 1, flexWrap: 'wrap' }}>
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Typography variant="body2" sx={{ fontWeight: 'normal' }}>
+      {event.producer_username ? event.producer_username : 'Unassigned'}
+    </Typography>
+    <Chip 
+      label="Producer" 
+      color={event.producer ? "primary" : "default"}
+      onClick={() => assignRoles(event, "producer")}
+      disabled={!!event.producer}
+      sx={{ 
+        borderRadius: '20px',
+        borderWidth: '1.5px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        '&:hover': {
+          backgroundColor: '#2980b9', // Change to blue on hover
+          borderColor: '#2980b9',
+        }
+      }}
+    />
+  </Box>
+
+
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Typography variant="body2" sx={{ fontWeight: 'normal' }}>
+      {event.camera_username ? event.camera_username : 'Unassigned'}
+    </Typography>
+    <Chip 
+      label="Camera" 
+      color={event.camera ? "primary" : "default"}
+      onClick={() => assignRoles(event, "camera")}
+      disabled={!!event.camera}
+      sx={{ 
+        borderRadius: '20px',
+        borderWidth: '1.5px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        '&:hover': {
+          backgroundColor: '#2980b9', // Change to blue on hover
+          borderColor: '#2980b9',
+        }
+      }}
+    />
+  </Box>
+
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Typography variant="body2" sx={{ fontWeight: 'normal' }}>
+      {event.play_by_play_username ? event.play_by_play_username : 'Unassigned'}
+    </Typography>
+    <Chip 
+      label="Play-by-Play" 
+      color={event.play_by_play ? "primary" : "default"}
+      onClick={() => assignRoles(event, "play_by_play")}
+      disabled={!!event.play_by_play}
+      sx={{ 
+        borderRadius: '20px',
+        borderWidth: '1.5px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        '&:hover': {
+          backgroundColor: '#2980b9', // Change to blue on hover
+          borderColor: '#2980b9',
+        }
+      }}
+    />
+  </Box>
+
+  <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+    <Typography variant="body2" sx={{ fontWeight: 'normal' }}>
+      {event.color_commentator_username ? event.color_commentator_username : 'Unassigned'}
+    </Typography>
+    <Chip 
+      label="Color Commentator" 
+      color={event.color_commentator ? "primary" : "default"}
+      onClick={() => assignRoles(event, "color_commentator")}
+      disabled={!!event.color_commentator}
+      sx={{ 
+        borderRadius: '20px',
+        borderWidth: '1.5px',
+        fontWeight: '500',
+        cursor: 'pointer',
+        '&:hover': {
+          backgroundColor: '#2980b9', 
+          borderColor: '#2980b9',
+        }
+      }}
+    />
+  </Box>
+</Box>
+</AccordionActions> */}
+
 
 
