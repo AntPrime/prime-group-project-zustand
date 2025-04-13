@@ -25,7 +25,6 @@ import AdminHome from '../AdminHome.jsx/AdminHome';
 import SuperAdminHome from '../SuperAdminHome.jsx/SuperAdminHome';
 import UserAttended from '../UserAttended.jsx/UserAttended';
 import AlterAdminRoles from '../AlterAdminRoles/AlterAdminRoles';
-import BasicSearch from '../BasicSearch/BasicSearch';
 import HomePage from '../HomePage/HomePage';
 import '../App/App.css';
 
@@ -197,7 +196,6 @@ return (
             )
           }
         />
-         <Route path="/BasicSearch" element={<BasicSearch />} />
         <Route path="/studentHomePage" element={<StudentHomePage />} />
         <Route exact path="/updateEvent/:eventId" element={<UpdateEvent />} />
         <Route path="/logout-success" element={<LogoutSuccess />} />

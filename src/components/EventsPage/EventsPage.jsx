@@ -89,7 +89,7 @@ useEffect(() => {
      .then(function (response) {
        console.log(response.data);
        fetchEvents();
-       setSnackbarMessage(`✅ Event "${newEvent.title}" created!`);
+       setSnackbarMessage(`Event "${newEvent.title}" created`);
        setSnackbarOpen(true);
        setTimeout(() => {
         if (user.admin_level === 2) {  // Check for super admin level
@@ -310,46 +310,20 @@ return (
 
           {/* Snackbar */}
           <Snackbar
-            open={snackbarOpen}
-            autoHideDuration={2000}
-            onClose={() => setSnackbarOpen(false)}
-            anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
-            sx={{
-              top: '40%',
-              transform: 'translateY(-50%)',
-              width: '100%',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-            }}
-          >
-            <Alert
-              onClose={() => setSnackbarOpen(false)}
-              severity="success"
-              variant="filled"
-              sx={{
-                width: '50%',
-                fontSize: '1.2rem',
-                padding: 3,
-                borderRadius: 2,
-                boxShadow: 5,
-                textAlign: 'center',
-                backgroundColor: '#d0f0c0',
-                color: '#1a4d1a',
-              }}
-            >
-              {snackbarMessage}
-            </Alert>
-          </Snackbar>
+  open={snackbarOpen}
+  autoHideDuration={2000}
+  onClose={() => setSnackbarOpen(false)}
+  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}
+>
+  <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
+    {snackbarMessage}
+  </Alert>
+</Snackbar>
         </Box>
       </Container>
     </Box>
   );
 }
-
-
-const cancelBtnStyle = { backgroundColor: '#B0B0B0', color: '#fff' };
-const saveBtnStyle = { backgroundColor: '#1976d2', color: '#fff' };
 
 
 export default EventsPage;

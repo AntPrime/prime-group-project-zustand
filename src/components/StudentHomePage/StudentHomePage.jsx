@@ -50,9 +50,8 @@ function StudentHomePage() {
       // 👇 Snackbar logic
       const roleName = roleColumn.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()); // Pretty role name
       const userName = useStore.getState().user.username; // Get username directly
-      const eventTitle = event.title;
       
-      setSnackbarMessage(`${userName} successfully signed up as ${roleName} for "${eventTitle}"`);
+      setSnackbarMessage(`${userName} successfully signed up as ${roleName}`);
       setSnackbarOpen(true);
        fetchEventList();
      }).catch(function() {
@@ -163,7 +162,7 @@ function StudentHomePage() {
       mb: 4,
     }}
   >
-    <Typography variant="body2">
+    <Typography variant="body2" sx={{ fontSize: '1rem' }}>
       {event.notes || "N/A"}
     </Typography>
   </Box>
@@ -219,12 +218,13 @@ function StudentHomePage() {
   open={snackbarOpen}
   autoHideDuration={4000}
   onClose={() => setSnackbarOpen(false)}
-  anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
+  anchorOrigin={{ vertical: 'top', horizontal: 'center' }} // Change to top-center
 >
   <Alert onClose={() => setSnackbarOpen(false)} severity="success" sx={{ width: '100%' }}>
     {snackbarMessage}
   </Alert>
 </Snackbar>
+
 
     </>
   );

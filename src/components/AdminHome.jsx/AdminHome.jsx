@@ -2,7 +2,7 @@ import useStore from '../../zustand/store';
 import { useState, useEffect } from 'react';
 import * as React from 'react';
 import {
-  Accordion, AccordionSummary, AccordionDetails, AccordionActions, Typography, Tabs, Tab, Box,
+  Accordion, AccordionSummary, AccordionDetails, AccordionActions, Typography, Tabs, Tab, Box, Table, TableHead, TableRow, TableCell, TableBody, Chip,
   Button, Divider, List, ListItem, ListItemText, Paper
 } from '@mui/material';
 import { IoIosArrowDropdown } from "react-icons/io";
@@ -218,51 +218,83 @@ const handleTabChange = (event, newValue) => {
               </AccordionSummary>
 
               <AccordionDetails>
-                <Divider sx={{ my: 2 }} />
-                <AccordionActions sx={{ justifyContent: 'flex-end', px: 2 }}>
-                  <NavLink
-                    to={`/updateEvent/${event.id}`}
-                    state={{ event }}
-                  >
-                    Update Event
-                  </NavLink>
-                </AccordionActions>
+  <Divider sx={{ mb: 1 }} />
+  <Box
+    sx={{
+      px: 4,
+      py: 3,
+      ml: 8,
+      mr: 8,
+    }}
+  >
+    <Typography variant="body2">
+      {event.notes || "N/A"}
+    </Typography>
+  </Box>
+  <Divider sx={{ mb: 2 }} />
+  <AccordionActions sx={{ justifyContent: 'flex-end', px: 2 }}>
+    <Box sx={{ display: 'flex', alignItems: 'center', gap: 2 }}>
+      <NavLink
+        to={`/updateEvent/${event.id}`}
+          state={{ event }}
+        >
+        Update Event
+        </NavLink>
+              </Box>
+        </AccordionActions>
+</AccordionDetails>
+<AccordionDetails>
+  <Table sx={{ width: '100%', minWidth: 300, px: 2, py: 1 }}>
+    <TableHead>
+      <TableRow>
+        <TableCell sx={{ fontWeight: 'bold' }}>Participant</TableCell>
+        <TableCell sx={{ fontWeight: 'bold' }}>Role</TableCell>
+        <TableCell sx={{ fontWeight: 'bold', textAlign: 'right', px: 8 }}>Status</TableCell> {/* Aligned left */}
+      </TableRow>
+    </TableHead>
+    <TableBody>
+      {event.participants.map((participant, pIndex) => (
+        <TableRow key={pIndex}>
+          {/* Username */}
+          <TableCell>
+            <Typography variant="body1" sx={{ fontWeight: 500 }}>
+              {participant.username}
+            </Typography>
+          </TableCell>
 
-                <Typography variant="h6" sx={{ mb: 1, pl: 11 }}>
-                  Participants
-                </Typography>
-                <List dense sx={{
-                  width: '100%',
-                  bgcolor: 'background.paper',
-                  pl: 11,
-                  borderRadius: 1,
-                }}>
-                  {event.participants.map((participant, pIndex) => (
-                    <ListItem key={pIndex} sx={{ mb: 2 }}>
-                      <ListItemText
-                        primary={participant.username}
-                        secondary={`Role: ${participant.role}`}
-                        sx={{
-                          '& .MuiListItemText-secondary': {
-                            color: 'text.secondary',
-                            fontSize: '0.875rem'
-                          }
-                        }}
-                      />
-                      <Box sx={{ ml: 'auto' }}>
-                        <Button
-                          size="small"
-                          variant="outlined"
-                          color={participant.marked ? 'success' : 'primary'}
-                          onClick={() => handleParticipantmarked(event.id, participant.role)}
-                        >
-                          {participant.marked ? 'Attended ✓' : 'Signed Up'}
-                        </Button>
-                      </Box>
-                    </ListItem>
-                  ))}
-                </List>
-              </AccordionDetails>
+          {/* Role */}
+          <TableCell>
+            <Chip
+              label={participant.role || "No Role"}
+              color="primary"
+              sx={{
+                borderRadius: '20px',
+                borderWidth: '1.5px',
+                fontWeight: '500',
+                height: 30,
+                minWidth: 150,
+                textAlign: 'center',
+                justifyContent: 'center'
+              }}
+            />
+          </TableCell>
+
+          {/* Status Button */}
+          <TableCell sx={{ textAlign: 'right' }}>
+            <Button
+              size="small"
+              variant="outlined"
+              color={participant.marked ? 'success' : 'primary'}
+              onClick={() => handleParticipantmarked(event.id, participant.role)}
+            >
+              {participant.marked ? 'Attended ✓' : 'Signed Up'}
+            </Button>
+          </TableCell>
+        </TableRow>
+      ))}
+    </TableBody>
+  </Table>
+</AccordionDetails>
             </Accordion>
           </Paper>
         ))}

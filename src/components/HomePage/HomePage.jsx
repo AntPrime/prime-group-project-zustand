@@ -29,15 +29,15 @@ function HomePage() {
       <Card sx={{ height: '100%' }}>
         <CardMedia
           component="img"
-          sx={{ height: 250, objectFit: 'cover', padding: 1, marginTop: 1 }}
-          image=""
+          sx={{  height: 250, objectFit: 'contain', padding: 1, marginTop: 2  }}
+          image="images/Screenshot 2025-04-12 at 10.47.40 PM.png"
           title="Look up your school"
         />
         <CardContent>
           <Typography variant="h4" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
             Look up your school
           </Typography>
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant="body2" color="textSecondary" sx={{ fontSize: '1rem' }}>
             See what events are happening at your school, event info, and sign-up listings below.
           </Typography>
         </CardContent>
@@ -48,16 +48,16 @@ function HomePage() {
     <Grid item xs={12} sm={6} md={4}>
       <Card sx={{ height: '100%' }}>
         <CardMedia
-          component="img"
-          sx={{ height: 250, objectFit: 'cover', padding: 1, marginTop: 1 }}
-          image="images/Screenshot 2025-04-12 at 7.29.32 PM.png"
-          title="Track attended events"
+        component="img"
+        sx={{ height: 250, objectFit: 'contain', padding: 1, marginTop: 1 }}
+        image="images/Screenshot 2025-04-12 at 10.45.19 PM.png" 
+        title="Track attended events"
         />
         <CardContent>
           <Typography variant="h4" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
             Track your attended events
           </Typography>
-          <Typography variant="body2" color="textSecondary">
+          <Typography variant="body2" color="textSecondary" sx={{ fontSize: '1rem' }}>
             Keep a record of everything you’ve helped with and attended on your student account page.
           </Typography>
         </CardContent>
@@ -77,7 +77,7 @@ function HomePage() {
           <Typography variant="h4" sx={{ fontWeight: 'bold', marginBottom: 2 }}>
             Check out our streaming channels
           </Typography>
-          <Typography variant="body2" color="textSecondary" sx={{ marginBottom: 2 }}>
+          <Typography variant="body2" color="textSecondary" sx={{ marginBottom: 2, fontSize: '1rem' }}>
             Want to catch up on local sports like Football, Volleyball, or Soccer? 
             LMR streams games and events from around the community, so you can watch and support your team!
           </Typography>
@@ -114,7 +114,7 @@ function HomePage() {
         py: 1.9, 
       }}
     >
-      Get Involved!
+      Get involved
     </Button>
   </Box>
 </Container>

@@ -121,7 +121,7 @@ function UserAttended() {
                       mb: 4,
                     }}
                   >
-                    <Typography variant="body2" sx={{ mb: 1 }}>
+                    <Typography variant="body2" sx={{ mb: 1, fontSize: '1rem' }}>
                       <strong>Notes:</strong> {event.notes || "N/A"}
                     </Typography>
                     <Box sx={{ display: 'flex', alignItems: 'center', gap: 1.5, mb: 1 }}>

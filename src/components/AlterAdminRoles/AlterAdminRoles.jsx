@@ -248,21 +248,22 @@ function AlterAdminRoles() {
         </DialogActions>
       </Dialog>
   
-      {/* Snackbar Notifications */}
-      <Snackbar
-        open={snackbar.open}
-        autoHideDuration={6000}
-        onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'center' }}
-      >
-        <Alert
-          severity={snackbar.severity}
-          onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
-          sx={{ width: '100%' }}
-        >
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
+   {/* Snackbar Notifications */}
+<Snackbar
+  open={snackbar.open}
+  autoHideDuration={6000}
+  onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+  anchorOrigin={{ vertical: 'top', horizontal: 'center' }}  // Change to top-center
+>
+  <Alert
+    severity={snackbar.severity}
+    onClose={() => setSnackbar((prev) => ({ ...prev, open: false }))}
+    sx={{ width: '100%' }}
+  >
+    {snackbar.message}
+  </Alert>
+</Snackbar>
+
     </Box>
   );
   
